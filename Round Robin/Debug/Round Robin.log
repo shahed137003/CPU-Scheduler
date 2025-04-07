@@ -1,16 +1,12 @@
 ﻿  Processes.cpp
-  Round Robin.cpp
-C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Round Robin\Round Robin.cpp(21,22): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Round Robin\Round Robin.cpp(46,20): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Round Robin\Round Robin.cpp(65,20): warning C4244: 'initializing': conversion from '_Ty' to 'int', possible loss of data
+C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Processes\Processes.cpp(195,20): warning C4244: 'initializing': conversion from '_Ty' to 'int', possible loss of data
           with
           [
               _Ty=float
           ]
-C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Round Robin\Round Robin.cpp(70,22): warning C4244: 'initializing': conversion from '_Ty' to 'int', possible loss of data
+C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Processes\Processes.cpp(200,22): warning C4244: 'initializing': conversion from '_Ty' to 'int', possible loss of data
           with
           [
               _Ty=float
           ]
-  Generating Code...
   Round Robin.vcxproj -> C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Round Robin\Debug\Round Robin.exe

@@ -168,21 +168,46 @@ void wait(int n, char print) {
     }
 }
 void printGantt(int time, bool live, char name) {
-    if (live) {
-        wait(time, name);
-    }
-    else { 
-        int threeTimes = (3 * time);
-        int middle = (3 * time) / 2;
-        while (threeTimes > middle + 1) {
-            std::cout << '_';
-            threeTimes--;
-        }
-        std ::cout << name;
+    cout << '|';
+    int threeTimes = (3 * time);
+    int middle = (3 * time) / 2;
+    while (threeTimes > middle + 1) {
+        if (name == '#') std::cout << '#';
+        else std::cout << '_';
         threeTimes--;
-        while (threeTimes > 0) {
-            std::cout << '_';
-            threeTimes--;
+        if (live && threeTimes % 3 == 0) wait();
+    }
+    std::cout << name;
+    threeTimes--;
+    if (live && threeTimes % 3 == 0) wait();
+    while (threeTimes > 0) {
+        if (name == '#') std::cout << '#';
+        else std::cout << '_';
+        threeTimes--;
+        if (live && threeTimes % 3 == 0) wait();
+    }
+    
+}
+
+void printNumbers(queue<float>time_slots) {
+    while (!time_slots.empty()) {
+        bool great = false;
+        int number = time_slots.front();
+        time_slots.pop();
+        cout << number;
+        great = (number / 10) > 0;
+        if (!time_slots.empty()) {
+            int diff = time_slots.front() - number;
+            while (diff > 0) {
+                if (great) {
+                    for (int i = 0; i < 3 * diff - 1;i++) {
+                        cout << ' ';
+                    }
+                    break;
+                }
+                cout << "   ";
+                diff--;
+            }
         }
     }
 }

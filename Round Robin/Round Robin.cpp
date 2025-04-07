@@ -19,11 +19,8 @@ void roundRobin(queue<Processes>& processes, float quantum, bool live) {
         if (readyQueue.empty()) {
             // Advance time to the next process arrival if readyQueue is empty
             int diff = processes.front().getArrival() - overall_time;
-            while (diff > 0) {
-                cout << "##";
-                diff--;
-            }
-            cout << "|";
+            printGantt(diff, live, '#');
+            time_slots.push(overall_time);
             overall_time = processes.front().getArrival();
             continue;
         }
@@ -35,7 +32,6 @@ void roundRobin(queue<Processes>& processes, float quantum, bool live) {
         if (operating.getResponse() < 0) {
             operating.setResponse(overall_time - operating.getArrival());
         }
-        cout << "|";
 
         // Calculate time slice
         float time_slice = min(quantum, operating.getRemaining());
@@ -59,27 +55,8 @@ void roundRobin(queue<Processes>& processes, float quantum, bool live) {
     // Output results
     cout << "|\n";
     processes = terminatedProcesses;
-    int x = processes.size();
-    while (!time_slots.empty()) {
-        bool great = false;
-        int number = time_slots.front();
-        time_slots.pop();
-        cout << number;
-        great = (number / 10) > 0;
-        if (!time_slots.empty()) {
-            int diff = time_slots.front() - number;
-            while (diff > 0) {
-                if (great) {
-                    for (int i = 0; i < 3 * diff - 1;i++) {
-                        cout << ' ';
-                    }
-                    break;
-                }
-                cout << "   ";
-                diff--;
-            }
-        }
-    }
+    
+    printNumbers(time_slots);
 
     cout << "\n\n\n";
     cout << "\nTotal Response Time: " << calcTotal_response_time(processes) << "\n";
@@ -129,7 +106,7 @@ int main() {
     else {
         cout << "Invalid input, defaulting to No.\n";
     }
-
+    cout << "\n";
     roundRobin(processes, quantum, live);
 
     return 0;
