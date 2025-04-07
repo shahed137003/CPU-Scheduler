@@ -1,12 +1,10 @@
 #include "FCFS.h"
 
 
-bool compareArrival(Processes a, Processes b) {
-    return a.getArrival() < b.getArrival();
-}
+
 
 void FCFS(vector<Processes>& processes) {
-    sort(processes.begin(), processes.end(), compareArrival); // Sort by arrival
+    sort(processes.begin(), processes.end(),compareByArrival); // Sort by arrival
 
     float currentTime = 0;
     for (int i = 0; i < processes.size(); i++) {
@@ -22,6 +20,15 @@ void FCFS(vector<Processes>& processes) {
         float waiting = turnaround - processes[i].getBurst();
         processes[i].setWaiting(waiting);
     }
+    queue<Processes> QueueOfProcesses;
+    for (const auto& p : processes) {
+        QueueOfProcesses.push(p);
+    }
+    cout << "Total Turnaround Time: " << calcTotal_turn_time(QueueOfProcesses) << "\n";
+    cout << "Average Turnaround Time: " << calcAvg_turn_time(QueueOfProcesses) << "\n\n";
+    cout << "Total Waiting Time: " << calcTotal_wait_time(QueueOfProcesses) << "\n";
+    cout << "Average Waiting Time: " << calcAvg_wait_time(QueueOfProcesses) << "\n";
+
 }
 
 int main() {
