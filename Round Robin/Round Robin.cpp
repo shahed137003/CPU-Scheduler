@@ -4,7 +4,8 @@ using namespace std;
 
 void roundRobin(queue<Processes>& processes, float quantum, bool live) {
     float overall_time = 0.0;
-    queue<float> time_slots;
+    queue<vector<float>> time_slots;  //to store start and end time of existing of a process in ready queue for gantt chart
+    queue<char>operate;
     queue<Processes> readyQueue;
     queue<Processes> terminatedProcesses;
     Processes operating;
@@ -18,16 +19,12 @@ void roundRobin(queue<Processes>& processes, float quantum, bool live) {
 
         if (readyQueue.empty()) {
             // Advance time to the next process arrival if readyQueue is empty
-            int diff = processes.front().getArrival() - overall_time;
-            printGantt(diff, live, '#');
-            time_slots.push(overall_time);
             overall_time = processes.front().getArrival();
             continue;
         }
 
         operating = readyQueue.front();
         readyQueue.pop();
-        time_slots.push(overall_time);
 
         if (operating.getResponse() < 0) {
             operating.setResponse(overall_time - operating.getArrival());
@@ -35,11 +32,16 @@ void roundRobin(queue<Processes>& processes, float quantum, bool live) {
 
         // Calculate time slice
         float time_slice = min(quantum, operating.getRemaining());
+        /*if (time_slots.empty() && overall_time != 0) {
+            time_slots.push({ 0,overall_time });
+            operate.push('#');
+        }*/
+        operate.push(operating.getName());
+        time_slots.push({ overall_time,overall_time + time_slice });
         overall_time += time_slice;
         operating.setLasttime(overall_time);
         operating.setRemaining(operating.getRemaining() - time_slice);
 
-        printGantt(time_slice, live, operating.getName());
 
         if (operating.getRemaining() > 0) {
             readyQueue.push(operating);
@@ -50,13 +52,11 @@ void roundRobin(queue<Processes>& processes, float quantum, bool live) {
             terminatedProcesses.push(operating);
         }
     }
-    time_slots.push(overall_time);
 
-    // Output results
-    cout << "|\n";
     processes = terminatedProcesses;
     
-    printNumbers(time_slots);
+    // Output results
+    printGantt(operate, time_slots, live);
 
     cout << "\n\n\n";
     cout << "\nTotal Response Time: " << calcTotal_response_time(processes) << "\n";

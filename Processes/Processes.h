@@ -52,8 +52,8 @@ private:
 void wait();
 void wait(int n);
 void wait(int n, char print);
-void printGantt(int time, bool live, char name);
-void printNumbers(queue<float>Time_slots);
+void printGantt(queue<char>operate, queue<vector<float>>Time_slots, bool live);
+void printNumbers(queue<vector<float>>Time_slots);
 bool compareByArrival(const Processes& a, const Processes& b);
 bool compareByPriority(const Processes& a, const Processes& b);
 float calcTotal_response_time(queue<Processes>processes);

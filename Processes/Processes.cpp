@@ -167,46 +167,97 @@ void wait(int n, char print) {
         n3times -=3;
     }
 }
-void printGantt(int time, bool live, char name) {
-    cout << '|';
-    int threeTimes = (3 * time);
-    int middle = (3 * time) / 2;
-    while (threeTimes > middle + 1) {
-        if (name == '#') std::cout << '#';
-        else std::cout << '_';
+void printGantt(queue<char>operate, queue<vector<float>>time_slots, bool live) {
+    vector<float> time_interval;
+    float last = 0;
+    if (time_slots.front()[0] != 0) {
+        int n = time_slots.size();
+        time_slots.push({ 0,time_slots.front()[0] });
+        for (int i = 0;i < n;i++) {
+            time_interval = time_slots.front();
+            time_slots.pop();
+            time_slots.push(time_interval);
+        }
+        n = operate.size();
+        operate.push('#');
+        char temp;
+        for (int i = 0;i < n;i++) {
+            temp = operate.front();
+            operate.pop();
+            operate.push(temp);
+        }
+    }
+    for (int i = 0;i < time_slots.size();i++) {
+        time_interval = time_slots.front();
+        time_slots.pop();
+        if (i == time_slots.size() - 1) {
+            last = time_slots.front()[1];
+        }
+        time_slots.push(time_interval);
+    }
+    cout << "\n";
+    last = 3 * last + time_slots.size() + 1;
+    while (last--)cout << '_';
+    cout << "\n";
+    while (!operate.empty()) {
+        cout << "|";
+        time_interval = time_slots.front();
+        float time = time_interval[1] - time_interval[0];
+        int threeTimes = (3 * time);
+        int middle = (3 * time) / 2;
+        while (threeTimes > middle + 1) {
+            if (operate.front() == '#') cout << '#';
+            else std::cout << '_';
+            threeTimes--;
+            if (live && threeTimes % 3 == 0) wait();
+        }
+        std::cout << operate.front();
         threeTimes--;
         if (live && threeTimes % 3 == 0) wait();
+        while (threeTimes > 0) {
+            if (operate.front() == '#') cout << '#';
+            else std::cout << '_';
+            threeTimes--;
+            if (live && threeTimes % 3 == 0) wait();
+        }
+        operate.pop();
+        time_slots.pop();
+        time_slots.push(time_interval);
+        if (!operate.empty() && time_interval[1] != time_slots.front()[0]) {
+            cout << "|";
+            time = time_slots.front()[0] - time_interval[1];
+            for (int i = 0; i < 3 * time;i++) {
+                cout << '#';
+                if (live && i % 3 == 0) wait();
+            }
+        }
     }
-    std::cout << name;
-    threeTimes--;
-    if (live && threeTimes % 3 == 0) wait();
-    while (threeTimes > 0) {
-        if (name == '#') std::cout << '#';
-        else std::cout << '_';
-        threeTimes--;
-        if (live && threeTimes % 3 == 0) wait();
-    }
-    
+    cout << "|\n";
+    printNumbers(time_slots);
 }
 
-void printNumbers(queue<float>time_slots) {
+void printNumbers(queue<vector<float>>time_slots) {
     while (!time_slots.empty()) {
-        bool great = false;
-        int number = time_slots.front();
-        time_slots.pop();
+        int great = 0; // 0 in case of two digit number, 1 in case 3 digit number....soon
+        float number = time_slots.front()[0];
         cout << number;
-        great = (number / 10) > 0;
-        if (!time_slots.empty()) {
-            int diff = time_slots.front() - number;
-            while (diff > 0) {
-                if (great) {
-                    for (int i = 0; i < 3 * diff - 1;i++) {
-                        cout << ' ';
-                    }
-                    break;
-                }
-                cout << "   ";
-                diff--;
+        while (number / 10 >= 1.0) { 
+            great++;
+            number /= 10;
+        }
+        int diff = time_slots.front()[1] - time_slots.front()[0];
+        for (int i = 0; i < 3 * diff - great;i++) {
+            cout << ' ';
+        }
+
+        number = time_slots.front()[1];
+        if (time_slots.size() == 1) cout << number;
+        time_slots.pop();
+        if (!time_slots.empty() && number != time_slots.front()[0]) {
+            cout << number;
+            diff = time_slots.front()[0] - number;
+            for (int i = 0; i < 3 * diff - great;i++) {
+                cout << ' ';
             }
         }
     }
