@@ -4,9 +4,7 @@ void SJF_Non(vector<Processes>& processes)
     queue<char> ordered_processes_with_names;
     queue<Processes> ordered_processes;
     float current_time = 0;
-    float total_waiting_time=0;
     queue<vector<float>>time_slots;
-    float total_turn_around_time=0;
     while (!processes.empty())
     {
         // we must sort processes based on burst time first, and arrival time second if burst times are equal
@@ -26,6 +24,7 @@ void SJF_Non(vector<Processes>& processes)
 
         if (process_found) {
             ordered_processes_with_names.push(selected_process.getName());
+            ordered_processes.push(selected_process);
             time_slots.push({ current_time,current_time + selected_process.getBurst() });
             current_time += selected_process.getBurst();
 
