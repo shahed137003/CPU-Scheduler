@@ -6,7 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include <queue>
-#include <windows.h> 
+#include <windows.h>
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -57,6 +57,7 @@ void printGantt(queue<char>operate, queue<vector<float>>Time_slots, bool live);
 void printNumbers(queue<vector<float>>Time_slots);
 bool compareByArrival(const Processes& a, const Processes& b);
 bool compareByPriority(const Processes& a, const Processes& b);
+bool compareByBurst(const Processes& a, const Processes& b);
 float calcTotal_response_time(queue<Processes>processes);
 float calcAvg_response_time(queue<Processes>processes);
 float calcTotal_turn_time(queue<Processes>processes);

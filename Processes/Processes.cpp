@@ -100,6 +100,12 @@ int Processes::getPriority() const {
 bool compareByArrival(const Processes& a, const Processes& b) {
     return a.getArrival() < b.getArrival();
 }
+bool compareByBurst(const Processes& a, const Processes& b)
+{
+    if (a.getBurst() == b.getBurst())
+                return a.getArrival() < b.getArrival();  // If burst times are the same, sort by arrival time
+            return a.getBurst() < b.getBurst();  // Otherwise, sort by burst time
+}
 bool compareByPriority(const Processes& a, const Processes& b) {
     return a.getPriority() < b.getPriority();
 }
@@ -241,7 +247,7 @@ void printNumbers(queue<vector<float>>time_slots) {
         int great = 0; // 0 in case of two digit number, 1 in case 3 digit number....soon
         float number = time_slots.front()[0];
         cout << number;
-        while (number / 10 >= 1.0) { 
+        while (number / 10 >= 1.0) {
             great++;
             number /= 10;
         }

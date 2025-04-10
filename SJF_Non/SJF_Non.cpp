@@ -1,5 +1,5 @@
-#include "SJF.h"
-void SJF(vector<Processes>& processes)
+#include "SJF_Non.h"
+void SJF_Non(vector<Processes>& processes)
 {
     queue<char> ordered_processes_with_names;
     queue<Processes> ordered_processes;
@@ -10,11 +10,7 @@ void SJF(vector<Processes>& processes)
     while (!processes.empty())
     {
         // we must sort processes based on burst time first, and arrival time second if burst times are equal
-        sort(processes.begin(), processes.end(), [](const Processes& a, const Processes& b) {
-            if (a.getBurst() == b.getBurst())
-                return a.getArrival() < b.getArrival();  // If burst times are the same, sort by arrival time
-            return a.getBurst() < b.getBurst();  // Otherwise, sort by burst time
-        });
+        sort(processes.begin(), processes.end(),compareByBurst);
 
         // we need to find the process that has arrived and has the shortest burst time
         Processes selected_process;
@@ -79,6 +75,6 @@ int main()
     }
 
     if(type=="SJF")
-        SJF(processes);
+        SJF_Non(processes);
     return 0;
 }
