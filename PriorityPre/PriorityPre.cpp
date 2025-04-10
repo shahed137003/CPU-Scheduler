@@ -13,7 +13,10 @@ void PriorityPre(vector<Processes>& processes)
         int selected = -1;
         for (int j = 0; j < processes.size(); j++) {
             if (processes[j].getArrival() <= i && processes[j].getRemaining() > 0) {
-                if (selected == -1 || processes[j].getPriority() < processes[selected].getPriority()) {
+                if (selected == -1 || 
+                    processes[j].getPriority() < processes[selected].getPriority() ||
+                    (processes[j].getPriority() == processes[selected].getPriority() && 
+                     processes[j].getArrival() < processes[selected].getArrival())) {
                     selected = j;
                 }
             }
@@ -51,9 +54,9 @@ void PriorityPre(vector<Processes>& processes)
 
 int main() {
     vector<Processes> processList;
-    processList.push_back(Processes('A', 0, 5, 2)); //ashof lw same priority a3ml eh
+    processList.push_back(Processes('A', 0, 5, 2)); 
     processList.push_back(Processes('B', 1, 3, 0));
-    processList.push_back(Processes('C', 2, 8, 3));
+    processList.push_back(Processes('C', 2, 8, 0));
     processList.push_back(Processes('D', 3, 6, 1));
 
     PriorityPre(processList);
