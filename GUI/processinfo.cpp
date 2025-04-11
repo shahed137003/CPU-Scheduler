@@ -67,8 +67,12 @@ processInfo::processInfo(QWidget *parent)
     font: bold 24px Arial;           /* Bold font, 14px size */
     border: none;                    /* No border */
 )");
-
-
+    ui->label_5->setStyleSheet(R"(
+    background-color: transparent;   /* No background */
+    color: white;                    /* White text color */
+    font: bold 24px Arial;           /* Bold font, 14px size */
+    border: none;                    /* No border */
+)");
 
 
 
@@ -83,7 +87,6 @@ processInfo::processInfo(QWidget *parent)
     ui->lineEdit_2->setStyleSheet(lineEditStyle);
     ui->lineEdit_3->setStyleSheet(lineEditStyle);
     ui->lineEdit_4->setStyleSheet(lineEditStyle);
-
 
 
 }
@@ -114,7 +117,8 @@ void processInfo::receiveProcessData(QString algorithm, int numProcesses) {
         ui->lineEdit_4->hide();
         ui->label_4->hide();
     }
-
+    ui->label_5->setText("Process 1");
+    ui->label_5->setAlignment(Qt::AlignLeft);
     ui->label->setText("Arrival Time: ");
     ui->label_2->setText("Burst Time: ");
     ui->label_3->setText("Priority: ");
@@ -143,10 +147,11 @@ void processInfo::receiveProcessData(QString algorithm, int numProcesses) {
                                   "}");
 
 }
+int i=2;
 vector<Processes> processes;
 void processInfo::on_pushButton_clicked()
 {
-
+    ui->label_5->setText("Process "+ QString::number(i));
     Processes p;
     float arrival=(ui->lineEdit->text()).toFloat();
     p.setArrival(arrival);
@@ -159,6 +164,6 @@ void processInfo::on_pushButton_clicked()
     ui->lineEdit_2->clear();
     ui->lineEdit_3->clear();
     ui->lineEdit_4->clear();
+    i++;
 
 }
-
