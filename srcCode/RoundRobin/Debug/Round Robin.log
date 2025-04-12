@@ -1,13 +1,14 @@
 ﻿  Processes.cpp
-C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Processes\Processes.cpp(190,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Processes\Processes.cpp(206,24): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Processes\Processes.cpp(207,20): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Processes\Processes.cpp(248,18): warning C4244: 'initializing': conversion from '_Ty' to 'int', possible loss of data
+C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Processes\Processes.cpp(148,13): warning C4244: 'argument': conversion from 'float' to 'DWORD', possible loss of data
+C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Processes\Processes.cpp(192,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Processes\Processes.cpp(208,24): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Processes\Processes.cpp(209,20): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Processes\Processes.cpp(250,18): warning C4244: 'initializing': conversion from '_Ty' to 'int', possible loss of data
           with
           [
               _Ty=float
           ]
-C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Processes\Processes.cpp(258,42): warning C4244: '=': conversion from '_Ty' to 'int', possible loss of data
+C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Processes\Processes.cpp(260,42): warning C4244: '=': conversion from '_Ty' to 'int', possible loss of data
           with
           [
               _Ty=float

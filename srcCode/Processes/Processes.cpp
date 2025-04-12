@@ -149,11 +149,13 @@ void wait() {
     // Waiting for 1 second
     Sleep(1000);
 }
-void wait(int n) {
-    while (n > 0) {
-        wait();
-        n--;
-    }
+void wait(float n) {
+    // Waiting for n second
+    Sleep(n * 1000);
+}
+void wait_ms(int n) {
+    // Waiting for n millisecond
+    Sleep(n);
 }
 void wait(int n, char print) {
     int n3times = 3 * n;
@@ -266,5 +268,21 @@ void printNumbers(queue<vector<float>>time_slots) {
                 cout << ' ';
             }
         }
+    }
+}
+
+void sort_queue(queue<Processes>&processes) {
+    if (processes.size() == 1)return;
+    vector<Processes> processes_vec;
+    int size = processes.size();
+    for (int i = 0; i < size; i++) {
+        processes_vec.push_back(processes.front());
+        processes.pop();
+    }
+    sort(processes_vec.begin(), processes_vec.end(), compareByArrival);
+
+    
+    for (const auto& proc : processes_vec) {
+        processes.push(proc);
     }
 }

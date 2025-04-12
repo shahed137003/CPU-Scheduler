@@ -1,25 +1,87 @@
 #include "RoundRobin.h"
 
-using namespace std;
+
+// Shared mutex and atomic flag for dynamic input thread
+float overall_time = 0.0;
+queue<Processes> readyQueue;
+std::mutex queueMutex;
+std::atomic<bool> stopInput(false);
+
+// Function to handle dynamic process input
+void dynamicInput(queue<Processes>& processes, std::mutex& queueMutex, std::atomic<bool>& stopInput) {
+    while (!stopInput) {
+        string input;
+        cout << "\n[Dynamic Add] Enter process (Name arrival Burst) or type 'STOP' to finish: ";
+        
+        cin >> input;
+
+        if (input == "STOP" ||(processes.empty() && readyQueue.empty())) { // Check if the user wants to stop entering processes
+            if (processes.empty() && readyQueue.empty())
+                cout << "Last processes is not added as all processes finished..\n";
+            stopInput = true; // Signal the input thread to terminate
+            break;
+        }
+
+        char name = input[0];
+        float arrival, burst;
+        cin >> arrival >> burst;
+
+        if (cin.fail() || burst <= 0 || arrival < 0) {
+            cin.clear();
+            cin.ignore(INT_MAX, '\n');
+            cout << "Invalid input. Please ensure arrival and burst times are valid.\n";
+            continue;
+        }
+        if (arrival < overall_time) {
+            arrival = overall_time;
+            cout << "You choose an arrival time less than the running time now.\n"
+                <<"So, we will set arrival time of process "<<name<<" to "<<overall_time<<"\n";
+        }
+        Processes newProc(name, arrival, burst);
+        {
+            {
+                lock_guard<mutex> lock(queueMutex);
+                processes.push(newProc);
+                sort_queue(processes);
+            }
+        }
+
+        cout << "[Process " << name << " added dynamically]\n" << overall_time <<"\n";
+    }
+}
 
 void roundRobin(queue<Processes>& processes, float quantum, bool live) {
-    float overall_time = 0.0;
-    queue<vector<float>> time_slots;  //to store start and end time of existing of a process in ready queue for gantt chart
-    queue<char>operate;
-    queue<Processes> readyQueue;
+
+    queue<vector<float>> time_slots;  // to store start and end time of process execution for Gantt chart
+    queue<char> operate;
     queue<Processes> terminatedProcesses;
     Processes operating;
 
-    while (!readyQueue.empty() || !processes.empty()) {
+    // Start input thread
+    thread inputThread(dynamicInput, ref(processes), ref(queueMutex), ref(stopInput));
+
+    while (!readyQueue.empty() || !processes.empty() || !stopInput) {
         // Move processes to readyQueue based on arrival times
-        while (!processes.empty() && processes.front().getArrival() <= overall_time) {
-            readyQueue.push(processes.front());
-            processes.pop();
+        {
+            lock_guard<mutex> lock(queueMutex);
+            while (!processes.empty() && processes.front().getArrival() <= overall_time) {
+                readyQueue.push(processes.front());
+                processes.pop();
+            }
         }
 
         if (readyQueue.empty()) {
             // Advance time to the next process arrival if readyQueue is empty
-            overall_time = processes.front().getArrival();
+            {
+                lock_guard<mutex> lock(queueMutex);
+                if (!processes.empty()) {
+                    overall_time = processes.front().getArrival();
+                }
+                else if (stopInput) { // Exit if input has stopped and no processes remain
+                    break;
+                }
+
+            }
             continue;
         }
 
@@ -32,16 +94,11 @@ void roundRobin(queue<Processes>& processes, float quantum, bool live) {
 
         // Calculate time slice
         float time_slice = min(quantum, operating.getRemaining());
-        /*if (time_slots.empty() && overall_time != 0) {
-            time_slots.push({ 0,overall_time });
-            operate.push('#');
-        }*/
         operate.push(operating.getName());
-        time_slots.push({ overall_time,overall_time + time_slice });
+        time_slots.push({ overall_time, overall_time + time_slice });
         overall_time += time_slice;
         operating.setLasttime(overall_time);
         operating.setRemaining(operating.getRemaining() - time_slice);
-
 
         if (operating.getRemaining() > 0) {
             readyQueue.push(operating);
@@ -51,10 +108,16 @@ void roundRobin(queue<Processes>& processes, float quantum, bool live) {
             operating.setWaiting(operating.getTurnaround() - operating.getBurst());
             terminatedProcesses.push(operating);
         }
+
+        if(live)wait(time_slice);
     }
 
+    // Stop dynamic input thread
+    stopInput = true;
+    inputThread.detach();       //inputThread.join();
+
     processes = terminatedProcesses;
-    
+
     // Output results
     printGantt(operate, time_slots, live);
 
@@ -72,21 +135,22 @@ int main() {
     int n;
     cin >> n;
 
-    vector<Processes> processes_vec;
+    if (n < 1) {
+        cout << "Please Enter an integer number greater than 0...\n";
+        return -1;
+    }
+
+    queue<Processes> processes;
     for (int i = 0; i < n; i++) {
         char name;
         float arrival, burst;
         cout << "Enter process name, arrival time, and burst time (e.g., A 0 4): ";
         cin >> name >> arrival >> burst;
-        processes_vec.emplace_back(name, arrival, burst);
+        Processes temp(name, arrival, burst);
+        processes.push(temp);
     }
-
-    sort(processes_vec.begin(), processes_vec.end(), compareByArrival);
-
-    queue<Processes> processes;
-    for (const auto& proc : processes_vec) {
-        processes.push(proc);
-    }
+    sort_queue(processes);
+   
 
     float quantum;
     cout << "Enter Time Quantum: ";
@@ -106,7 +170,8 @@ int main() {
     else {
         cout << "Invalid input, defaulting to No.\n";
     }
-    cout << "\n";
+    cout << "\nYou can add new processes while the scheduler is running (e.g., Z 5 2)\n\n";
+
     roundRobin(processes, quantum, live);
 
     return 0;
