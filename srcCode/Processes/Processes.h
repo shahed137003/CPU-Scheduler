@@ -7,8 +7,13 @@
 #include <algorithm>
 #include <queue>
 #include <windows.h>
+<<<<<<< Updated upstream:srcCode/Processes/Processes.h
 #include <bits/stdc++.h>
 
+=======
+#include <mutex>
+#include <string>
+>>>>>>> Stashed changes:Processes/Processes.h
 using namespace std;
 
 class Processes {
@@ -51,7 +56,8 @@ private:
 };
 
 void wait();
-void wait(int n);
+void wait(float n);
+void wait_ms(int n);
 void wait(int n, char print);
 void printGantt(queue<char>operate, queue<vector<float>>Time_slots, bool live);
 void printNumbers(queue<vector<float>>Time_slots);
@@ -64,3 +70,7 @@ float calcTotal_turn_time(queue<Processes>processes);
 float calcAvg_turn_time(queue<Processes>processes);
 float calcTotal_wait_time(queue<Processes>processes);
 float calcAvg_wait_time(queue<Processes>processes);
+<<<<<<< Updated upstream:srcCode/Processes/Processes.h
+=======
+void sort_queue(queue<Processes>&processes);
+>>>>>>> Stashed changes:Processes/Processes.h
