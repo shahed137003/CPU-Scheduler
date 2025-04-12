@@ -1,6 +1,6 @@
 #ifndef PROCESSINFO_H
 #define PROCESSINFO_H
-#include "Processes_file.h"
+#include "Processes/Processes.h"
 #include <QDialog>
 #include <QLabel>
 #include <QSpinBox>
@@ -8,8 +8,6 @@
 #include <QHBoxLayout>
 #include <QVector>
 #include <QString>
-
-
 
 namespace Ui {
 class processInfo;

@@ -1,6 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include "Processes_file.h"
+#include "Processes/Processes.h"
 #include <QMainWindow>
 #include <QApplication>
 #include <QTextEdit>
