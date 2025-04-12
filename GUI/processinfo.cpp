@@ -73,7 +73,13 @@ processInfo::processInfo(QWidget *parent)
     font: bold 24px Arial;           /* Bold font, 14px size */
     border: none;                    /* No border */
 )");
-
+    ui->label_6->setStyleSheet(R"(
+    font-size: 33px;  /* Larger font size */
+    font-weight: bold;  /* Bold title */
+    color: white;  /* Title text color set to white */
+    )");
+    ui->label_6->setAlignment(Qt::AlignCenter);
+    ui->label_6->hide();
 
 
     QString lineEditStyle = R"(
@@ -151,6 +157,22 @@ int i=2;
 vector<Processes> processes;
 void processInfo::on_pushButton_clicked()
 {
+    if(i>processNum)
+    {
+        ui->pushButton->hide();
+        ui->label->hide();
+        ui->label_2->hide();
+        ui->label_3->hide();
+        ui->label_4->hide();
+        ui->label_5->hide();
+        ui->lineEdit->hide();
+        ui->lineEdit_2->hide();
+        ui->lineEdit_3->hide();
+        ui->lineEdit_4->hide();
+        ui->label_6->show();
+        ui->label_6->setText("Processes added successfully");
+
+    }
     ui->label_5->setText("Process "+ QString::number(i));
     Processes p;
     float arrival=(ui->lineEdit->text()).toFloat();
