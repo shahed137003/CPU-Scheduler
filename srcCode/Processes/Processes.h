@@ -7,13 +7,12 @@
 #include <algorithm>
 #include <queue>
 #include <windows.h>
-<<<<<<< Updated upstream:srcCode/Processes/Processes.h
-#include <bits/stdc++.h>
-
-=======
+#include "../Processes/Processes.h"
+//#include <bits/stdc++.h>
 #include <mutex>
 #include <string>
->>>>>>> Stashed changes:Processes/Processes.h
+#include <mutex>
+#include <string>
 using namespace std;
 
 class Processes {
@@ -70,7 +69,4 @@ float calcTotal_turn_time(queue<Processes>processes);
 float calcAvg_turn_time(queue<Processes>processes);
 float calcTotal_wait_time(queue<Processes>processes);
 float calcAvg_wait_time(queue<Processes>processes);
-<<<<<<< Updated upstream:srcCode/Processes/Processes.h
-=======
 void sort_queue(queue<Processes>&processes);
->>>>>>> Stashed changes:Processes/Processes.h

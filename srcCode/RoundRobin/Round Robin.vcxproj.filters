@@ -15,18 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Round Robin.cpp">
+    <ClCompile Include="..\Processes\Processes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Processes\Processes.cpp">
+    <ClCompile Include="RoundRobin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Round Robin.h">
+    <ClInclude Include="..\Processes\Processes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Processes\Processes.h">
+    <ClInclude Include="RoundRobin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

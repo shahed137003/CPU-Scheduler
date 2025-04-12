@@ -140,11 +140,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Processes\Processes.cpp" />
-    <ClCompile Include="Round Robin.cpp" />
+    <ClCompile Include="RoundRobin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Processes\Processes.h" />
-    <ClInclude Include="Round Robin.h" />
+    <ClInclude Include="RoundRobin.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
