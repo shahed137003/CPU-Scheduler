@@ -31,7 +31,7 @@ void FCFS(vector<Processes>& processes) {
 
 }
 
-int main() {
+/*int main() {
     vector<Processes> processList;
     processList.push_back(Processes('A', 0, 5));
     processList.push_back(Processes('B', 1, 3));
@@ -51,4 +51,4 @@ int main() {
     }
 
     return 0;
-}
+}*/

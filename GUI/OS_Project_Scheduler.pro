@@ -10,15 +10,29 @@ CONFIG += c++17
 INCLUDEPATH += srcCode
 
 SOURCES += \
+    Dynamically.cpp \
     main.cpp \
     mainwindow.cpp \
     processinfo.cpp\
-    srcCode/Processes/Processes.cpp
+    srcCode/FCFS/FCFS.cpp \
+    srcCode/PriorityNon/PriorityNon.cpp \
+    srcCode/PriorityPre/PriorityPre.cpp \
+    srcCode/Processes/Processes.cpp \
+    srcCode/RoundRobin/RoundRobin.cpp \
+    srcCode/SJF_Non/SJF_Non.cpp \
+    srcCode/SRJF/SRJF.cpp
 
 HEADERS += \
+    Dynamically.h \
     mainwindow.h \
     processinfo.h \
-    srcCode/Processes/Processes.h
+    srcCode/FCFS/FCFS.h \
+    srcCode/PriorityNon/PriorityNon.h \
+    srcCode/PriorityPre/PriorityPre.h \
+    srcCode/Processes/Processes.h \
+    srcCode/RoundRobin/RoundRobin.h \
+    srcCode/SJF_Non/SJF_Non.h \
+    srcCode/SRJF/SRJF.h
 
 FORMS += \
     mainwindow.ui \

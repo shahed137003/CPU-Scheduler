@@ -1,0 +1,14 @@
+release/Dynamically.o
+release/main.o
+release/mainwindow.o
+release/processinfo.o
+release/FCFS.o
+release/PriorityNon.o
+release/PriorityPre.o
+release/Processes.o
+release/RoundRobin.o
+release/SJF_Non.o
+release/SRJF.o
+release/moc_Dynamically.o
+release/moc_mainwindow.o
+release/moc_processinfo.o

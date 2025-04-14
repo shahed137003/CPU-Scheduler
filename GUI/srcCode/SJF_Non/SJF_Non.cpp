@@ -37,7 +37,7 @@ void SJF_Non(vector<Processes>& processes)
     calcAvg_turn_time(ordered_processes);
     calcAvg_wait_time(ordered_processes);
 }
-
+/*
 int main()
 {
     string done = "Y";
@@ -76,4 +76,4 @@ int main()
     if(type=="SJF")
         SJF_Non(processes);
     return 0;
-}
+}*/

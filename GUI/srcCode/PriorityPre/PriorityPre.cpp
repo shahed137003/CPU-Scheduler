@@ -51,7 +51,7 @@ void PriorityPre(vector<Processes>& processes)
 
     
 
-
+/*
 int main() {
     vector<Processes> processList;
     processList.push_back(Processes('A', 0, 5, 2)); 
@@ -74,7 +74,7 @@ int main() {
 
     return 0;
 }
-
+*/
 
 
 

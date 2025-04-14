@@ -1,6 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include "Processes/Processes.h"
+#include "srcCode/FCFS/FCFS.h"
+#include "srcCode/PriorityNon/PriorityNon.h"
+#include "srcCode/PriorityPre/PriorityPre.h"
+#include "srcCode/RoundRobin/RoundRobin.h"
+#include "srcCode/SJF_Non/SJF_Non.h"
+#include "srcCode/SRJF/SRJF.h"
 #include <QMainWindow>
 #include <QApplication>
 #include <QTextEdit>
@@ -29,6 +35,7 @@
 #include <QFontMetrics>
 #include <QMainWindow>
 #include "processinfo.h"
+#include "Dynamically.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -49,6 +56,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     processInfo *processInfo;
+    Dynamically *Dynamically;
 
 };
 #endif // MAINWINDOW_H

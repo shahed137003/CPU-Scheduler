@@ -101,8 +101,8 @@ processInfo::~processInfo()
 {
     delete ui;
 }
-
-void processInfo::receiveProcessData(QString algorithm, int numProcesses) {
+int comboIndex;
+void processInfo::receiveProcessData(QString algorithm, int numProcesses, int index) {
     // Set Algorithm and Process Number Labels
     processInfo::AlgorithmNum = algorithm;
     processInfo::processNum = numProcesses;
@@ -118,7 +118,8 @@ void processInfo::receiveProcessData(QString algorithm, int numProcesses) {
     {
         ui->lineEdit_3->hide();
         ui->label_3->hide();
-    }    if(!needsQuantum)
+    }
+    if(!needsQuantum)
     {
         ui->lineEdit_4->hide();
         ui->label_4->hide();
@@ -151,14 +152,42 @@ void processInfo::receiveProcessData(QString algorithm, int numProcesses) {
                                   "    background-color: #2980b9;"    // Grey background for disabled state
                                   "    color: #7f8c8d;"                // Darker text color for disabled state
                                   "}");
-
+    comboIndex = index;
 }
-int i=2;
+int i = 2;//Why 2 ??
+bool first = false;
+float quantum = 0.0;
 vector<Processes> processes;
+vector<Process> process;
 void processInfo::on_pushButton_clicked()
 {
     if(i>processNum)
     {
+        switch(comboIndex){
+        case 0:
+            FCFS(processes);
+            break;
+        case 1:
+            SJF_Non(processes);
+            break;
+        case 2:
+            scheduleSRJF(process);
+            break;
+        case 3:
+            PriorityNon(processes);
+            break;
+        case 4:
+            PriorityPre(processes);
+            break;
+        case 5:
+            queue<Processes>processesQ;
+            for (const auto& proc : processes) {
+                processesQ.push(proc);
+            }
+            bool live = true;
+            roundRobin(processesQ, quantum, live);
+            break;
+        }
         ui->pushButton->hide();
         ui->label->hide();
         ui->label_2->hide();
@@ -171,21 +200,33 @@ void processInfo::on_pushButton_clicked()
         ui->lineEdit_4->hide();
         ui->label_6->show();
         ui->label_6->setText("Processes added successfully");
-
+        Dynamically *dynamically = new class Dynamically(nullptr); // Create Dynamically instance
+        //processInfo->receiveProcessData(algorithmMain, numProcessesMain); // Pass the selected data
+        dynamically->show(); // Show the processInfo dialog*/
     }
     ui->label_5->setText("Process "+ QString::number(i));
     Processes p;
+    char name = 'A' +i;
     float arrival=(ui->lineEdit->text()).toFloat();
+    p.setName(name);
     p.setArrival(arrival);
     p.setBurst((ui->lineEdit_2->text()).toFloat());
-    p.setPriority((ui->lineEdit_3->text()).toFloat());
-    int quantum = ((ui->lineEdit_4->text()).toFloat());
+    p.setPriority((ui->lineEdit_3->text()).toInt());
     QString str = QString::number(arrival, 'f', 2);
+    Process p1(i, arrival, (ui->lineEdit_2->text()).toFloat(), true);
+    process.push_back(p1);
     processes.push_back(p);
     ui->lineEdit->clear();
     ui->lineEdit_2->clear();
     ui->lineEdit_3->clear();
     ui->lineEdit_4->clear();
+    first = true;
+    if(first){
+        quantum = ((ui->lineEdit_4->text()).toFloat());
+        ui->lineEdit_4->hide();
+        ui->label_4->hide();
+    }
+
     i++;
 
 }

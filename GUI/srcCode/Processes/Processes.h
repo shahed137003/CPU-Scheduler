@@ -13,6 +13,7 @@
 #include <string>
 #include <mutex>
 #include <string>
+#include <atomic>
 using namespace std;
 
 class Processes {

@@ -5,6 +5,7 @@
 #include "ui_mainwindow.h"
 QString algorithmMain;
 int numProcessesMain;
+int index;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -41,12 +42,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->comboBox->setCurrentIndex(-1);
     ui->comboBox->setPlaceholderText("Select an option: ");
-    ui->comboBox->addItem("First Come First Served");
-    ui->comboBox->addItem("Non Preemptive Shortest Job First");
-    ui->comboBox->addItem("Preemptive Shortest Job First");
-    ui->comboBox->addItem("Non Preemptive Priority Scheduling");
-    ui->comboBox->addItem("Preemptive Priority Scheduling");
-    ui->comboBox->addItem("Round Robin");
+    ui->comboBox->addItem("First Come First Served");  // 0 FCFS
+    ui->comboBox->addItem("Non Preemptive Shortest Job First"); // 1 SJF
+    ui->comboBox->addItem("Preemptive Shortest Job First"); // 2 non SJF
+    ui->comboBox->addItem("Non Preemptive Priority Scheduling");    // 3 nonPriority
+    ui->comboBox->addItem("Preemptive Priority Scheduling");        // 4 priority
+    ui->comboBox->addItem("Round Robin");       //5 rr
     ui->comboBox->setStyleSheet("QComboBox {"
                                 "    background-color: #ecf0f1;"  // Light gray background
                                 "    color: #2c3e50;"             // Dark text color
@@ -117,6 +118,8 @@ MainWindow::MainWindow(QWidget *parent)
                                   "    background-color: #bdc3c7;"    // Grey background for disabled state
                                   "    color: #7f8c8d;"                // Darker text color for disabled state
                                   "}");
+
+    index= ui->comboBox->currentIndex();
     algorithmMain = ui->comboBox->currentText();
     numProcessesMain = ui->spinBox->value();
 
@@ -129,12 +132,12 @@ MainWindow::~MainWindow()
 
 
 void MainWindow::on_Nextbutton_clicked()
-{     numProcessesMain = ui->spinBox->value();     // Get the entered number of processes
-
+{
+    numProcessesMain = ui->spinBox->value();     // Get the entered number of processes
     algorithmMain = ui->comboBox->currentText(); // Get the selected algorithm
     hide(); // Hide the main window
     processInfo= new class processInfo(this); // Create processInfo instance
-    processInfo->receiveProcessData(algorithmMain, numProcessesMain); // Pass the selected data
+    processInfo->receiveProcessData(algorithmMain, numProcessesMain,index); // Pass the selected data
     processInfo->show(); // Show the processInfo dialog
 
 }

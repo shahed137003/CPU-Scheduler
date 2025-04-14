@@ -130,7 +130,7 @@ void roundRobin(queue<Processes>& processes, float quantum, bool live) {
     cout << "Average Waiting Time: " << calcAvg_wait_time(processes) << "\n";
 }
 
-int main() {
+/*int main() {
     cout << "Welcome! Enter number of processes to be scheduled: ";
     int n;
     cin >> n;
@@ -175,4 +175,4 @@ int main() {
     roundRobin(processes, quantum, live);
 
     return 0;
-}
+}*/

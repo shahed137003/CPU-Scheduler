@@ -8,6 +8,13 @@
 #include <QHBoxLayout>
 #include <QVector>
 #include <QString>
+#include "srcCode/FCFS/FCFS.h"
+#include "srcCode/PriorityNon/PriorityNon.h"
+#include "srcCode/PriorityPre/PriorityPre.h"
+#include "srcCode/RoundRobin/RoundRobin.h"
+#include "srcCode/SJF_Non/SJF_Non.h"
+#include "srcCode/SRJF/SRJF.h"
+#include "Dynamically.h"
 
 namespace Ui {
 class processInfo;
@@ -20,13 +27,14 @@ class processInfo : public QDialog
 public:
     explicit processInfo(QWidget *parent = nullptr);
     ~processInfo();
-    void receiveProcessData(QString algorithm, int numProcesses);
+    void receiveProcessData(QString algorithm, int numProcesses, int index);
 
 private slots:
     void on_pushButton_clicked();
 
 private:
     Ui::processInfo *ui;
+    Dynamically *dynamically;
     int processNum;
     QString AlgorithmNum;
 };
