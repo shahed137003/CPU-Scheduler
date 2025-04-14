@@ -12,7 +12,7 @@
 #include <iomanip>
 #include <atomic>
 #include <string>
-
+# include <QString>
 // Process structure definition
 struct Process {
     int pid;

@@ -34,6 +34,7 @@ queue<Process> new_processes;
 atomic<bool> stop_flag(false);
 atomic<bool> new_processes_added(false);
 
+//QVector<QPair<QString::QString, int>>& PRocess;
 // Comparison function for priority queue (SRJF)
 auto cmp = [](const Process* left, const Process* right) {
     return left->remaining_time > right->remaining_time;
