@@ -11,6 +11,7 @@ INCLUDEPATH += srcCode
 
 SOURCES += \
     Dynamically.cpp \
+    GanttChart.cpp \
     main.cpp \
     mainwindow.cpp \
     processinfo.cpp\
@@ -24,6 +25,7 @@ SOURCES += \
 
 HEADERS += \
     Dynamically.h \
+    GanttChart.h \
     mainwindow.h \
     processinfo.h \
     srcCode/FCFS/FCFS.h \

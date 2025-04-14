@@ -14,6 +14,10 @@
 #include <mutex>
 #include <string>
 #include <atomic>
+
+// Forward declaration to avoid including dynamically.h
+class GanttChart;
+
 using namespace std;
 
 class Processes {

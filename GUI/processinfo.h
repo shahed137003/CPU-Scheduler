@@ -1,13 +1,6 @@
 #ifndef PROCESSINFO_H
 #define PROCESSINFO_H
 #include "Processes/Processes.h"
-#include <QDialog>
-#include <QLabel>
-#include <QSpinBox>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QVector>
-#include <QString>
 #include "srcCode/FCFS/FCFS.h"
 #include "srcCode/PriorityNon/PriorityNon.h"
 #include "srcCode/PriorityPre/PriorityPre.h"
@@ -16,6 +9,13 @@
 #include "srcCode/SRJF/SRJF.h"
 #include "Dynamically.h"
 
+#include <QDialog>
+#include <QLabel>
+#include <QSpinBox>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QVector>
+#include <QString>
 namespace Ui {
 class processInfo;
 }
