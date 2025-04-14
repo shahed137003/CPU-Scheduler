@@ -1,0 +1,14 @@
+debug/Dynamically.o
+debug/main.o
+debug/mainwindow.o
+debug/processinfo.o
+debug/FCFS.o
+debug/PriorityNon.o
+debug/PriorityPre.o
+debug/Processes.o
+debug/RoundRobin.o
+debug/SJF_Non.o
+debug/SRJF.o
+debug/moc_Dynamically.o
+debug/moc_mainwindow.o
+debug/moc_processinfo.o
