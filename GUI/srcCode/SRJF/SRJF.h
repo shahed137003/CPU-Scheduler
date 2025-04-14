@@ -1,27 +1,40 @@
-#ifndef SRJF_SCHEDULER_H
-#define SRJF_SCHEDULER_H
+// scheduler.h
 
-#include <iostream>
+#ifndef SCHEDULER_H
+#define SCHEDULER_H
+
 #include <vector>
 #include <queue>
-#include <algorithm>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <chrono>
+#include <iomanip>
+#include <atomic>
+#include <string>
 
-using namespace std;
-
-// Struct to represent a process
+// Process structure definition
 struct Process {
     int pid;
     int arrival_time;
     int burst_time;
     int remaining_time;
-    int start_time = -1;
-    int completion_time;
+    int start_time;
+    int finish_time;
+    bool is_initial;
+
+    Process(int id, int arrival, int burst, bool initial);
 };
 
-// Comparison function for sorting by arrival time
-bool compareArrival(const Process& a, const Process& b);
+// Global variables
+extern std::mutex mtx;
+extern std::queue<Process> new_processes;
+extern std::atomic<bool> stop_flag;
+extern std::atomic<bool> new_processes_added;
 
-// Function declaration for SRJF scheduling
-void srjfScheduler(vector<Process>& processes);
+// Function prototypes
+void calculateAverages(const std::vector<Process>& processes);
+void scheduleSRJF(std::vector<Process>& processes);
+void inputListener();
 
-#endif // SRJF_SCHEDULER_H
+#endif // SCHEDULER_H
