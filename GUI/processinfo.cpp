@@ -152,7 +152,6 @@ void processInfo::receiveProcessData(QString algorithm, int numProcesses, int in
                                   "    background-color: #2980b9;"    // Grey background for disabled state
                                   "    color: #7f8c8d;"                // Darker text color for disabled state
                                   "}");
-    qDebug() << index;
     comboIndex = index;
 }
 int i = 2;//Why 2 ??
@@ -164,9 +163,7 @@ void processInfo::on_pushButton_clicked()
 {
     if(i>processNum)
     {
-        qDebug()<<"d5lt";
         sort(processes.begin(),processes.end(),compareByArrival);
-        qDebug()<<"sorted";//implemeted
         ui->pushButton->hide();
         ui->label->hide();
         ui->label_2->hide();
@@ -179,12 +176,12 @@ void processInfo::on_pushButton_clicked()
         ui->lineEdit_4->hide();
         ui->label_6->show();
         ui->label_6->setText("Processes added successfully");
-        qDebug() << "Processes added successfully";//implemeted
         Dynamically *dynamically = new class Dynamically(nullptr); // Create Dynamically instance
-        qDebug() << comboIndex;
-        dynamically->show(); // Show the Dynamically dialog*/
         dynamically->callAlgo(processes,process,quantum,comboIndex); // Pass the selected algo
+        dynamically->show(); // Show the Dynamically dialog*/
     }
+    if(i>1)
+        ui->label_4->hide();
     ui->label_5->setText("Process "+ QString::number(i));
     Processes p;
     char name = 'A' +i;
@@ -194,8 +191,8 @@ void processInfo::on_pushButton_clicked()
     p.setBurst((ui->lineEdit_2->text()).toFloat());
     p.setPriority((ui->lineEdit_3->text()).toInt());
     QString str = QString::number(arrival, 'f', 2);
-    Processes p1(i, arrival, (ui->lineEdit_2->text()).toFloat());
-    process.push_back(p1);
+    Processes p1(i, arrival, (ui->lineEdit_2->text()).toFloat(), true);
+    process.push_back(p);
     processes.push_back(p);
     ui->lineEdit->clear();
     ui->lineEdit_2->clear();
@@ -209,5 +206,13 @@ void processInfo::on_pushButton_clicked()
     }
 
     i++;
+    QString output;
+    for (const auto& p : processes) {
+        output += QString("%1\t%2\t%3\n")
+        .arg(p.getName())
+            .arg(p.getArrival())
+            .arg(p.getBurst());
+    }
+    ui->textEdit->setPlainText(output);  // assuming you have a QTextEdit named textEdit
 
 }

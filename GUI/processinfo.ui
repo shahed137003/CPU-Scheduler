@@ -170,6 +170,16 @@
     <string>TextLabel</string>
    </property>
   </widget>
+  <widget class="QTextEdit" name="textEdit">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>400</y>
+     <width>411</width>
+     <height>201</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

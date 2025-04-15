@@ -1,28 +1,14 @@
 #include "GanttChart.h"
-#include <QPainter>
-#include <QDebug>
 
-GanttChart::GanttChart(QWidget *parent) : QWidget(parent), isLiveMode(false) {
-    connect(this, &GanttChart::requestUpdateGantt, this, &GanttChart::handleUpdateGantt);
-}
+GanttChart::GanttChart(QWidget *parent) : QWidget(parent), isLiveMode(false) {}
 
-void GanttChart::updateGanttChart(const std::queue<char>& processes, const std::queue<std::vector<float>>& timeSlots, bool live) {
-    // Emit signal to ensure update happens in the main thread
-    emit requestUpdateGantt(processes, timeSlots, live);
-}
-
-void GanttChart::handleUpdateGantt(const std::queue<char>& processes, const std::queue<std::vector<float>>& timeSlots, bool live) {
-    // Clear existing data
-    while (!processNames.empty()) processNames.pop();
-    while (!timeIntervals.empty()) timeIntervals.pop();
-
+void GanttChart::updateGanttChart(std::queue<char> processes, std::queue<std::vector<float>> timeSlots, bool live) {
     processNames = processes;
     timeIntervals = timeSlots;
     isLiveMode = live;
-
-    qDebug() << "handleUpdateGantt: Stored" << processNames.size() << "processes";
     update(); // Trigger repaint
 }
+
 void GanttChart::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
     QPainter painter(this);
@@ -31,27 +17,18 @@ void GanttChart::paintEvent(QPaintEvent *event) {
     // Draw background
     painter.fillRect(rect(), Qt::white);
 
-    qDebug() << "GanttChart::paintEvent - processNames size:" << processNames.size()
-             << "timeIntervals size:" << timeIntervals.size();
-
-    if (processNames.empty() || timeIntervals.empty()) {
+    if (processNames.empty()) {
         painter.drawText(rect(), Qt::AlignCenter, "No processes scheduled.");
         return;
     }
 
-    // Create temporary copies to avoid modifying originals
-    auto tempNames = processNames;
-    auto tempSlots = timeIntervals;
-
     // Calculate total time duration
     float totalTime = 0;
+    auto tempSlots = timeIntervals;
     while (!tempSlots.empty()) {
         totalTime = std::max(totalTime, tempSlots.front()[1]); // Max end time
         tempSlots.pop();
     }
-    tempSlots = timeIntervals; // Reset tempSlots for drawing
-
-    qDebug() << "Total time:" << totalTime;
 
     const int barHeight = 30;
     const int startY = 50;
@@ -59,15 +36,13 @@ void GanttChart::paintEvent(QPaintEvent *event) {
     const int textOffset = 15;
 
     // Draw each process bar
-    while (!tempNames.empty() && !tempSlots.empty()) {
-        char process = tempNames.front();
-        float startTime = tempSlots.front()[0];
-        float endTime = tempSlots.front()[1];
+    while (!processNames.empty() && !timeIntervals.empty()) {
+        char process = processNames.front();
+        float startTime = timeIntervals.front()[0];
+        float endTime = timeIntervals.front()[1];
         float duration = endTime - startTime;
 
-        qDebug() << "Drawing process:" << process << "start:" << startTime << "end:" << endTime;
-
-        // Calculate bar dimensions
+        // Calculate bar dimensions (scaled to fit available width)
         int barWidth = static_cast<int>((duration / totalTime) * (width() - 2 * margin));
         int barX = margin + static_cast<int>((startTime / totalTime) * (width() - 2 * margin));
 
@@ -76,15 +51,15 @@ void GanttChart::paintEvent(QPaintEvent *event) {
         painter.setBrush(QColor(100, 150, 255));
         painter.drawRect(barRect);
 
-        // Draw process name
+        // Draw process name inside the bar
         painter.drawText(barRect, Qt::AlignCenter, QString(process));
 
-        // Draw start and end times
+        // Draw start and end times below the bar
         painter.drawText(barX, startY + barHeight + textOffset, QString::number(startTime, 'f', 1));
         painter.drawText(barX + barWidth - 15, startY + barHeight + textOffset, QString::number(endTime, 'f', 1));
 
-        tempNames.pop();
-        tempSlots.pop();
+        processNames.pop();
+        timeIntervals.pop();
     }
 
     // Draw timeline

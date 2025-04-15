@@ -8,7 +8,6 @@
 #include "srcCode/SJF_Non/SJF_Non.h"
 #include "srcCode/SRJF/SRJF.h"
 #include "Dynamically.h"
-
 #include <QDialog>
 #include <QLabel>
 #include <QSpinBox>
