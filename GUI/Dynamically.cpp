@@ -87,7 +87,7 @@ void Dynamically::addProcess() {
     arrivalTimeEdit->clear();
     burstTimeEdit->clear();
 }
-void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<Process> process, float quantum, int comboIndex) {
+void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<Processes> process, float quantum, int comboIndex) {
     std::queue<Processes> processesQ;
     // Use input processes or hardcoded ones for testing
     if (true) {
@@ -133,4 +133,3 @@ void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<Process
         break;
     }
 }
-

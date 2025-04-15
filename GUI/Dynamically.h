@@ -21,7 +21,7 @@ class Dynamically : public QWidget {
     Q_OBJECT
 public:
     explicit Dynamically(QWidget *parent = nullptr);
-    void callAlgo(std::vector<Processes> processes, std::vector<Process> process, float quantum, int comboIndex);
+    void callAlgo(std::vector<Processes> processes, std::vector<Processes> process, float quantum, int comboIndex);
 
 private slots:
     void addProcess();

@@ -1,6 +1,6 @@
 #ifndef PROCESSINFO_H
 #define PROCESSINFO_H
-#include "Processes/Processes.h"
+#include "srcCode/Processes/Processes.h"
 #include "srcCode/FCFS/FCFS.h"
 #include "srcCode/PriorityNon/PriorityNon.h"
 #include "srcCode/PriorityPre/PriorityPre.h"

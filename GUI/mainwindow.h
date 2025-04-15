@@ -1,6 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include "Processes/Processes.h"
+#include "srcCode/Processes/Processes.h"
 #include "srcCode/FCFS/FCFS.h"
 #include "srcCode/PriorityNon/PriorityNon.h"
 #include "srcCode/PriorityPre/PriorityPre.h"
