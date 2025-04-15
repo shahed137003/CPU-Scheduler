@@ -1,12 +1,19 @@
-#ifndef SRJF_H
-#define SRJF_H
+// scheduler.h
+
+#ifndef SCHEDULER_H
+#define SCHEDULER_H
 
 #include <vector>
 #include <queue>
-#include <atomic>
+#include <thread>
 #include <mutex>
-
-// Structure to represent a Process
+#include <condition_variable>
+#include <chrono>
+#include <iomanip>
+#include <atomic>
+#include <string>
+# include <QString>
+// Process structure definition
 struct Process {
     int pid;
     int arrival_time;
@@ -14,25 +21,20 @@ struct Process {
     int remaining_time;
     int start_time;
     int finish_time;
+    bool is_initial;
 
-    Process(int pid, int arrival, int burst);
+    Process(int id, int arrival, int burst, bool initial);
 };
 
-// Comparator for the priority queue (Shortest Remaining Job First)
-//extern auto cmp;
+// Global variables
+extern std::mutex mtx;
+extern std::queue<Process> new_processes;
+extern std::atomic<bool> stop_flag;
+extern std::atomic<bool> new_processes_added;
 
-// Function to calculate average waiting time and average turnaround time
+// Function prototypes
 void calculateAverages(const std::vector<Process>& processes);
-
-// Function to simulate SRJF scheduling
 void scheduleSRJF(std::vector<Process>& processes);
-
-// Function to handle dynamic input from the user (runs in a separate thread)
 void inputListener();
 
-// Global variables for thread synchronization
-extern std::mutex mtx;
-extern std::vector<Process> dynamic_processes;
-extern std::atomic<bool> stop_flag;
-
-#endif // SRJF_H
+#endif // SCHEDULER_H
