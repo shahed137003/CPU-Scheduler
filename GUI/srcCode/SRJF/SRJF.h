@@ -19,7 +19,7 @@ struct Process {
 };
 
 // Comparator for the priority queue (Shortest Remaining Job First)
-extern auto cmp;
+//extern auto cmp;
 
 // Function to calculate average waiting time and average turnaround time
 void calculateAverages(const std::vector<Process>& processes);

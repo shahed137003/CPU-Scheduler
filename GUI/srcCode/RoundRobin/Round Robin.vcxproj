@@ -143,6 +143,7 @@
     <ClCompile Include="RoundRobin.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\GanttChart.h" />
     <ClInclude Include="..\Processes\Processes.h" />
     <ClInclude Include="RoundRobin.h" />
   </ItemGroup>

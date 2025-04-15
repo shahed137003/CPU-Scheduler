@@ -5,7 +5,7 @@
 #include "ui_mainwindow.h"
 QString algorithmMain;
 int numProcessesMain;
-int index;
+int comboindex;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     )");
     ui->label->setText(text);
     ui->label->setAlignment(Qt::AlignCenter);
-
+    ui->comboBox->clear();
     ui->comboBox->setCurrentIndex(-1);
     ui->comboBox->setPlaceholderText("Select an option: ");
     ui->comboBox->addItem("First Come First Served");  // 0 FCFS
@@ -118,10 +118,7 @@ MainWindow::MainWindow(QWidget *parent)
                                   "    background-color: #bdc3c7;"    // Grey background for disabled state
                                   "    color: #7f8c8d;"                // Darker text color for disabled state
                                   "}");
-
-    index= ui->comboBox->currentIndex();
-    algorithmMain = ui->comboBox->currentText();
-    numProcessesMain = ui->spinBox->value();
+    connect(ui->comboBox, &QComboBox::currentIndexChanged, this, &MainWindow::selectAlgo);
 
 
 }
@@ -130,14 +127,21 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
+void MainWindow::selectAlgo()
+{
+    comboindex= ui->comboBox->currentIndex();
+    qDebug() << comboindex;
+    algorithmMain = ui->comboBox->currentText();
+    qDebug() << algorithmMain;
+    numProcessesMain = ui->spinBox->value();
+}
 void MainWindow::on_Nextbutton_clicked()
 {
     numProcessesMain = ui->spinBox->value();     // Get the entered number of processes
     algorithmMain = ui->comboBox->currentText(); // Get the selected algorithm
     hide(); // Hide the main window
     processInfo= new class processInfo(this); // Create processInfo instance
-    processInfo->receiveProcessData(algorithmMain, numProcessesMain,index); // Pass the selected data
+    processInfo->receiveProcessData(algorithmMain, numProcessesMain,comboindex); // Pass the selected data
     processInfo->show(); // Show the processInfo dialog
 
 }

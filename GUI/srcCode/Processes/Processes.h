@@ -8,6 +8,7 @@
 #include <queue>
 #include <windows.h>
 #include "../Processes/Processes.h"
+#include "../../GanttChart.h"
 //#include <bits/stdc++.h>
 #include <mutex>
 #include <string>

@@ -152,6 +152,7 @@ void processInfo::receiveProcessData(QString algorithm, int numProcesses, int in
                                   "    background-color: #2980b9;"    // Grey background for disabled state
                                   "    color: #7f8c8d;"                // Darker text color for disabled state
                                   "}");
+    qDebug() << index;
     comboIndex = index;
 }
 int i = 2;//Why 2 ??
@@ -163,7 +164,9 @@ void processInfo::on_pushButton_clicked()
 {
     if(i>processNum)
     {
+        qDebug()<<"d5lt";
         sort(processes.begin(),processes.end(),compareByArrival);
+        qDebug()<<"sorted";//implemeted
         ui->pushButton->hide();
         ui->label->hide();
         ui->label_2->hide();
@@ -176,9 +179,11 @@ void processInfo::on_pushButton_clicked()
         ui->lineEdit_4->hide();
         ui->label_6->show();
         ui->label_6->setText("Processes added successfully");
+        qDebug() << "Processes added successfully";//implemeted
         Dynamically *dynamically = new class Dynamically(nullptr); // Create Dynamically instance
-        dynamically->callAlgo(processes,process,quantum,comboIndex); // Pass the selected algo
+        qDebug() << comboIndex;
         dynamically->show(); // Show the Dynamically dialog*/
+        dynamically->callAlgo(processes,process,quantum,comboIndex); // Pass the selected algo
     }
     ui->label_5->setText("Process "+ QString::number(i));
     Processes p;
@@ -189,7 +194,7 @@ void processInfo::on_pushButton_clicked()
     p.setBurst((ui->lineEdit_2->text()).toFloat());
     p.setPriority((ui->lineEdit_3->text()).toInt());
     QString str = QString::number(arrival, 'f', 2);
-    Process p1(i, arrival, (ui->lineEdit_2->text()).toFloat(), true);
+    Process p1(i, arrival, (ui->lineEdit_2->text()).toFloat());
     process.push_back(p1);
     processes.push_back(p);
     ui->lineEdit->clear();

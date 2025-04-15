@@ -52,11 +52,13 @@ public:
 
 private slots:
     void on_Nextbutton_clicked();
+    void selectAlgo();
 
 private:
     Ui::MainWindow *ui;
     processInfo *processInfo;
     Dynamically *Dynamically;
+    QComboBox *processChoose;
 
 };
 #endif // MAINWINDOW_H

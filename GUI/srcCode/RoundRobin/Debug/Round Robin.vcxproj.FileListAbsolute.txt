@@ -1,2 +1,3 @@
 C:\Users\Dell\Documents\GitHub\CPU-Scheduler\Round Robin\Debug\Round Robin.exe
 C:\Users\Dell\Documents\GitHub\CPU-Scheduler\srcCode\RoundRobin\Debug\Round Robin.exe
+C:\Users\Dell\Documents\GitHub\CPU-Scheduler\GUI\srcCode\RoundRobin\Debug\Round Robin.exe

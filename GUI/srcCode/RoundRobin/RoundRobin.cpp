@@ -1,65 +1,68 @@
 #include "RoundRobin.h"
-#include <algorithm>
-#include <chrono>
-#include <thread>
 
+
+// Shared mutex and atomic flag for dynamic input thread
 float overall_time = 0.0;
-std::queue<Processes> readyQueue;
+queue<Processes> readyQueue;
 std::mutex queueMutex;
 std::atomic<bool> stopInput(false);
 
-void dynamicInput(std::queue<Processes>& processes, std::mutex& queueMutex, std::atomic<bool>& stopInput) {
-    while (!stopInput) {
-        std::string input;
-        std::cout << "\n[Dynamic Add] Enter process (Name arrival Burst) or type 'STOP' to finish: ";
+// Function to handle dynamic process input
+void dynamicInput(queue<Processes>& processes, std::mutex& queueMutex, std::atomic<bool>& stopInput, bool &gui) {
+    while (!stopInput && !gui) {
+        string input;
+        cout << "\n[Dynamic Add] Enter process (Name arrival Burst) or type 'STOP' to finish: ";
 
-        std::cin >> input;
+        cin >> input;
 
-        if (input == "STOP" || (processes.empty() && readyQueue.empty())) {
+        if (input == "STOP" ||(processes.empty() && readyQueue.empty())) { // Check if the user wants to stop entering processes
             if (processes.empty() && readyQueue.empty())
-                std::cout << "Last process is not added as all processes finished..\n";
-            stopInput = true;
+                cout << "Last processes is not added as all processes finished..\n";
+            stopInput = true; // Signal the input thread to terminate
             break;
         }
 
         char name = input[0];
         float arrival, burst;
-        std::cin >> arrival >> burst;
+        cin >> arrival >> burst;
 
-        if (std::cin.fail() || burst <= 0 || arrival < 0) {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Invalid input. Please ensure arrival and burst times are valid.\n";
+        if (cin.fail() || burst <= 0 || arrival < 0) {
+            cin.clear();
+            cin.ignore(INT_MAX, '\n');
+            cout << "Invalid input. Please ensure arrival and burst times are valid.\n";
             continue;
         }
         if (arrival < overall_time) {
             arrival = overall_time;
-            std::cout << "You chose an arrival time less than the running time now.\n"
-                      << "So, we will set arrival time of process " << name << " to " << overall_time << "\n";
+            cout << "You choose an arrival time less than the running time now.\n"
+                <<"So, we will set arrival time of process "<<name<<" to "<<overall_time<<"\n";
         }
         Processes newProc(name, arrival, burst);
         {
-            std::lock_guard<std::mutex> lock(queueMutex);
-            processes.push(newProc);
-            // Assuming sort_queue is defined elsewhere
-            // sort_queue(processes);
+            {
+                lock_guard<mutex> lock(queueMutex);
+                processes.push(newProc);
+                sort_queue(processes);
+            }
         }
 
-        std::cout << "[Process " << name << " added dynamically]\n" << overall_time << "\n";
+        cout << "[Process " << name << " added dynamically]\n" << overall_time <<"\n";
     }
 }
-
-void roundRobin(std::queue<Processes>& processes, float quantum, bool live, GanttChart* ganttChart) {
-    std::queue<std::vector<float>> time_slots;
-    std::queue<char> operate;
-    std::queue<Processes> terminatedProcesses;
+void roundRobin(queue<Processes>& processes, float quantum, bool live, GanttChart* ganttChart, bool gui) {
+    wait(10);
+    queue<vector<float>> time_slots;  // to store start and end time of process execution for Gantt chart
+    queue<char> operate;
+    queue<Processes> terminatedProcesses;
     Processes operating;
-
-    std::thread inputThread(dynamicInput, std::ref(processes), std::ref(queueMutex), std::ref(stopInput));
+    ganttChart->isLiveMode = live;
+    // Start input thread
+    //thread inputThread(dynamicInput, ref(processes), ref(queueMutex), ref(stopInput), ref(gui));
 
     while (!readyQueue.empty() || !processes.empty() || !stopInput) {
+        // Move processes to readyQueue based on arrival times
         {
-            std::lock_guard<std::mutex> lock(queueMutex);
+            lock_guard<mutex> lock(queueMutex);
             while (!processes.empty() && processes.front().getArrival() <= overall_time) {
                 readyQueue.push(processes.front());
                 processes.pop();
@@ -67,13 +70,16 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live, Gant
         }
 
         if (readyQueue.empty()) {
+            // Advance time to the next process arrival if readyQueue is empty
             {
-                std::lock_guard<std::mutex> lock(queueMutex);
+                lock_guard<mutex> lock(queueMutex);
                 if (!processes.empty()) {
                     overall_time = processes.front().getArrival();
-                } else if (stopInput) {
+                }
+                else if (stopInput) { // Exit if input has stopped and no processes remain
                     break;
                 }
+
             }
             continue;
         }
@@ -85,48 +91,54 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live, Gant
             operating.setResponse(overall_time - operating.getArrival());
         }
 
-        float time_slice = std::min(quantum, operating.getRemaining());
+
+
+        // Calculate time slice
+        float time_slice = min(quantum, operating.getRemaining());
         operate.push(operating.getName());
-        time_slots.push({overall_time, overall_time + time_slice});
+        time_slots.push({ overall_time, overall_time + time_slice });
 
-        if (ganttChart) {
-            ganttChart->updateGanttChart(operate, time_slots, live);
-        }
+        ganttChart->processNames.push(operating.getName());
+        ganttChart->timeIntervals.push({overall_time, overall_time + time_slice});
+        ganttChart->update(); // Trigger repaint
 
+        std::cout << "RoundRobin: Scheduling process " << operating.getName()
+                  << " start: " << overall_time << " end: " << (overall_time + time_slice) << std::endl;
+        std::cout << "RoundRobin: Updated GanttChart with " << operate.size() << " processes" << std::endl;
         overall_time += time_slice;
         operating.setLasttime(overall_time);
         operating.setRemaining(operating.getRemaining() - time_slice);
 
         if (operating.getRemaining() > 0) {
             readyQueue.push(operating);
-        } else {
+        }
+        else {
             operating.setTurnaround(overall_time - operating.getArrival());
             operating.setWaiting(operating.getTurnaround() - operating.getBurst());
             terminatedProcesses.push(operating);
         }
-
-        if (live) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(time_slice * 1000)));
-        }
+        if(live)wait(time_slice);
     }
 
-    stopInput = true;
-    inputThread.detach();
+    // Stop dynamic input thread
+    //stopInput = true;
+    //inputThread.detach();       //inputThread.join();
 
     processes = terminatedProcesses;
 
-    // Assuming these functions are defined elsewhere
-    // printGantt(operate, time_slots, live);
-    std::cout << "\n\n\n";
-    std::cout << "\nTotal Response Time: " << /* calcTotal_response_time(processes) */ 0 << "\n";
-    std::cout << "Average Response Time: " << /* calcAvg_response_time(processes) */ 0 << "\n\n";
-    std::cout << "Total Turnaround Time: " << /* calcTotal_turn_time(processes) */ 0 << "\n";
-    std::cout << "Average Turnaround Time: " << /* calcAvg_turn_time(processes) */ 0 << "\n\n";
-    std::cout << "Total Waiting Time: " << /* calcTotal_wait_time(processes) */ 0 << "\n";
-    std::cout << "Average Waiting Time: " << /* calcAvg_wait_time(processes) */ 0 << "\n";
-}
+    // Output results
+    printGantt(operate, time_slots, live);
 
-/*int main() {
+    cout << "\n\n\n";
+    cout << "\nTotal Response Time: " << calcTotal_response_time(processes) << "\n";
+    cout << "Average Response Time: " << calcAvg_response_time(processes) << "\n\n";
+    cout << "Total Turnaround Time: " << calcTotal_turn_time(processes) << "\n";
+    cout << "Average Turnaround Time: " << calcAvg_turn_time(processes) << "\n\n";
+    cout << "Total Waiting Time: " << calcTotal_wait_time(processes) << "\n";
+    cout << "Average Waiting Time: " << calcAvg_wait_time(processes) << "\n";
+}
+/*
+int main() {
     cout << "Welcome! Enter number of processes to be scheduled: ";
     int n;
     cin >> n;
@@ -167,8 +179,9 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live, Gant
         cout << "Invalid input, defaulting to No.\n";
     }
     cout << "\nYou can add new processes while the scheduler is running (e.g., Z 5 2)\n\n";
-
-    roundRobin(processes, quantum, live);
+    GanttChart gantt; // Initialize properly
+    roundRobin(processes, quantum, live, &gantt, false);
 
     return 0;
-}*/
+}
+*/
