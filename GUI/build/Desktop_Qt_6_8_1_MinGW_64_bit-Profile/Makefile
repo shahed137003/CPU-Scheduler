@@ -563,7 +563,7 @@ all: release-all debug-all  FORCE
 clean: release-clean debug-clean  FORCE
 distclean: release-distclean debug-distclean  FORCE
 	-$(DEL_FILE) Makefile
-	-$(DEL_FILE) D:\QT\OS_Project_Scheduler\build\Desktop_Qt_6_8_1_MinGW_64_bit-Profile\OS_Project_Scheduler.exe.debug .qmake.stash
+	-$(DEL_FILE) D:\Documents\GitHub\CPU-Scheduler\GUI\build\Desktop_Qt_6_8_1_MinGW_64_bit-Profile\OS_Project_Scheduler.exe.debug .qmake.stash
 
 release-mocclean:
 	$(MAKE) -f $(MAKEFILE).Release mocclean

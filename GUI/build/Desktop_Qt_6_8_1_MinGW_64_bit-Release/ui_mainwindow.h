@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
@@ -32,6 +33,8 @@ public:
     QLabel *label_3;
     QSpinBox *spinBox;
     QPushButton *Nextbutton;
+    QLabel *label_4;
+    QCheckBox *checkBox;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -44,31 +47,37 @@ public:
         centralwidget->setObjectName("centralwidget");
         label = new QLabel(centralwidget);
         label->setObjectName("label");
-        label->setGeometry(QRect(30, 30, 751, 41));
+        label->setGeometry(QRect(0, 0, 801, 71));
         QFont font;
         font.setFamilies({QString::fromUtf8("PT Simple Ruled")});
         font.setBold(true);
         label->setFont(font);
         comboBox = new QComboBox(centralwidget);
         comboBox->setObjectName("comboBox");
-        comboBox->setGeometry(QRect(20, 130, 301, 41));
+        comboBox->setGeometry(QRect(210, 210, 441, 41));
         label_2 = new QLabel(centralwidget);
         label_2->setObjectName("label_2");
-        label_2->setGeometry(QRect(20, 90, 261, 21));
+        label_2->setGeometry(QRect(210, 150, 341, 41));
         label_3 = new QLabel(centralwidget);
         label_3->setObjectName("label_3");
-        label_3->setGeometry(QRect(10, 200, 261, 31));
+        label_3->setGeometry(QRect(210, 280, 341, 31));
         spinBox = new QSpinBox(centralwidget);
         spinBox->setObjectName("spinBox");
-        spinBox->setGeometry(QRect(260, 200, 61, 31));
+        spinBox->setGeometry(QRect(560, 280, 61, 31));
         spinBox->setButtonSymbols(QAbstractSpinBox::ButtonSymbols::UpDownArrows);
         Nextbutton = new QPushButton(centralwidget);
         Nextbutton->setObjectName("Nextbutton");
-        Nextbutton->setGeometry(QRect(240, 250, 83, 29));
+        Nextbutton->setGeometry(QRect(310, 440, 241, 51));
+        label_4 = new QLabel(centralwidget);
+        label_4->setObjectName("label_4");
+        label_4->setGeometry(QRect(210, 350, 301, 31));
+        checkBox = new QCheckBox(centralwidget);
+        checkBox->setObjectName("checkBox");
+        checkBox->setGeometry(QRect(610, 350, 31, 41));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 800, 25));
+        menubar->setGeometry(QRect(0, 0, 800, 26));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");
@@ -86,6 +95,8 @@ public:
         label_2->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
         label_3->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
         Nextbutton->setText(QCoreApplication::translate("MainWindow", "Next", nullptr));
+        label_4->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
+        checkBox->setText(QCoreApplication::translate("MainWindow", "CheckBox", nullptr));
     } // retranslateUi
 
 };

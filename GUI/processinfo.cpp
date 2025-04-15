@@ -1,6 +1,7 @@
 #include "processinfo.h"
+#include "build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/ui_processinfo.h"
 #include "ui_processinfo.h"
-bool needsPriority;
+bool needsPriority=false;
 bool needsQuantum;
 struct ProcessInputs {
     QLabel* label;             // Process label
@@ -67,12 +68,6 @@ processInfo::processInfo(QWidget *parent)
     font: bold 24px Arial;           /* Bold font, 14px size */
     border: none;                    /* No border */
 )");
-    ui->label_5->setStyleSheet(R"(
-    background-color: transparent;   /* No background */
-    color: white;                    /* White text color */
-    font: bold 24px Arial;           /* Bold font, 14px size */
-    border: none;                    /* No border */
-)");
     ui->label_6->setStyleSheet(R"(
     font-size: 33px;  /* Larger font size */
     font-weight: bold;  /* Bold title */
@@ -111,7 +106,7 @@ void processInfo::receiveProcessData(QString algorithm, int numProcesses, int in
     ui->Algorithm_label->setText(algorithmText);
 
     QString processText = "Selected Number of Processes: " + QString::number(processNum);
-    bool needsPriority = algorithm.contains("Priority", Qt::CaseInsensitive);
+    needsPriority = algorithm.contains("Priority", Qt::CaseInsensitive);
     bool needsQuantum = algorithm.contains("Round Robin", Qt::CaseInsensitive);
     // Create input fields dynamically based on the number of processes
     if(!needsPriority)
@@ -124,8 +119,6 @@ void processInfo::receiveProcessData(QString algorithm, int numProcesses, int in
         ui->lineEdit_4->hide();
         ui->label_4->hide();
     }
-    ui->label_5->setText("Process 1");
-    ui->label_5->setAlignment(Qt::AlignLeft);
     ui->label->setText("Arrival Time: ");
     ui->label_2->setText("Burst Time: ");
     ui->label_3->setText("Priority: ");
@@ -154,7 +147,7 @@ void processInfo::receiveProcessData(QString algorithm, int numProcesses, int in
                                   "}");
     comboIndex = index;
 }
-int i = 2;//Why 2 ??
+int i = 0;
 bool first = false;
 float quantum = 0.0;
 vector<Processes> processes;
@@ -169,7 +162,6 @@ void processInfo::on_pushButton_clicked()
         ui->label_2->hide();
         ui->label_3->hide();
         ui->label_4->hide();
-        ui->label_5->hide();
         ui->lineEdit->hide();
         ui->lineEdit_2->hide();
         ui->lineEdit_3->hide();
@@ -182,9 +174,9 @@ void processInfo::on_pushButton_clicked()
     }
     if(i>1)
         ui->label_4->hide();
-    ui->label_5->setText("Process "+ QString::number(i));
+    //ui->label_5->setText("Process "+ QString::number(i));
     Processes p;
-    char name = 'A' +i;
+    char name = 'A'+i; //nshof 7l!
     float arrival=(ui->lineEdit->text()).toFloat();
     p.setName(name);
     p.setArrival(arrival);
@@ -213,6 +205,74 @@ void processInfo::on_pushButton_clicked()
             .arg(p.getArrival())
             .arg(p.getBurst());
     }
-    ui->textEdit->setPlainText(output);  // assuming you have a QTextEdit named textEdit
+    // Update table headers dynamically
+    QStringList headers = {"Process Name", "Arrival Time", "Burst Time"};
+    int columnCount = 3;
+
+    if (needsPriority) {
+        headers << "Priority";
+        columnCount++;
+    }
+
+    ui->tableWidget->setColumnCount(columnCount);
+    ui->tableWidget->setHorizontalHeaderLabels(headers);
+    ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
+    ui->tableWidget->verticalHeader()->setVisible(false);
+    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers); // Read-only
+    ui->tableWidget->setSelectionMode(QAbstractItemView::NoSelection);   // Disable selection
+
+    // Insert new row
+    int row = ui->tableWidget->rowCount();
+    ui->tableWidget->insertRow(row);
+
+    // Column 0: Process Name
+    QTableWidgetItem *nameItem = new QTableWidgetItem(QString(p.getName()));
+    nameItem->setTextAlignment(Qt::AlignCenter);
+    ui->tableWidget->setItem(row, 0, nameItem);
+
+    // Column 1: Arrival Time
+    QTableWidgetItem *arrivalItem = new QTableWidgetItem(QString::number(p.getArrival()));
+    arrivalItem->setTextAlignment(Qt::AlignCenter);
+    ui->tableWidget->setItem(row, 1, arrivalItem);
+
+    // Column 2: Burst Time
+    QTableWidgetItem *burstItem = new QTableWidgetItem(QString::number(p.getBurst()));
+    burstItem->setTextAlignment(Qt::AlignCenter);
+    ui->tableWidget->setItem(row, 2, burstItem);
+
+    // Column 3: Priority (only if needed)
+    if (needsPriority) {
+        QTableWidgetItem *priorityItem = new QTableWidgetItem(QString::number(p.getPriority()));
+        priorityItem->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(row, 3, priorityItem); // Must match the correct index
+    }
+
+    // Style the table
+    ui->tableWidget->setStyleSheet(R"(
+    QTableWidget {
+        background-color: #f9f9f9;
+        alternate-background-color: #e0e0e0;
+        gridline-color: #ccc;
+        font: 14px 'Segoe UI';
+    }
+    QHeaderView::section {
+        background-color: #3498db;
+        color: white;
+        font-weight: bold;
+        padding: 5px;
+        border: 1px solid #ccc;
+    }
+    QTableWidget::item {
+        color: black;
+    }
+    QTableWidget::item:selected {
+        background-color: #a0d8ef;
+        color: black;
+    }
+)");
+
+
+
+
 
 }

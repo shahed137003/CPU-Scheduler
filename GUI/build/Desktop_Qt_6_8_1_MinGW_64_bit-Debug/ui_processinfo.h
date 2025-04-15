@@ -12,10 +12,11 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
+#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QTableWidget>
 
 QT_BEGIN_NAMESPACE
 
@@ -33,9 +34,8 @@ public:
     QLineEdit *lineEdit_3;
     QLineEdit *lineEdit_4;
     QPushButton *pushButton;
-    QLabel *label_5;
     QLabel *label_6;
-    QTextEdit *textEdit;
+    QTableWidget *tableWidget;
 
     void setupUi(QDialog *processInfo)
     {
@@ -47,43 +47,40 @@ public:
         title->setGeometry(QRect(0, 0, 1301, 81));
         Algorithm_label = new QLabel(processInfo);
         Algorithm_label->setObjectName("Algorithm_label");
-        Algorithm_label->setGeometry(QRect(20, 100, 421, 31));
+        Algorithm_label->setGeometry(QRect(10, 100, 421, 31));
         label = new QLabel(processInfo);
         label->setObjectName("label");
-        label->setGeometry(QRect(370, 240, 201, 20));
+        label->setGeometry(QRect(260, 210, 201, 20));
         label_2 = new QLabel(processInfo);
         label_2->setObjectName("label_2");
-        label_2->setGeometry(QRect(370, 280, 191, 20));
+        label_2->setGeometry(QRect(490, 210, 191, 20));
         label_3 = new QLabel(processInfo);
         label_3->setObjectName("label_3");
-        label_3->setGeometry(QRect(370, 320, 191, 20));
+        label_3->setGeometry(QRect(710, 210, 191, 20));
         label_4 = new QLabel(processInfo);
         label_4->setObjectName("label_4");
-        label_4->setGeometry(QRect(370, 360, 181, 20));
+        label_4->setGeometry(QRect(960, 210, 181, 20));
         lineEdit = new QLineEdit(processInfo);
         lineEdit->setObjectName("lineEdit");
-        lineEdit->setGeometry(QRect(640, 240, 301, 26));
+        lineEdit->setGeometry(QRect(260, 240, 131, 31));
         lineEdit_2 = new QLineEdit(processInfo);
         lineEdit_2->setObjectName("lineEdit_2");
-        lineEdit_2->setGeometry(QRect(640, 280, 301, 26));
+        lineEdit_2->setGeometry(QRect(490, 240, 131, 31));
         lineEdit_3 = new QLineEdit(processInfo);
         lineEdit_3->setObjectName("lineEdit_3");
-        lineEdit_3->setGeometry(QRect(640, 320, 301, 26));
+        lineEdit_3->setGeometry(QRect(710, 240, 131, 31));
         lineEdit_4 = new QLineEdit(processInfo);
         lineEdit_4->setObjectName("lineEdit_4");
-        lineEdit_4->setGeometry(QRect(640, 360, 301, 26));
+        lineEdit_4->setGeometry(QRect(950, 240, 131, 31));
         pushButton = new QPushButton(processInfo);
         pushButton->setObjectName("pushButton");
-        pushButton->setGeometry(QRect(530, 420, 211, 51));
-        label_5 = new QLabel(processInfo);
-        label_5->setObjectName("label_5");
-        label_5->setGeometry(QRect(370, 180, 561, 41));
+        pushButton->setGeometry(QRect(510, 300, 211, 51));
         label_6 = new QLabel(processInfo);
         label_6->setObjectName("label_6");
-        label_6->setGeometry(QRect(370, 160, 591, 101));
-        textEdit = new QTextEdit(processInfo);
-        textEdit->setObjectName("textEdit");
-        textEdit->setGeometry(QRect(50, 400, 411, 201));
+        label_6->setGeometry(QRect(400, 140, 591, 101));
+        tableWidget = new QTableWidget(processInfo);
+        tableWidget->setObjectName("tableWidget");
+        tableWidget->setGeometry(QRect(190, 370, 921, 221));
 
         retranslateUi(processInfo);
 
@@ -100,7 +97,6 @@ public:
         label_3->setText(QCoreApplication::translate("processInfo", "TextLabel", nullptr));
         label_4->setText(QCoreApplication::translate("processInfo", "TextLabel", nullptr));
         pushButton->setText(QCoreApplication::translate("processInfo", "PushButton", nullptr));
-        label_5->setText(QCoreApplication::translate("processInfo", "TextLabel", nullptr));
         label_6->setText(QCoreApplication::translate("processInfo", "TextLabel", nullptr));
     } // retranslateUi
 

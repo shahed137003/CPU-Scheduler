@@ -389,7 +389,7 @@ debug/moc_Dynamically.cpp: ../../Dynamically.h \
 		C:/Qt/6.8.1/mingw_64/include/QtCore/QString \
 		debug/moc_predefs.h \
 		C:/Qt/6.8.1/mingw_64/bin/moc.exe
-	C:\Qt\6.8.1\mingw_64\bin\moc.exe $(DEFINES) --include "C:/Users/marha/Desktop/Mariam/Senior 1/Spring 2025/Operating Systems/Project/Project/CPU-Scheduler/CPU-Scheduler/GUI/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/debug/moc_predefs.h" -IC:/Qt/6.8.1/mingw_64/mkspecs/win32-g++ -I"C:/Users/marha/Desktop/Mariam/Senior 1/Spring 2025/Operating Systems/Project/Project/CPU-Scheduler/CPU-Scheduler/GUI" -I"C:/Users/marha/Desktop/Mariam/Senior 1/Spring 2025/Operating Systems/Project/Project/CPU-Scheduler/CPU-Scheduler/GUI/srcCode" -IC:/Qt/6.8.1/mingw_64/include -IC:/Qt/6.8.1/mingw_64/include/QtWidgets -IC:/Qt/6.8.1/mingw_64/include/QtGui -IC:/Qt/6.8.1/mingw_64/include/QtCore -I. -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++ -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed -IC:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include ..\..\Dynamically.h -o debug\moc_Dynamically.cpp
+	C:\Qt\6.8.1\mingw_64\bin\moc.exe $(DEFINES) --include D:/Documents/GitHub/CPU-Scheduler/GUI/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/debug/moc_predefs.h -IC:/Qt/6.8.1/mingw_64/mkspecs/win32-g++ -ID:/Documents/GitHub/CPU-Scheduler/GUI -ID:/Documents/GitHub/CPU-Scheduler/GUI/srcCode -IC:/Qt/6.8.1/mingw_64/include -IC:/Qt/6.8.1/mingw_64/include/QtWidgets -IC:/Qt/6.8.1/mingw_64/include/QtGui -IC:/Qt/6.8.1/mingw_64/include/QtCore -I. -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++ -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed -IC:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include ..\..\Dynamically.h -o debug\moc_Dynamically.cpp
 
 debug/moc_GanttChart.cpp: ../../GanttChart.h \
 		C:/Qt/6.8.1/mingw_64/include/QtWidgets/QWidget \
@@ -587,7 +587,7 @@ debug/moc_GanttChart.cpp: ../../GanttChart.h \
 		C:/Qt/6.8.1/mingw_64/include/QtGui/qpen.h \
 		debug/moc_predefs.h \
 		C:/Qt/6.8.1/mingw_64/bin/moc.exe
-	C:\Qt\6.8.1\mingw_64\bin\moc.exe $(DEFINES) --include "C:/Users/marha/Desktop/Mariam/Senior 1/Spring 2025/Operating Systems/Project/Project/CPU-Scheduler/CPU-Scheduler/GUI/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/debug/moc_predefs.h" -IC:/Qt/6.8.1/mingw_64/mkspecs/win32-g++ -I"C:/Users/marha/Desktop/Mariam/Senior 1/Spring 2025/Operating Systems/Project/Project/CPU-Scheduler/CPU-Scheduler/GUI" -I"C:/Users/marha/Desktop/Mariam/Senior 1/Spring 2025/Operating Systems/Project/Project/CPU-Scheduler/CPU-Scheduler/GUI/srcCode" -IC:/Qt/6.8.1/mingw_64/include -IC:/Qt/6.8.1/mingw_64/include/QtWidgets -IC:/Qt/6.8.1/mingw_64/include/QtGui -IC:/Qt/6.8.1/mingw_64/include/QtCore -I. -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++ -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed -IC:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include ..\..\GanttChart.h -o debug\moc_GanttChart.cpp
+	C:\Qt\6.8.1\mingw_64\bin\moc.exe $(DEFINES) --include D:/Documents/GitHub/CPU-Scheduler/GUI/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/debug/moc_predefs.h -IC:/Qt/6.8.1/mingw_64/mkspecs/win32-g++ -ID:/Documents/GitHub/CPU-Scheduler/GUI -ID:/Documents/GitHub/CPU-Scheduler/GUI/srcCode -IC:/Qt/6.8.1/mingw_64/include -IC:/Qt/6.8.1/mingw_64/include/QtWidgets -IC:/Qt/6.8.1/mingw_64/include/QtGui -IC:/Qt/6.8.1/mingw_64/include/QtCore -I. -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++ -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed -IC:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include ..\..\GanttChart.h -o debug\moc_GanttChart.cpp
 
 debug/moc_mainwindow.cpp: ../../mainwindow.h \
 		../../srcCode/Processes/Processes.h \
@@ -881,7 +881,7 @@ debug/moc_mainwindow.cpp: ../../mainwindow.h \
 		C:/Qt/6.8.1/mingw_64/include/QtCore/qvector.h \
 		debug/moc_predefs.h \
 		C:/Qt/6.8.1/mingw_64/bin/moc.exe
-	C:\Qt\6.8.1\mingw_64\bin\moc.exe $(DEFINES) --include "C:/Users/marha/Desktop/Mariam/Senior 1/Spring 2025/Operating Systems/Project/Project/CPU-Scheduler/CPU-Scheduler/GUI/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/debug/moc_predefs.h" -IC:/Qt/6.8.1/mingw_64/mkspecs/win32-g++ -I"C:/Users/marha/Desktop/Mariam/Senior 1/Spring 2025/Operating Systems/Project/Project/CPU-Scheduler/CPU-Scheduler/GUI" -I"C:/Users/marha/Desktop/Mariam/Senior 1/Spring 2025/Operating Systems/Project/Project/CPU-Scheduler/CPU-Scheduler/GUI/srcCode" -IC:/Qt/6.8.1/mingw_64/include -IC:/Qt/6.8.1/mingw_64/include/QtWidgets -IC:/Qt/6.8.1/mingw_64/include/QtGui -IC:/Qt/6.8.1/mingw_64/include/QtCore -I. -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++ -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed -IC:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include ..\..\mainwindow.h -o debug\moc_mainwindow.cpp
+	C:\Qt\6.8.1\mingw_64\bin\moc.exe $(DEFINES) --include D:/Documents/GitHub/CPU-Scheduler/GUI/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/debug/moc_predefs.h -IC:/Qt/6.8.1/mingw_64/mkspecs/win32-g++ -ID:/Documents/GitHub/CPU-Scheduler/GUI -ID:/Documents/GitHub/CPU-Scheduler/GUI/srcCode -IC:/Qt/6.8.1/mingw_64/include -IC:/Qt/6.8.1/mingw_64/include/QtWidgets -IC:/Qt/6.8.1/mingw_64/include/QtGui -IC:/Qt/6.8.1/mingw_64/include/QtCore -I. -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++ -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed -IC:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include ..\..\mainwindow.h -o debug\moc_mainwindow.cpp
 
 debug/moc_processinfo.cpp: ../../processinfo.h \
 		../../srcCode/Processes/Processes.h \
@@ -1131,7 +1131,7 @@ debug/moc_processinfo.cpp: ../../processinfo.h \
 		C:/Qt/6.8.1/mingw_64/include/QtCore/qvector.h \
 		debug/moc_predefs.h \
 		C:/Qt/6.8.1/mingw_64/bin/moc.exe
-	C:\Qt\6.8.1\mingw_64\bin\moc.exe $(DEFINES) --include "C:/Users/marha/Desktop/Mariam/Senior 1/Spring 2025/Operating Systems/Project/Project/CPU-Scheduler/CPU-Scheduler/GUI/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/debug/moc_predefs.h" -IC:/Qt/6.8.1/mingw_64/mkspecs/win32-g++ -I"C:/Users/marha/Desktop/Mariam/Senior 1/Spring 2025/Operating Systems/Project/Project/CPU-Scheduler/CPU-Scheduler/GUI" -I"C:/Users/marha/Desktop/Mariam/Senior 1/Spring 2025/Operating Systems/Project/Project/CPU-Scheduler/CPU-Scheduler/GUI/srcCode" -IC:/Qt/6.8.1/mingw_64/include -IC:/Qt/6.8.1/mingw_64/include/QtWidgets -IC:/Qt/6.8.1/mingw_64/include/QtGui -IC:/Qt/6.8.1/mingw_64/include/QtCore -I. -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++ -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed -IC:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include ..\..\processinfo.h -o debug\moc_processinfo.cpp
+	C:\Qt\6.8.1\mingw_64\bin\moc.exe $(DEFINES) --include D:/Documents/GitHub/CPU-Scheduler/GUI/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/debug/moc_predefs.h -IC:/Qt/6.8.1/mingw_64/mkspecs/win32-g++ -ID:/Documents/GitHub/CPU-Scheduler/GUI -ID:/Documents/GitHub/CPU-Scheduler/GUI/srcCode -IC:/Qt/6.8.1/mingw_64/include -IC:/Qt/6.8.1/mingw_64/include/QtWidgets -IC:/Qt/6.8.1/mingw_64/include/QtGui -IC:/Qt/6.8.1/mingw_64/include/QtCore -I. -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++ -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed -IC:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include ..\..\processinfo.h -o debug\moc_processinfo.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -2176,13 +2176,7 @@ debug/mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		C:/Qt/6.8.1/mingw_64/include/QtWidgets/qspinbox.h \
 		C:/Qt/6.8.1/mingw_64/include/QtCore/QVector \
 		C:/Qt/6.8.1/mingw_64/include/QtCore/qvector.h \
-		ui_mainwindow.h \
-		C:/Qt/6.8.1/mingw_64/include/QtCore/QVariant \
-		C:/Qt/6.8.1/mingw_64/include/QtWidgets/QMenuBar \
-		C:/Qt/6.8.1/mingw_64/include/QtWidgets/qmenubar.h \
-		C:/Qt/6.8.1/mingw_64/include/QtWidgets/qmenu.h \
-		C:/Qt/6.8.1/mingw_64/include/QtWidgets/QStatusBar \
-		C:/Qt/6.8.1/mingw_64/include/QtWidgets/qstatusbar.h
+		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\mainwindow.o ..\..\mainwindow.cpp
 
 debug/processinfo.o: ../../processinfo.cpp ../../processinfo.h \
@@ -2431,10 +2425,7 @@ debug/processinfo.o: ../../processinfo.cpp ../../processinfo.h \
 		C:/Qt/6.8.1/mingw_64/include/QtWidgets/QHBoxLayout \
 		C:/Qt/6.8.1/mingw_64/include/QtCore/QVector \
 		C:/Qt/6.8.1/mingw_64/include/QtCore/qvector.h \
-		ui_processinfo.h \
-		C:/Qt/6.8.1/mingw_64/include/QtCore/QVariant \
-		C:/Qt/6.8.1/mingw_64/include/QtWidgets/QApplication \
-		C:/Qt/6.8.1/mingw_64/include/QtWidgets/qapplication.h
+		ui_processinfo.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\processinfo.o ..\..\processinfo.cpp
 
 debug/FCFS.o: ../../srcCode/FCFS/FCFS.cpp ../../srcCode/FCFS/FCFS.h \

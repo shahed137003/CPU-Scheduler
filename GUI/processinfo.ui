@@ -144,19 +144,6 @@
     <string>PushButton</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_5">
-   <property name="geometry">
-    <rect>
-     <x>260</x>
-     <y>150</y>
-     <width>561</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
@@ -170,12 +157,12 @@
     <string>TextLabel</string>
    </property>
   </widget>
-  <widget class="QTextEdit" name="textEdit">
+  <widget class="QTableWidget" name="tableWidget">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>190</x>
      <y>370</y>
-     <width>971</width>
+     <width>921</width>
      <height>221</height>
     </rect>
    </property>

@@ -12,9 +12,11 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
+#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTableWidget>
 
 QT_BEGIN_NAMESPACE
 
@@ -23,8 +25,17 @@ class Ui_processInfo
 public:
     QLabel *title;
     QLabel *Algorithm_label;
-    QWidget *verticalLayoutWidget;
-    QVBoxLayout *processInputsLayout;
+    QLabel *label;
+    QLabel *label_2;
+    QLabel *label_3;
+    QLabel *label_4;
+    QLineEdit *lineEdit;
+    QLineEdit *lineEdit_2;
+    QLineEdit *lineEdit_3;
+    QLineEdit *lineEdit_4;
+    QPushButton *pushButton;
+    QLabel *label_6;
+    QTableWidget *tableWidget;
 
     void setupUi(QDialog *processInfo)
     {
@@ -33,16 +44,43 @@ public:
         processInfo->resize(1300, 609);
         title = new QLabel(processInfo);
         title->setObjectName("title");
-        title->setGeometry(QRect(320, 10, 631, 61));
+        title->setGeometry(QRect(0, 0, 1301, 81));
         Algorithm_label = new QLabel(processInfo);
         Algorithm_label->setObjectName("Algorithm_label");
-        Algorithm_label->setGeometry(QRect(10, 89, 421, 31));
-        verticalLayoutWidget = new QWidget(processInfo);
-        verticalLayoutWidget->setObjectName("verticalLayoutWidget");
-        verticalLayoutWidget->setGeometry(QRect(10, 120, 1271, 441));
-        processInputsLayout = new QVBoxLayout(verticalLayoutWidget);
-        processInputsLayout->setObjectName("processInputsLayout");
-        processInputsLayout->setContentsMargins(0, 0, 0, 0);
+        Algorithm_label->setGeometry(QRect(10, 100, 421, 31));
+        label = new QLabel(processInfo);
+        label->setObjectName("label");
+        label->setGeometry(QRect(260, 210, 201, 20));
+        label_2 = new QLabel(processInfo);
+        label_2->setObjectName("label_2");
+        label_2->setGeometry(QRect(490, 210, 191, 20));
+        label_3 = new QLabel(processInfo);
+        label_3->setObjectName("label_3");
+        label_3->setGeometry(QRect(710, 210, 191, 20));
+        label_4 = new QLabel(processInfo);
+        label_4->setObjectName("label_4");
+        label_4->setGeometry(QRect(960, 210, 181, 20));
+        lineEdit = new QLineEdit(processInfo);
+        lineEdit->setObjectName("lineEdit");
+        lineEdit->setGeometry(QRect(260, 240, 131, 31));
+        lineEdit_2 = new QLineEdit(processInfo);
+        lineEdit_2->setObjectName("lineEdit_2");
+        lineEdit_2->setGeometry(QRect(490, 240, 131, 31));
+        lineEdit_3 = new QLineEdit(processInfo);
+        lineEdit_3->setObjectName("lineEdit_3");
+        lineEdit_3->setGeometry(QRect(710, 240, 131, 31));
+        lineEdit_4 = new QLineEdit(processInfo);
+        lineEdit_4->setObjectName("lineEdit_4");
+        lineEdit_4->setGeometry(QRect(950, 240, 131, 31));
+        pushButton = new QPushButton(processInfo);
+        pushButton->setObjectName("pushButton");
+        pushButton->setGeometry(QRect(510, 300, 211, 51));
+        label_6 = new QLabel(processInfo);
+        label_6->setObjectName("label_6");
+        label_6->setGeometry(QRect(400, 140, 591, 101));
+        tableWidget = new QTableWidget(processInfo);
+        tableWidget->setObjectName("tableWidget");
+        tableWidget->setGeometry(QRect(190, 370, 921, 221));
 
         retranslateUi(processInfo);
 
@@ -54,6 +92,12 @@ public:
         processInfo->setWindowTitle(QCoreApplication::translate("processInfo", "Dialog", nullptr));
         title->setText(QCoreApplication::translate("processInfo", "TextLabel", nullptr));
         Algorithm_label->setText(QCoreApplication::translate("processInfo", "TextLabel", nullptr));
+        label->setText(QCoreApplication::translate("processInfo", "TextLabel", nullptr));
+        label_2->setText(QCoreApplication::translate("processInfo", "TextLabel", nullptr));
+        label_3->setText(QCoreApplication::translate("processInfo", "TextLabel", nullptr));
+        label_4->setText(QCoreApplication::translate("processInfo", "TextLabel", nullptr));
+        pushButton->setText(QCoreApplication::translate("processInfo", "PushButton", nullptr));
+        label_6->setText(QCoreApplication::translate("processInfo", "TextLabel", nullptr));
     } // retranslateUi
 
 };
