@@ -90,6 +90,7 @@ void Dynamically::addProcess() {
 void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<Processes> process, float quantum, int comboIndex) {
     std::queue<Processes> processesQ;
     // Use input processes or hardcoded ones for testing
+    /*
     if (true) {
         // Hardcoded for testing
         std::vector<Processes> processes_manual = {
@@ -101,14 +102,15 @@ void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<Process
             processesQ.push(proc);
             qDebug() << "Adding process to queue:" << proc.getName();
         }
-    }/*
+    }
     else {
         for (const auto& proc : processes) {
             processesQ.push(proc);
             qDebug() << "Adding process to queue:" << proc.getName();
         }
     }*/
-    qDebug() << comboIndex;
+    //qDebug() << comboIndex;
+    /*
     switch (comboIndex) {
     case 0:
         // FCFS(processes);
@@ -132,4 +134,5 @@ void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<Process
         //roundRobin(processesQ, quantum, live, ganttChart, true);
         break;
     }
+*/
 }
