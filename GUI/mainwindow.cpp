@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/ui_mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include "mainwindow.h"
@@ -6,6 +7,7 @@
 QString algorithmMain;
 int numProcessesMain;
 int index;
+bool live;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -136,9 +138,7 @@ MainWindow::MainWindow(QWidget *parent)
                                   "    color: #7f8c8d;"                // Darker text color for disabled state
                                   "}");
 
-    index= ui->comboBox->currentIndex();
-    algorithmMain = ui->comboBox->currentText();
-    numProcessesMain = ui->spinBox->value();
+
 
 
 }
@@ -150,11 +150,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_Nextbutton_clicked()
 {
+    index= ui->comboBox->currentIndex();
     numProcessesMain = ui->spinBox->value();     // Get the entered number of processes
     algorithmMain = ui->comboBox->currentText(); // Get the selected algorithm
+    live = ui->checkBox->isChecked();
     hide(); // Hide the main window
     processInfo= new class processInfo(this); // Create processInfo instance
-    processInfo->receiveProcessData(algorithmMain, numProcessesMain,index); // Pass the selected data
+    processInfo->receiveProcessData(algorithmMain, numProcessesMain,index,live); // Pass the selected data
     processInfo->show(); // Show the processInfo dialog
 
 }

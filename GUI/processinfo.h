@@ -26,7 +26,7 @@ class processInfo : public QDialog
 public:
     explicit processInfo(QWidget *parent = nullptr);
     ~processInfo();
-    void receiveProcessData(QString algorithm, int numProcesses, int index);
+    void receiveProcessData(QString algorithm, int numProcesses, int index,bool live);
 
 private slots:
     void on_pushButton_clicked();
