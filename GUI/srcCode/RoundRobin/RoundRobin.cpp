@@ -4,8 +4,8 @@
 #include <QDebug>
 using namespace std;
 
-RoundRobin::RoundRobin(std::queue<Processes>& initialProcesses, float quantum, bool live, GanttChart* gantt, bool gui, QObject* parent)
-    : QObject(parent), processes(initialProcesses), quantum(quantum), live(live), gantt(gantt), gui(gui),
+RoundRobin::RoundRobin(std::queue<Processes>& initialProcesses, float quantum, bool live, GanttChart* gantt, bool gui,std::queue<char>& processes_name, std::queue<std::vector<float>>& timeSlots, QObject* parent)
+    : QObject(parent), processes(initialProcesses), quantum(quantum), live(live), gantt(gantt), gui(gui),operate(processes_name),time_slots(timeSlots),
     overall_time(0.0), stopInput(false), isOperating(false) {
     connect(&timer, &QTimer::timeout, this, &RoundRobin::processStep);
 }
@@ -66,11 +66,11 @@ void RoundRobin::processStep() {
         std::queue<std::vector<float>> timeSlotsCopy = time_slots;
 
         // Update Gantt chart
-        if (gantt && live) {
+        /*if (gantt && live) {
             qDebug() << "Updating GanttChart with copy, operateCopy size:" << operateCopy.size();
             gantt->updateGanttChart(operateCopy, timeSlotsCopy, live);
             QApplication::processEvents(); // Force GUI update
-        }
+        }*/
 
         std::cout << "RoundRobin: Scheduling process " << operating.getName()
                   << " start: " << overall_time << " end: " << (overall_time + time_slice) << std::endl;

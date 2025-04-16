@@ -90,7 +90,7 @@ void Dynamically::addProcess() {
 void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<Process> process, float quantum, int comboIndex, bool live) {
     std::queue<Processes> processesQ;
     // Use input processes or hardcoded ones for testing
-    if (true) {
+    /*if (true) {
         // Hardcoded for testing
         std::vector<Processes> processes_manual = {
             Processes('A', 0, 21),
@@ -101,13 +101,14 @@ void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<Process
             processesQ.push(proc);
             qDebug() << "Adding process to queue:" << proc.getName();
         }
-    }/*
+    }
     else {
-        for (const auto& proc : processes) {
-            processesQ.push(proc);
-            qDebug() << "Adding process to queue:" << proc.getName();
-        }
+
     }*/
+    for (const auto& proc : processes) {
+        processesQ.push(proc);
+        qDebug() << "Adding process to queue:" << proc.getName();
+    }
     qDebug() << comboIndex;
     switch (comboIndex) {
     case 0:
@@ -126,10 +127,11 @@ void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<Process
         // PriorityPre(processes);
         break;
     case 5:
-
+        std::queue<char> processes_name;
+        std::queue<std::vector<float>> timeSlots;
         qDebug() << "Calling roundRobin with quantum =" << quantum << ", live =" << live;
-        quantum = 2;
-        RoundRobin(processesQ, quantum, live, ganttChart, true);
+        RoundRobin(processesQ, quantum, live, ganttChart, live,processes_name,timeSlots);
+        ganttChart->updateGanttChart(processes_name, timeSlots, false);
         break;
     }
 }

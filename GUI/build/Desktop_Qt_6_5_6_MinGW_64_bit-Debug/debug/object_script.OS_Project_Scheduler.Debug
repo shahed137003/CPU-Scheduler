@@ -14,3 +14,4 @@ debug/moc_Dynamically.o
 debug/moc_GanttChart.o
 debug/moc_mainwindow.o
 debug/moc_processinfo.o
+debug/moc_RoundRobin.o
