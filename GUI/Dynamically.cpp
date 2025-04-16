@@ -87,7 +87,7 @@ void Dynamically::addProcess() {
     arrivalTimeEdit->clear();
     burstTimeEdit->clear();
 }
-void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<Process> process, float quantum, int comboIndex, bool live) {
+void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<SRJF::Process> process, float quantum, int comboIndex, bool live) {
     std::queue<Processes> processesQ;
     // Use input processes or hardcoded ones for testing
     /*if (true) {
@@ -110,6 +110,9 @@ void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<Process
         qDebug() << "Adding process to queue:" << proc.getName();
     }
     qDebug() << comboIndex;
+
+    std::queue<char> processes_name;
+    std::queue<std::vector<float>> timeSlots;
     switch (comboIndex) {
     case 0:
         // FCFS(processes);
@@ -119,19 +122,33 @@ void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<Process
         break;
     case 2:
         // scheduleSRJF(process);
+       SRJF srjf(
+            process,        // std::vector<Process>& initialProcesses
+            live,        // bool live
+            ganttChart,      // GanttChart* gantt
+            processes_name,  // std::queue<char>& processes_name
+            timeSlots,  // std::queue<std::vector<float>>& timeSlots
+            nullptr          // QObject* parent (optional if default is nullptr)
+            );
+
+        srjf.start();  // Begins the scheduling process
+        qDebug()<<processes_name.size();
+        ganttChart->updateGanttChart(processes_name, timeSlots, false);
         break;
-    case 3:
+    /*case 3:
         // PriorityNon(processes);
         break;
     case 4:
         // PriorityPre(processes);
         break;
-    case 5:
-        std::queue<char> processes_name;
-        std::queue<std::vector<float>> timeSlots;
+    */
+    /*case 5:
         qDebug() << "Calling roundRobin with quantum =" << quantum << ", live =" << live;
-        RoundRobin(processesQ, quantum, live, ganttChart, live,processes_name,timeSlots);
+        RoundRobin RRSARA(processesQ, quantum, live, ganttChart, live,processes_name,timeSlots);
+        RRSARA.start();
         ganttChart->updateGanttChart(processes_name, timeSlots, false);
         break;
+    */
+
     }
 }

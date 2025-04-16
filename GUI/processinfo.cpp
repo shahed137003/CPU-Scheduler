@@ -156,7 +156,7 @@ int i = 0;
 bool first = false;
 float quantum = 0.0;
 vector<Processes> processes;
-vector<Process> process;
+vector<SRJF::Process> process;
 void processInfo::on_pushButton_clicked()
 {
     if (i >= processNum)
@@ -192,7 +192,7 @@ void processInfo::on_pushButton_clicked()
     p.setBurst((ui->lineEdit_2->text()).toFloat());
     p.setPriority((ui->lineEdit_3->text()).toInt());
 
-    Process p1(i, arrival, (ui->lineEdit_2->text()).toFloat(), true);
+    SRJF::Process p1(i, arrival, (ui->lineEdit_2->text()).toFloat(), true);
     process.push_back(p1);
     processes.push_back(p);
 

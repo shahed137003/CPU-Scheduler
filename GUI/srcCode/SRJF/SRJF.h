@@ -1,40 +1,52 @@
-// scheduler.h
+#ifndef SRJF_H
+#define SRJF_H
 
-#ifndef SCHEDULER_H
-#define SCHEDULER_H
-
-#include <vector>
+#include <QObject>
+#include <QTimer>
 #include <queue>
+#include <vector>
+#include <functional>
 #include <thread>
-#include <mutex>
-#include <condition_variable>
-#include <chrono>
-#include <iomanip>
-#include <atomic>
-#include <string>
-# include <QString>
-// Process structure definition
-struct Process {
-    int pid;
-    int arrival_time;
-    int burst_time;
-    int remaining_time;
-    int start_time;
-    int finish_time;
-    bool is_initial;
+#include "../Processes/Processes.h"
+#include "GanttChart.h"
 
-    Process(int id, int arrival, int burst, bool initial);
+class SRJF : public QObject {
+    Q_OBJECT
+public:
+    struct Process {
+        int pid;
+        int arrival_time;
+        int burst_time;
+        int remaining_time;
+        int start_time;
+        int finish_time;
+        bool is_initial;
+
+        Process(int id, int arrival, int burst, bool initial)
+            : pid(id), arrival_time(arrival), burst_time(burst),
+            remaining_time(burst), start_time(-1), finish_time(-1),
+            is_initial(initial) {}
+    };
+
+    SRJF(std::vector<Process>& initialProcesses, bool live, GanttChart* gantt,std::queue<char>& processes_name, std::queue<std::vector<float>>& timeSlots, QObject* parent);
+    void start();
+private slots :
+    void processStep();
+
+private:
+    std::vector<Process> processes;
+    std::priority_queue<Process*, std::vector<Process*>, std::function<bool(Process*, Process*)>> ready_queue;
+    Process* current_process;
+    int current_time;
+    bool live;
+    GanttChart* gantt;
+    QTimer timer;
+    bool initial_only;
+    std::queue<char> operate; // For Gantt chart process names
+    std::queue<std::vector<float>> time_slots; // For Gantt chart time intervals
+
+    void calculateAverages();
+    void printResults();
 };
 
-// Global variables
-extern std::mutex mtx;
-extern std::queue<Process> new_processes;
-extern std::atomic<bool> stop_flag;
-extern std::atomic<bool> new_processes_added;
-
-// Function prototypes
-void calculateAverages(const std::vector<Process>& processes);
-void scheduleSRJF(std::vector<Process>& processes);
-void inputListener();
-
-#endif // SCHEDULER_H
+#endif

@@ -15,3 +15,4 @@ release/moc_GanttChart.o
 release/moc_mainwindow.o
 release/moc_processinfo.o
 release/moc_RoundRobin.o
+release/moc_SRJF.o
