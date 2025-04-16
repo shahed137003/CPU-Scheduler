@@ -1,4 +1,5 @@
 release/Dynamically.o
+release/GanttChart.o
 release/main.o
 release/mainwindow.o
 release/processinfo.o
@@ -10,5 +11,7 @@ release/RoundRobin.o
 release/SJF_Non.o
 release/SRJF.o
 release/moc_Dynamically.o
+release/moc_GanttChart.o
 release/moc_mainwindow.o
 release/moc_processinfo.o
+release/moc_RoundRobin.o

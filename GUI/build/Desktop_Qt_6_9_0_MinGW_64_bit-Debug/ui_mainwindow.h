@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
@@ -32,6 +33,8 @@ public:
     QLabel *label_3;
     QSpinBox *spinBox;
     QPushButton *Nextbutton;
+    QLabel *label_4;
+    QCheckBox *checkBox;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -64,7 +67,13 @@ public:
         spinBox->setButtonSymbols(QAbstractSpinBox::ButtonSymbols::UpDownArrows);
         Nextbutton = new QPushButton(centralwidget);
         Nextbutton->setObjectName("Nextbutton");
-        Nextbutton->setGeometry(QRect(310, 380, 241, 51));
+        Nextbutton->setGeometry(QRect(310, 440, 241, 51));
+        label_4 = new QLabel(centralwidget);
+        label_4->setObjectName("label_4");
+        label_4->setGeometry(QRect(210, 350, 301, 31));
+        checkBox = new QCheckBox(centralwidget);
+        checkBox->setObjectName("checkBox");
+        checkBox->setGeometry(QRect(610, 350, 31, 41));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
@@ -86,6 +95,8 @@ public:
         label_2->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
         label_3->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
         Nextbutton->setText(QCoreApplication::translate("MainWindow", "Next", nullptr));
+        label_4->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
+        checkBox->setText(QCoreApplication::translate("MainWindow", "CheckBox", nullptr));
     } // retranslateUi
 
 };

@@ -10,13 +10,18 @@
 #include <queue>
 #include "GanttChart.h"
 #include "srcCode/Processes/Processes.h" // Assuming Processes and Process are defined here
+#include "srcCode/FCFS/FCFS.h"
+#include "srcCode/PriorityNon/PriorityNon.h"
+#include "srcCode/PriorityPre/PriorityPre.h"
+#include "srcCode/RoundRobin/RoundRobin.h"
+#include "srcCode/SJF_Non/SJF_Non.h"
 #include "srcCode/SRJF/SRJF.h"
 
 class Dynamically : public QWidget {
     Q_OBJECT
 public:
     explicit Dynamically(QWidget *parent = nullptr);
-    void callAlgo(std::vector<Processes> processes, std::vector<Processes> process, float quantum, int comboIndex);
+    void callAlgo(std::vector<Processes> processes, std::vector<Process> process, float quantum, int comboIndex, bool live);
 
 private slots:
     void addProcess();
@@ -28,13 +33,6 @@ private:
     QPushButton *addButton;
     QTableWidget *processTable;
     GanttChart *ganttChart;
-
-    // Scheduling algorithms
-    void FCFS(std::vector<Processes> processes);
-    void SJF_Non(std::vector<Processes> processes); // Corrected declaration
-    void scheduleSRJF(std::vector<Process> process);
-    void PriorityNon(std::vector<Processes> processes);
-    void PriorityPre(std::vector<Processes> processes);
 };
 
 #endif // DYNAMICALLY_H

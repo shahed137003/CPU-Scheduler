@@ -1,23 +1,41 @@
-
 #ifndef ROUNDROBIN_H
 #define ROUNDROBIN_H
 
 #include <queue>
-#include <vector>
 #include <mutex>
 #include <atomic>
-#include <thread>
-#include <string>
-#include <iostream>
-#include "GanttChart.h" // Include GanttChart definition
-#include"..\Processes\Processes.h"
+#include <QObject>
+#include <QTimer>
+#include "../Processes/Processes.h"
+#include "GanttChart.h"
 
-extern float overall_time;
-extern std::queue<Processes> readyQueue;
-extern std::mutex queueMutex;
-extern std::atomic<bool> stopInput;
+class RoundRobin : public QObject {
+    Q_OBJECT
+public:
+    RoundRobin(std::queue<Processes>& processes, float quantum, bool live, GanttChart* gantt, bool gui, QObject* parent = nullptr);
+    void start();
 
-void dynamicInput(std::queue<Processes>& processes, std::mutex& queueMutex, std::atomic<bool>& stopInput);
-void roundRobin(std::queue<Processes>& processes, float quantum, bool live, GanttChart* ganttChart);
+private slots:
+    void processStep();
 
-#endif // ROUNDROBIN_H
+private:
+    std::queue<Processes> processes;
+    std::queue<Processes> readyQueue;
+    std::queue<Processes> terminatedProcesses;
+    std::queue<std::vector<float>> time_slots;
+    std::queue<char> operate;
+    float quantum;
+    bool live;
+    GanttChart* gantt;
+    bool gui;
+    float overall_time;
+    std::mutex queueMutex;
+    std::atomic<bool> stopInput;
+    QTimer timer;
+    Processes operating;
+    bool isOperating;
+
+    void printResults();
+};
+
+#endif

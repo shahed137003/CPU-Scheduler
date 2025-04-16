@@ -156,7 +156,7 @@ int i = 0;
 bool first = false;
 float quantum = 0.0;
 vector<Processes> processes;
-vector<Processes> process;
+vector<Process> process;
 void processInfo::on_pushButton_clicked()
 {
     if (i >= processNum)
@@ -176,7 +176,7 @@ void processInfo::on_pushButton_clicked()
         ui->tableWidget->show();
 
         Dynamically *dynamically = new class Dynamically(nullptr); // Create Dynamically instance
-        dynamically->callAlgo(processes, process, quantum, comboIndex); // Pass the selected algo
+        dynamically->callAlgo(processes, process, quantum, comboIndex,isLive); // Pass the selected algo
         dynamically->show(); // Show the Dynamically dialog
         return; // Stop execution to prevent adding extra row
     }
@@ -192,8 +192,8 @@ void processInfo::on_pushButton_clicked()
     p.setBurst((ui->lineEdit_2->text()).toFloat());
     p.setPriority((ui->lineEdit_3->text()).toInt());
 
-    Processes p1(i, arrival, (ui->lineEdit_2->text()).toFloat(), true);
-    process.push_back(p);
+    Process p1(i, arrival, (ui->lineEdit_2->text()).toFloat(), true);
+    process.push_back(p1);
     processes.push_back(p);
 
     ui->lineEdit->clear();
