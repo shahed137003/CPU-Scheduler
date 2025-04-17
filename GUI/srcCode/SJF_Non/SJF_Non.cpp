@@ -1,10 +1,27 @@
 #include "SJF_Non.h"
-void SJF_Non(vector<Processes>& processes)
-{
+#include <QApplication>
+#include <QDebug>
+#include <algorithm>
+#include <iostream>
+
+SJF_Non::SJF_Non(std::vector<Processes>& initialProcesses, bool live, GanttChart* gantt, QObject* parent)
+    : QObject(parent), processes(initialProcesses), live(live), gantt(gantt) {
+    connect(this, &SJF_Non::requestProcessStep, this, &SJF_Non::processStep);
+}
+
+void SJF_Non::start() {
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    emit requestProcessStep();
+}
+
+void SJF_Non::processStep() {
+    qDebug() << "SJF_Non::processStep called, processes size:" << processes.size();
     queue<char> ordered_processes_with_names;
     queue<Processes> ordered_processes;
     float current_time = 0;
     queue<vector<float>>time_slots;
+
+
     while (!processes.empty())
     {
         // we must sort processes based on burst time first, and arrival time second if burst times are equal
@@ -30,50 +47,18 @@ void SJF_Non(vector<Processes>& processes)
 
         }
         else
-           current_time++; //If there is no process ready, increment the current time
+            current_time++; //If there is no process ready, increment the current time
     }
-
-    printGantt(ordered_processes_with_names,time_slots,true);
-    calcAvg_turn_time(ordered_processes);
-    calcAvg_wait_time(ordered_processes);
+    printResults();
 }
-/*
-int main()
-{
-    string done = "Y";
-    string type;
-    int i = 0;
-    float burst,arrival;
-    char name;
-    queue<Processes> ready_queue;
-    cout << "Enter Scheduler Type: ";
-    cin >> type;
-    while (done == "Y" || done == "y")
-    {
-        Processes p;
-        i++;
-        cout << "Enter process " << i << " name: ";
-        cin >> name;
-        p.setName(name);
-        cout << "Enter process " << i << " arrival time: ";
-        cin >> arrival;
-        p.setArrival(arrival);
-        cout << "Enter process " << i << " burst time: ";
-        cin >> burst;
-        p.setBurst(burst);
-        p.setRemaining (burst);
-        ready_queue.push(p);
-        cout << "Do you want to add more processes? (Y/N) ";
-        cin >> done;
-    }
 
-    vector<Processes> processes;
-    while (!ready_queue.empty()) {
-        processes.push_back(ready_queue.front());
-        ready_queue.pop();
-    }
+void SJF_Non::printResults() {
+    //processes = terminatedProcesses;
+    printGantt(operate, time_slots, live);
 
-    if(type=="SJF")
-        SJF_Non(processes);
-    return 0;
-}*/
+    std::cout << "\n\n\n";
+    std::cout << "Total Turnaround Time: " << calcTotal_turn_time(terminatedProcesses) << "\n";
+    std::cout << "Average Turnaround Time: " << calcAvg_turn_time(terminatedProcesses) << "\n\n";
+    std::cout << "Total Waiting Time: " << calcTotal_wait_time(terminatedProcesses) << "\n";
+    std::cout << "Average Waiting Time: " << calcAvg_wait_time(terminatedProcesses) << "\n";
+}

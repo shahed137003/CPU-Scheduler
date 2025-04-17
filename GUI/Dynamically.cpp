@@ -114,12 +114,18 @@ void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<SRJF::P
     std::queue<char> processes_name;
     std::queue<std::vector<float>> timeSlots;
     switch (comboIndex) {
-    case 0:
-        // FCFS(processes);
+    case 0:{
+        FCFS fcfs(processes,live,ganttChart);
+        fcfs.start();
         break;
-    case 1:
-        // SJF_Non(processes);
+    }
+
+    case 1:{
+        SJF_Non sjfnon(processes,live,ganttChart);
+        sjfnon.start();
         break;
+    }
+
     case 2:{
         // scheduleSRJF(process);
        SRJF srjf(
@@ -134,13 +140,16 @@ void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<SRJF::P
         //ganttChart->updateGanttChart(processes_name, timeSlots, false);
         break;
     }
-    /*case 3:
-        // PriorityNon(processes);
+    case 3:{
+        PriorityNon pn(processes,live,ganttChart);
+        pn.start();
         break;
-    case 4:
-        // PriorityPre(processes);
+    }
+    case 4:{
+        PriorityPre pp(processes,live,ganttChart);
+        pp.start();
         break;
-    */
+    }
     case 5:{
         qDebug() << "Calling roundRobin with quantum =" << quantum << ", live =" << live;
         RoundRobin RRSARA(processesQ, quantum, live, ganttChart);

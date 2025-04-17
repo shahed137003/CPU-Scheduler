@@ -1,8 +1,28 @@
 #include "PriorityPre.h"
+#include <QApplication>
+#include <QDebug>
+#include <algorithm>
+#include <iostream>
 
+PriorityPre::PriorityPre(std::vector<Processes>& initialProcesses, bool live, GanttChart* gantt, QObject* parent)
+    : QObject(parent), live(live), gantt(gantt) {
+    // Initialize processes with remaining time
+    while (!initialProcesses.empty()) {
+        Processes p = initialProcesses.front();
+        p.setRemaining(p.getBurst());
+        processes.push_back(p);
+        initialProcesses.pop_back();
+    }
+    connect(this, &PriorityPre::requestProcessStep, this, &PriorityPre::processStep);
+}
 
-void PriorityPre(vector<Processes>& processes)
-{
+void PriorityPre::start() {
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    emit requestProcessStep();
+}
+
+void PriorityPre::processStep() {
+    qDebug() << "PriorityPre::processStep called, processes size:" << processes.size();
     float total_burst = 0;
     for (auto& process : processes) {
         process.setRemaining(process.getBurst());
@@ -13,9 +33,9 @@ void PriorityPre(vector<Processes>& processes)
         int selected = -1;
         for (int j = 0; j < processes.size(); j++) {
             if (processes[j].getArrival() <= i && processes[j].getRemaining() > 0) {
-                if (selected == -1 || 
+                if (selected == -1 ||
                     processes[j].getPriority() < processes[selected].getPriority() ||
-                    (processes[j].getPriority() == processes[selected].getPriority() && 
+                    (processes[j].getPriority() == processes[selected].getPriority() &&
                      processes[j].getArrival() < processes[selected].getArrival())) {
                     selected = j;
                 }
@@ -35,61 +55,33 @@ void PriorityPre(vector<Processes>& processes)
                 process.setTurnaround(turnaround);
                 process.setWaiting(waiting);
             }
+            operate.push(process.getName());
+            time_slots.push({total_burst,total_burst+1});
+
+            // Update Gantt chart
+            if (gantt && live) {
+                std::queue<char> operateCopy = operate;
+                std::queue<std::vector<float>> timeSlotsCopy = time_slots;
+                qDebug() << "Updating GanttChart with copy, operateCopy size:" << operateCopy.size();
+                gantt->updateGanttChart(operateCopy, timeSlotsCopy, live);
+                QApplication::processEvents();
+            }
+
+
         }
     }
-    queue<Processes> QueueOfProcesses;
-    for (const auto& p : processes) {
-        QueueOfProcesses.push(p);
-    }
-    cout << "Total Turnaround Time: " << calcTotal_turn_time(QueueOfProcesses) << "\n";
-    cout << "Average Turnaround Time: " << calcAvg_turn_time(QueueOfProcesses) << "\n\n";
-    cout << "Total Waiting Time: " << calcTotal_wait_time(QueueOfProcesses) << "\n";
-    cout << "Average Waiting Time: " << calcAvg_wait_time(QueueOfProcesses) << "\n";
+
+
+    printResults();
 }
 
+void PriorityPre::printResults() {
+    //processes = terminatedProcesses;
+    printGantt(operate, time_slots, live);
 
-
-    
-
-/*
-int main() {
-    vector<Processes> processList;
-    processList.push_back(Processes('A', 0, 5, 2)); 
-    processList.push_back(Processes('B', 1, 3, 0));
-    processList.push_back(Processes('C', 2, 8, 0));
-    processList.push_back(Processes('D', 3, 6, 1));
-
-    PriorityPre(processList);
-
-    cout << "Name\tArrival\tBurst\tPriority\tCompletion\tTurnaround\tWaiting\n";
-    for (const auto& p : processList) {
-        cout << p.getName() << "\t"
-             << p.getArrival() << "\t"
-             << p.getBurst() << "\t"
-             <<p.getPriority()<<"\t\t"
-             << p.getLasttime() << "\t\t"
-             << p.getTurnaround() << "\t\t"
-             << p.getWaiting() << endl;
-    }
-
-    return 0;
+    std::cout << "\n\n\n";
+    std::cout << "Total Turnaround Time: " << calcTotal_turn_time(terminatedProcesses) << "\n";
+    std::cout << "Average Turnaround Time: " << calcAvg_turn_time(terminatedProcesses) << "\n\n";
+    std::cout << "Total Waiting Time: " << calcTotal_wait_time(terminatedProcesses) << "\n";
+    std::cout << "Average Waiting Time: " << calcAvg_wait_time(terminatedProcesses) << "\n";
 }
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
