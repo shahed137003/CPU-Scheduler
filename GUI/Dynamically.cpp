@@ -8,50 +8,35 @@
 Dynamically::Dynamically(QWidget *parent) : QWidget(parent) {
 
     setWindowTitle("Process Scheduler with Gantt Chart");
-    resize(900, 600);
+    resize(900, 400);
 
-    // Main layout (3 horizontal slots)
+    // Main layout (2 vertical slots)
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
-    // ===== Slot 1: Input Fields =====
-    QWidget *inputWidget = new QWidget;
-    QVBoxLayout *inputLayout = new QVBoxLayout(inputWidget);
+    // ===== Slot 1: Output Fields =====
+    outputWidget = new QWidget;
+    QVBoxLayout *outputLayout = new QVBoxLayout(outputWidget);
 
-    processNameEdit = new QLineEdit;
-    processNameEdit->setPlaceholderText("Process Name (e.g., A)");
-    arrivalTimeEdit = new QLineEdit;
-    arrivalTimeEdit->setPlaceholderText("Arrival Time");
-    burstTimeEdit = new QLineEdit;
-    burstTimeEdit->setPlaceholderText("Burst Time");
-    addButton = new QPushButton("Add Process");
+    // Add a QTextEdit for displaying results
+    resultsDisplay = new QTextEdit;
+    resultsDisplay->setReadOnly(true); // Make it read-only
+    outputLayout->addWidget(new QLabel("Scheduling Results:"));
+    outputLayout->addWidget(resultsDisplay);
 
-    inputLayout->addWidget(new QLabel("Add New Process:"));
-    inputLayout->addWidget(processNameEdit);
-    inputLayout->addWidget(arrivalTimeEdit);
-    inputLayout->addWidget(burstTimeEdit);
-    inputLayout->addWidget(addButton);
-    inputLayout->addStretch();
 
-    // ===== Slot 2: Process Table =====
-    processTable = new QTableWidget;
-    processTable->setColumnCount(3);
-    processTable->setHorizontalHeaderLabels({"Process", "Arrival", "Burst"});
-    processTable->horizontalHeader()->setStretchLastSection(true);
-
-    // ===== Slot 3: Gantt Chart =====
+    // ===== Slot 2: Gantt Chart =====
     ganttChart = new GanttChart;
 
     // Add all slots to main layout
-    mainLayout->addWidget(inputWidget, 1);
-    mainLayout->addWidget(processTable, 2);
-    mainLayout->addWidget(ganttChart, 3);
+    mainLayout->addWidget(outputWidget, 1);
+    mainLayout->addWidget(ganttChart, 2);
 
     // Connect button to addProcess()
-    connect(addButton, &QPushButton::clicked, this, &Dynamically::addProcess);
+    //connect(addButton, &QPushButton::clicked, this, &Dynamically::addProcess);
 }
 
 void Dynamically::addProcess() {
-    QString name = processNameEdit->text();
+    /*QString name = processNameEdit->text();
     QString arrival = arrivalTimeEdit->text();
     QString burst = burstTimeEdit->text();
 
@@ -85,7 +70,7 @@ void Dynamically::addProcess() {
     // Clear input fields
     processNameEdit->clear();
     arrivalTimeEdit->clear();
-    burstTimeEdit->clear();
+    burstTimeEdit->clear();*/
 }
 void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<SRJF::Process> process, float quantum, int comboIndex, bool live) {
     std::queue<Processes> processesQ;
@@ -117,12 +102,14 @@ void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<SRJF::P
     case 0:{
         FCFS fcfs(processes,live,ganttChart);
         fcfs.start();
+        resultsDisplay->setText(fcfs.printResults());
         break;
     }
 
     case 1:{
         SJF_Non sjfnon(processes,live,ganttChart);
         sjfnon.start();
+        resultsDisplay->setText(sjfnon.printResults());
         break;
     }
 
@@ -137,23 +124,27 @@ void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<SRJF::P
 
         srjf.start();  // Begins the scheduling process
         qDebug()<<processes_name.size();
+        resultsDisplay->setText(srjf.printResults());
         //ganttChart->updateGanttChart(processes_name, timeSlots, false);
         break;
     }
     case 3:{
         PriorityNon pn(processes,live,ganttChart);
         pn.start();
+        resultsDisplay->setText(pn.printResults());
         break;
     }
     case 4:{
         PriorityPre pp(processes,live,ganttChart);
         pp.start();
+        resultsDisplay->setText(pp.printResults());
         break;
     }
     case 5:{
         qDebug() << "Calling roundRobin with quantum =" << quantum << ", live =" << live;
         RoundRobin RRSARA(processesQ, quantum, live, ganttChart);
         RRSARA.start();
+        resultsDisplay->setText(RRSARA.printResults());
         //ganttChart->updateGanttChart(processes_name, timeSlots, false);
         break;
 

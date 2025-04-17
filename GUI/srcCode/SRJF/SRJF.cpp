@@ -105,7 +105,7 @@ void SRJF::processStep() {
     }
 }
 
-void SRJF::calculateAverages() {
+QString SRJF::calculateAverages() {
     double total_waiting = 0;
     double total_turnaround = 0;
     int count = 0;
@@ -127,10 +127,19 @@ void SRJF::calculateAverages() {
     } else {
         std::cout << "No processes completed." << std::endl;
     }
+
+    QString results;
+    //results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
+    results += QString("Average Turnaround Time: %1\n\n").arg((total_turnaround / count));
+    //results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
+    results += QString("Average Waiting Time: %1\n").arg((total_waiting / count));
+    return results;
+
 }
 
-void SRJF::printResults() {
+QString SRJF::printResults() {
     // Output results
     printGantt(operate, time_slots, live);
-    calculateAverages();
+
+    return calculateAverages();
 }

@@ -67,7 +67,7 @@ void PriorityNon::processStep() {
     printResults();
 }
 
-void PriorityNon::printResults() {
+QString PriorityNon::printResults() {
     //processes = terminatedProcesses;
     printGantt(operate, time_slots, live);
 
@@ -76,4 +76,12 @@ void PriorityNon::printResults() {
     std::cout << "Average Turnaround Time: " << calcAvg_turn_time(terminatedProcesses) << "\n\n";
     std::cout << "Total Waiting Time: " << calcTotal_wait_time(terminatedProcesses) << "\n";
     std::cout << "Average Waiting Time: " << calcAvg_wait_time(terminatedProcesses) << "\n";
+
+    QString results;
+    //results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
+    results += QString("Average Turnaround Time: %1\n\n").arg(calcAvg_turn_time(terminatedProcesses));
+    //results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
+    results += QString("Average Waiting Time: %1\n").arg(calcAvg_wait_time(terminatedProcesses));
+
+    return results;
 }

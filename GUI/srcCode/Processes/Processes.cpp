@@ -195,10 +195,11 @@ void printGantt(queue<char>operate, queue<vector<float>>time_slots, bool live) {
             operate.push(temp);
         }
     }
-    for (int i = 0;i < time_slots.size();i++) {
+    int j = time_slots.size();
+    for (int i = 0;i < j;i++) {
         time_interval = time_slots.front();
         time_slots.pop();
-        if (i == time_slots.size() - 1) {
+        if (i == j - 1) {
             last = time_slots.front()[1];
         }
         time_slots.push(time_interval);

@@ -6,7 +6,7 @@
 #include "ui_mainwindow.h"
 QString algorithmMain;
 int numProcessesMain;
-int index;
+int cbindex;
 bool live;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -150,13 +150,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_Nextbutton_clicked()
 {
-    index= ui->comboBox->currentIndex();
+    cbindex= ui->comboBox->currentIndex();
     numProcessesMain = ui->spinBox->value();     // Get the entered number of processes
     algorithmMain = ui->comboBox->currentText(); // Get the selected algorithm
     live = ui->checkBox->isChecked();
     hide(); // Hide the main window
     processInfo= new class processInfo(this); // Create processInfo instance
-    processInfo->receiveProcessData(algorithmMain, numProcessesMain,index,live); // Pass the selected data
+    processInfo->receiveProcessData(algorithmMain, numProcessesMain,cbindex,live); // Pass the selected data
     processInfo->show(); // Show the processInfo dialog
 
 }

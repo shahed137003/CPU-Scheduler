@@ -18,10 +18,12 @@ public:
     float overall_time = 0;
     bool live;
     GanttChart* gantt;
+    QString results;
 
     SJF_Non(std::vector<Processes>& initialProcesses, bool live, GanttChart* gantt, QObject* parent = nullptr);
 
     void start();
+    QString printResults();
 
 signals:
     void requestProcessStep();
@@ -30,7 +32,6 @@ public slots:
     void processStep();
 
 private:
-    void printResults();
 };
 
 #endif // SJF_NON_H

@@ -9,7 +9,6 @@
 #include <thread>
 #include <string>
 #include <iostream>
-#include "GanttChart.h" // Include GanttChart definition
 #include"..\Processes\Processes.h"
 
 extern float overall_time;
@@ -18,6 +17,6 @@ extern std::mutex queueMutex;
 extern std::atomic<bool> stopInput;
 
 void dynamicInput(std::queue<Processes>& processes, std::mutex& queueMutex, std::atomic<bool>& stopInput);
-void roundRobin(std::queue<Processes>& processes, float quantum, bool live, GanttChart* ganttChart);
+void roundRobin(std::queue<Processes>& processes, float quantum, bool live);
 
 #endif // ROUNDROBIN_H

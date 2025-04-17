@@ -32,6 +32,8 @@ public:
 
     SRJF(std::vector<Process>& initialProcesses, bool live, GanttChart* gantt, QObject* parent);
     void start();
+
+    QString printResults();
 private slots :
     void processStep();
 signals:
@@ -51,9 +53,9 @@ private:
     queue<Process> new_processes;
     atomic<bool> stop_flag;
     atomic<bool> new_processes_added;
+    QString results;
 
-    void calculateAverages();
-    void printResults();
+    QString calculateAverages();
 };
 
 #endif

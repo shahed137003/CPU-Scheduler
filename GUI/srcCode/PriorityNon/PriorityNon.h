@@ -14,6 +14,7 @@ public:
     std::queue<Processes> readyQueue;
     std::queue<Processes> terminatedProcesses;
     std::queue<char> operate;
+    QString results;
     std::queue<std::vector<float>> time_slots;
     float overall_time = 0;
     bool live;
@@ -22,6 +23,7 @@ public:
     PriorityNon(std::vector<Processes>& initialProcesses, bool live, GanttChart* gantt, QObject* parent = nullptr);
 
     void start();
+    QString printResults();
 
 signals:
     void requestProcessStep();
@@ -30,7 +32,6 @@ public slots:
     void processStep();
 
 private:
-    void printResults();
 };
 
 #endif // PRIORITYNON_H

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QTableWidget>
+#include <QTextEdit>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -27,6 +28,8 @@ private slots:
     void addProcess();
 
 private:
+    QTextEdit *resultsDisplay; // Add this to the private section
+    QWidget *outputWidget;
     QLineEdit *processNameEdit;
     QLineEdit *arrivalTimeEdit;
     QLineEdit *burstTimeEdit;

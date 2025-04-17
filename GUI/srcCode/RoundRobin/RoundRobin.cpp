@@ -17,6 +17,7 @@ void RoundRobin::start() {
 
 void RoundRobin::processStep() {
     qDebug() << "processStep called, readyQueue size:" << readyQueue.size() << "processes size:" << processes.size();
+    bool first = false;
     while (!readyQueue.empty() || !processes.empty() || !stopInput) {
         // Move processes to readyQueue based on arrival times
         {
@@ -32,6 +33,8 @@ void RoundRobin::processStep() {
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
                 if (!processes.empty()) {
+                    operate.push('#');
+                    time_slots.push({overall_time,processes.front().getArrival()});
                     overall_time = processes.front().getArrival();
                     continue;
                 } else if (stopInput) {
@@ -51,8 +54,16 @@ void RoundRobin::processStep() {
 
         // Calculate time slice
         float time_slice = min(quantum, operating.getRemaining());
+        if(first){
+            if(overall_time != 0.0){
+                operate.push('#');
+                time_slots.push({0,overall_time});
+            }
+            first = false;
+        }
         operate.push(operating.getName());
         qDebug()<<operating.getName();
+
         time_slots.push({overall_time, overall_time + time_slice});
         qDebug()<<overall_time;
         qDebug()<<overall_time + time_slice;
@@ -95,7 +106,7 @@ void RoundRobin::processStep() {
     printResults();
 }
 
-void RoundRobin::printResults() {
+QString RoundRobin::printResults() {
     processes = terminatedProcesses;
 
     // Output results
@@ -107,5 +118,11 @@ void RoundRobin::printResults() {
     cout << "Total Turnaround Time: " << calcTotal_turn_time(processes) << "\n";
     cout << "Average Turnaround Time: " << calcAvg_turn_time(processes) << "\n\n";
     cout << "Total Waiting Time: " << calcTotal_wait_time(processes) << "\n";
-    cout << "Average Waiting Time: " << calcAvg_wait_time(processes) << "\n";
+    cout << "Average Waiting Time: " << calcAvg_wait_time(processes) << "\n";    QString results;
+    //results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
+    results += QString("Average Turnaround Time: %1\n\n").arg(calcAvg_turn_time(terminatedProcesses));
+    //results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
+    results += QString("Average Waiting Time: %1\n").arg(calcAvg_wait_time(terminatedProcesses));
+
+    return results;
 }

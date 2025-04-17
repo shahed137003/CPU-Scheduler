@@ -31,7 +31,8 @@ void PriorityPre::processStep() {
 
     for (float i = 0; i < total_burst; i++) {
         int selected = -1;
-        for (int j = 0; j < processes.size(); j++) {
+        int x = processes.size();
+        for (int j = 0; j < x; j++) {
             if (processes[j].getArrival() <= i && processes[j].getRemaining() > 0) {
                 if (selected == -1 ||
                     processes[j].getPriority() < processes[selected].getPriority() ||
@@ -75,7 +76,7 @@ void PriorityPre::processStep() {
     printResults();
 }
 
-void PriorityPre::printResults() {
+QString PriorityPre::printResults() {
     //processes = terminatedProcesses;
     printGantt(operate, time_slots, live);
 
@@ -84,4 +85,11 @@ void PriorityPre::printResults() {
     std::cout << "Average Turnaround Time: " << calcAvg_turn_time(terminatedProcesses) << "\n\n";
     std::cout << "Total Waiting Time: " << calcTotal_wait_time(terminatedProcesses) << "\n";
     std::cout << "Average Waiting Time: " << calcAvg_wait_time(terminatedProcesses) << "\n";
+    QString results;
+    //results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
+    results += QString("Average Turnaround Time: %1\n\n").arg(calcAvg_turn_time(terminatedProcesses));
+    //results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
+    results += QString("Average Waiting Time: %1\n").arg(calcAvg_wait_time(terminatedProcesses));
+
+    return results;
 }

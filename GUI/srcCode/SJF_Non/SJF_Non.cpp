@@ -30,7 +30,8 @@ void SJF_Non::processStep() {
         // we need to find the process that has arrived and has the shortest burst time
         Processes selected_process;
         bool process_found = false;
-        for (int i = 0; i < processes.size(); i++) {
+        int j = processes.size();
+        for (int i = 0; i < j; i++) {
             if (processes[i].getArrival() <= current_time) {
                 selected_process = processes[i];
                 processes.erase(processes.begin() + i);
@@ -52,7 +53,7 @@ void SJF_Non::processStep() {
     printResults();
 }
 
-void SJF_Non::printResults() {
+QString SJF_Non::printResults() {
     //processes = terminatedProcesses;
     printGantt(operate, time_slots, live);
 
@@ -61,4 +62,11 @@ void SJF_Non::printResults() {
     std::cout << "Average Turnaround Time: " << calcAvg_turn_time(terminatedProcesses) << "\n\n";
     std::cout << "Total Waiting Time: " << calcTotal_wait_time(terminatedProcesses) << "\n";
     std::cout << "Average Waiting Time: " << calcAvg_wait_time(terminatedProcesses) << "\n";
+    QString results;
+    //results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
+    results += QString("Average Turnaround Time: %1\n\n").arg(calcAvg_turn_time(terminatedProcesses));
+    //results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
+    results += QString("Average Waiting Time: %1\n").arg(calcAvg_wait_time(terminatedProcesses));
+
+    return results;
 }

@@ -54,7 +54,7 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live, Gant
     std::queue<char> operate;
     std::queue<Processes> terminatedProcesses;
     Processes operating;
-
+    bool first = false;
     std::thread inputThread(dynamicInput, std::ref(processes), std::ref(queueMutex), std::ref(stopInput));
 
     while (!readyQueue.empty() || !processes.empty() || !stopInput) {
@@ -70,6 +70,8 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live, Gant
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
                 if (!processes.empty()) {
+                    operate.push('#');
+                    time_slots.push({overall_time,processes.front().getArrival()});
                     overall_time = processes.front().getArrival();
                 } else if (stopInput) {
                     break;
@@ -86,12 +88,15 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live, Gant
         }
 
         float time_slice = std::min(quantum, operating.getRemaining());
+        if(first){
+            if(overall_time != 0){
+                operate.push('#');
+                time_slots.push({0,overall_time});
+            }
+            first = false;
+        }
         operate.push(operating.getName());
         time_slots.push({overall_time, overall_time + time_slice});
-
-        if (ganttChart) {
-            ganttChart->updateGanttChart(operate, time_slots, live);
-        }
 
         overall_time += time_slice;
         operating.setLasttime(overall_time);
@@ -106,7 +111,7 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live, Gant
         }
 
         if (live) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(time_slice * 1000)));
+            wait(n);
         }
     }
 

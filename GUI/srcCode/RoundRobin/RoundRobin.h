@@ -15,6 +15,7 @@ public:
     RoundRobin(std::queue<Processes>& processes, float quantum, bool live, GanttChart* gantt, QObject* parent = nullptr);
 
     void start();
+    QString printResults();
 signals:
     void requestProcessStep();
 private slots:
@@ -35,8 +36,8 @@ private:
     QTimer timer;
     Processes operating;
     bool isOperating;
+    QString results;
 
-    void printResults();
 };
 
 #endif
