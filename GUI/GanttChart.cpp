@@ -8,6 +8,8 @@ GanttChart::GanttChart(QWidget *parent) : QWidget(parent), isLiveMode(false) {
 
 void GanttChart::updateGanttChart(const std::queue<char>& processes, const std::queue<std::vector<float>>& timeSlots, bool live) {
     // Emit signal to ensure update happens in the main thread
+    qDebug() << "GanttChart::updateGanttChart - processes size:" << processes.size()
+             << "timeSlots size:" << timeSlots.size();
     emit requestUpdateGantt(processes, timeSlots, live);
 }
 
@@ -15,7 +17,7 @@ void GanttChart::handleUpdateGantt(const std::queue<char>& processes, const std:
     // Clear existing data
     while (!processNames.empty()) processNames.pop();
     while (!timeIntervals.empty()) timeIntervals.pop();
-
+    qDebug()<< processes.size();
     processNames = processes;
     timeIntervals = timeSlots;
     isLiveMode = live;
@@ -80,8 +82,9 @@ void GanttChart::paintEvent(QPaintEvent *event) {
         painter.drawText(barRect, Qt::AlignCenter, QString(process));
 
         // Draw start and end times
-        painter.drawText(barX, startY + barHeight + textOffset, QString::number(startTime, 'f', 1));
-        painter.drawText(barX + barWidth - 15, startY + barHeight + textOffset, QString::number(endTime, 'f', 1));
+        painter.drawText(barX, startY + barHeight + textOffset, QString::number(startTime));
+        if(tempSlots.size() == 1)
+            painter.drawText(barX + barWidth - 15, startY + barHeight + textOffset, QString::number(endTime));
 
         tempNames.pop();
         tempSlots.pop();

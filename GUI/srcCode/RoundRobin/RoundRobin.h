@@ -12,9 +12,11 @@
 class RoundRobin : public QObject {
     Q_OBJECT
 public:
-    RoundRobin(std::queue<Processes>& processes, float quantum, bool live, GanttChart* gantt, bool gui,std::queue<char>& processes_name, std::queue<std::vector<float>>& timeSlots, QObject* parent = nullptr);
-    void start();
+    RoundRobin(std::queue<Processes>& processes, float quantum, bool live, GanttChart* gantt, QObject* parent = nullptr);
 
+    void start();
+signals:
+    void requestProcessStep();
 private slots:
     void processStep();
 
@@ -27,7 +29,6 @@ private:
     float quantum;
     bool live;
     GanttChart* gantt;
-    bool gui;
     float overall_time;
     std::mutex queueMutex;
     std::atomic<bool> stopInput;

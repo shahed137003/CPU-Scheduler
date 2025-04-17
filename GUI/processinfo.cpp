@@ -181,32 +181,32 @@ void processInfo::on_pushButton_clicked()
         return; // Stop execution to prevent adding extra row
     }
 
-    if (i > 1)
-        ui->label_4->hide();
-
     Processes p;
     char name = 'A' + i;
     float arrival = (ui->lineEdit->text()).toFloat();
     p.setName(name);
     p.setArrival(arrival);
     p.setBurst((ui->lineEdit_2->text()).toFloat());
+    p.setRemaining((ui->lineEdit_2->text()).toFloat());
     p.setPriority((ui->lineEdit_3->text()).toInt());
+    qDebug()<<"Process data:"<<p.getName()<<p.getArrival()<<p.getBurst()<<p.getPriority();
 
-    SRJF::Process p1(i, arrival, (ui->lineEdit_2->text()).toFloat(), true);
+    SRJF::Process p1(i, arrival, (ui->lineEdit_2->text()).toFloat(), true,name);
     process.push_back(p1);
     processes.push_back(p);
+    if (!first) {
+        quantum = ((ui->lineEdit_4->text()).toFloat());
+        qDebug()<<"Quantum = "<<quantum;
+        ui->lineEdit_4->hide();
+        ui->label_4->hide();
+        first = true;
+    }
 
     ui->lineEdit->clear();
     ui->lineEdit_2->clear();
     ui->lineEdit_3->clear();
     ui->lineEdit_4->clear();
 
-    if (!first) {
-        quantum = ((ui->lineEdit_4->text()).toFloat());
-        ui->lineEdit_4->hide();
-        ui->label_4->hide();
-        first = true;
-    }
 
     // Update table
     QStringList headers = {"Process Name", "Arrival Time", "Burst Time"};

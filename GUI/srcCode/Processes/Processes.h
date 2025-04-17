@@ -7,7 +7,8 @@
 #include <algorithm>
 #include <queue>
 #include <windows.h>
-//#include "../Processes/Processes.h"
+#include "../Processes/Processes.h"
+//#include "../../GanttChart.h"
 //#include <bits/stdc++.h>
 #include <mutex>
 #include <string>
@@ -16,7 +17,7 @@
 #include <atomic>
 
 // Forward declaration to avoid including dynamically.h
-class GanttChart;
+//class GanttChart;
 
 using namespace std;
 

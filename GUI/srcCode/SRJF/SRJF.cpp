@@ -4,84 +4,105 @@
 #include <iostream>
 #include <iomanip>
 
-SRJF::SRJF(std::vector<Process>& initialProcesses, bool live, GanttChart* gantt,std::queue<char>& processes_name, std::queue<std::vector<float>>& timeSlots, QObject* parent)
+SRJF::SRJF(std::vector<Process>& initialProcesses, bool live, GanttChart* gantt, QObject* parent)
     : QObject(parent),processes(initialProcesses),ready_queue([](Process* left, Process* right) {
-        return left->remaining_time > right->remaining_time;}),current_process(nullptr),current_time(0),live(live),gantt(gantt),operate(processes_name),time_slots(timeSlots),
-    initial_only(true) {
-
-    connect(&timer, &QTimer::timeout, this, &SRJF::processStep);
-    timer.start(3000);
-    qDebug() << "Timer connected:" << timer.isActive();
+        return left->remaining_time > right->remaining_time;}),current_process(nullptr),current_time(0),live(live),gantt(gantt),
+    initial_only(true),stop_flag(false),new_processes_added(false) {
+    connect(this, &SRJF::requestProcessStep, this, &SRJF::processStep);
+    //connect(&timer, &QTimer::timeout, this, );
 }
 
 void SRJF::start() {
-    qDebug() << "START SRJF" << processes.size();
-    timer.start(3000); // Run every 100ms to allow GUI updates
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    emit requestProcessStep();
 }
 
 void SRJF::processStep() {
-    // Check for arriving processes
-    for (auto& p : processes) {
-        if (p.arrival_time == current_time && p.remaining_time == p.burst_time) {
-            ready_queue.push(&p);
-            qDebug() << "processesStep SRJF" << p.pid;
-        }
-    }
-
-    // Process completion
-    if (current_process && current_process->remaining_time == 0) {
-        current_process->finish_time = current_time;
-        current_process = nullptr;
-    }
-
-    // Get next process if none running
-    if (!current_process && !ready_queue.empty()) {
-        current_process = ready_queue.top();
-        ready_queue.pop();
-        if (current_process->start_time == -1) {
-            current_process->start_time = current_time;
-        }
-    }
-
-    // Execute current process
-    if (current_process) {
-        current_process->remaining_time--;
-
-        // Update Gantt chart
-        operate.push(char(current_process->pid));
-        time_slots.push({static_cast<float>(current_time), static_cast<float>(current_time + 1)});
-
-        if (gantt && live) {
-            std::queue<char> operateCopy = operate;
-            std::queue<std::vector<float>> timeSlotsCopy = time_slots;
-            gantt->updateGanttChart(operateCopy, timeSlotsCopy, live);
-            QApplication::processEvents(); // Force GUI update
+    while (true) {
+        // Check for new processes
+        {
+            lock_guard<mutex> lock(mtx);
+            while (!new_processes.empty() && new_processes.front().arrival_time <= current_time) {
+                Process& p = new_processes.front();
+                processes.push_back(p);
+                ready_queue.push(&processes.back());
+                new_processes.pop();
+                if (!p.is_initial) {
+                    new_processes_added = true;
+                    initial_only = false;
+                }
+            }
         }
 
-        std::cout << "SRJF: Scheduling process P" << current_process->pid
-                  << " at time " << current_time << std::endl;
+        // Check for arriving processes
+        for (auto& p : processes) {
+            if (p.arrival_time == current_time && p.remaining_time == p.burst_time) {
+                ready_queue.push(&p);
+            }
+        }
 
-        // Check for preemption
-        if (!ready_queue.empty() && ready_queue.top()->remaining_time < current_process->remaining_time) {
-            ready_queue.push(current_process);
+        // Process completion
+        if (current_process && current_process->remaining_time == 0) {
+            current_process->finish_time = current_time;
+            current_process = nullptr;
+        }
+
+        // Get next process if none running
+        if (!current_process && !ready_queue.empty()) {
             current_process = ready_queue.top();
             ready_queue.pop();
+            if (current_process->start_time == -1) {
+                current_process->start_time = current_time;
+            }
         }
 
-        if (live) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        // Execute current process
+        if (current_process) {
+            current_process->remaining_time--;
+
+            // Update Gantt chart
+            operate.push(char(current_process->name));
+            time_slots.push({static_cast<float>(current_time), static_cast<float>(current_time + 1)});
+
+            if (gantt && live) {
+                std::queue<char> operateCopy = operate;
+                std::queue<std::vector<float>> timeSlotsCopy = time_slots;
+                gantt->updateGanttChart(operateCopy, timeSlotsCopy, live);
+                QApplication::processEvents(); // Force GUI update
+            }
+
+            std::cout << "SRJF: Scheduling process P" << current_process->pid
+                      << " at time " << current_time << std::endl;
+            // Check for preemption
+            if (!ready_queue.empty() && ready_queue.top()->remaining_time < current_process->remaining_time) {
+                ready_queue.push(current_process);
+                current_process = ready_queue.top();
+                ready_queue.pop();
+            }
+            if (live) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            }
         }
-    }
 
-    // Check termination conditions
-    bool should_stop = initial_only && ready_queue.empty() && (!current_process || current_process->remaining_time == 0);
-    if (should_stop) {
-        timer.stop();
-        printResults();
-        return;
-    }
+        // Check termination conditions
+        bool should_stop = false;
+        {
+            lock_guard<mutex> lock(mtx);
+            should_stop = stop_flag ||
+                          (initial_only && ready_queue.empty() && (!current_process || current_process->remaining_time == 0));
+        }
 
-    current_time++;
+        if (should_stop) {
+            if (!stop_flag && initial_only) {
+                cout << "\nAll initial processes completed at time " << current_time << endl;
+            }
+            printResults();
+            break;
+        }
+
+        current_time++;
+        this_thread::sleep_for(chrono::milliseconds(100));
+    }
 }
 
 void SRJF::calculateAverages() {
