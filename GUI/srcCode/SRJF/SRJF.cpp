@@ -17,6 +17,7 @@ void SRJF::start() {
     emit requestProcessStep();
 }
 
+
 void SRJF::processStep() {
     while (true) {
         // Check for new processes
@@ -41,9 +42,9 @@ void SRJF::processStep() {
             }
         }
 
-        // Process completion
+        // Process completion (set finish_time at the end of the time unit)
         if (current_process && current_process->remaining_time == 0) {
-            current_process->finish_time = current_time;
+            current_process->finish_time = current_time; // Set finish_time to end of current time unit
             current_process = nullptr;
         }
 
@@ -73,6 +74,7 @@ void SRJF::processStep() {
 
             std::cout << "SRJF: Scheduling process P" << current_process->pid
                       << " at time " << current_time << std::endl;
+
             // Check for preemption
             if (!ready_queue.empty() && ready_queue.top()->remaining_time < current_process->remaining_time) {
                 ready_queue.push(current_process);
@@ -89,7 +91,7 @@ void SRJF::processStep() {
         {
             lock_guard<mutex> lock(mtx);
             should_stop = stop_flag ||
-                          (initial_only && ready_queue.empty() && (!current_process || current_process->remaining_time == 0));
+                          (initial_only && ready_queue.empty() && !current_process); // Modified condition
         }
 
         if (should_stop) {
@@ -108,17 +110,20 @@ void SRJF::processStep() {
 QString SRJF::calculateAverages() {
     double total_waiting = 0;
     double total_turnaround = 0;
-    int count = 0;
 
     for (const auto& p : processes) {
-        if (p.finish_time != -1) {
-            int turnaround = p.finish_time - p.arrival_time;
-            int waiting = turnaround - p.burst_time;
-            total_waiting += waiting;
-            total_turnaround += turnaround;
-            count++;
-        }
+        int turnaround = p.finish_time - p.arrival_time;
+        qDebug()<<turnaround<<p.finish_time<<p.arrival_time;
+        int waiting = turnaround - p.burst_time;
+        qDebug()<<waiting<<p.burst_time;
+
+        total_turnaround += turnaround;
+        qDebug()<<total_turnaround;
+        total_waiting += waiting;
+        qDebug()<<total_waiting;
     }
+
+    int count = processes.size();
 
     if (count > 0) {
         std::cout << std::fixed << std::setprecision(2);
@@ -129,10 +134,10 @@ QString SRJF::calculateAverages() {
     }
 
     QString results;
-    //results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
-    results += QString("Average Turnaround Time: %1\n\n").arg((total_turnaround / count));
-    //results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
-    results += QString("Average Waiting Time: %1\n").arg((total_waiting / count));
+    //results += QString("Total Turnaround Time: %1\n").arg(total_turnaround);
+    results += QString("Average Turnaround Time: %1\n\n").arg(total_turnaround/count);
+    //results += QString("Total Waiting Time: %1\n").arg(total_waiting);
+    results += QString("Average Waiting Time: %1\n").arg(total_waiting / count);
     return results;
 
 }
