@@ -26,8 +26,14 @@
     <ClInclude Include="..\Processes\Processes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\GanttChart.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+<<<<<<< Updated upstream
+=======
     <ClInclude Include="RoundRobin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+>>>>>>> Stashed changes
   </ItemGroup>
 </Project>
