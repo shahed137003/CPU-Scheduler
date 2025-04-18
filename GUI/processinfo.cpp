@@ -159,27 +159,7 @@ vector<Processes> processes;
 vector<SRJF::Process> process;
 void processInfo::on_pushButton_clicked()
 {
-    if (i >= processNum)
-    {
-        sort(processes.begin(), processes.end(), compareByArrival);
-        ui->pushButton->hide();
-        ui->label->hide();
-        ui->label_2->hide();
-        ui->label_3->hide();
-        ui->label_4->hide();
-        ui->lineEdit->hide();
-        ui->lineEdit_2->hide();
-        ui->lineEdit_3->hide();
-        ui->lineEdit_4->hide();
-        ui->label_6->show();
-        ui->label_6->setText("Processes added successfully");
-        ui->tableWidget->show();
-
-        Dynamically *dynamically = new class Dynamically(nullptr); // Create Dynamically instance
-        dynamically->callAlgo(processes, process, quantum, comboIndex,isLive); // Pass the selected algo
-        dynamically->show(); // Show the Dynamically dialog
-        return; // Stop execution to prevent adding extra row
-    }
+    
 
     Processes p;
     char name = 'A' + i;
@@ -266,6 +246,26 @@ void processInfo::on_pushButton_clicked()
             color: black;
         }
     )");
+    if (i >= processNum-1)
+    {
+        sort(processes.begin(), processes.end(), compareByArrival);
+        ui->pushButton->hide();
+        ui->label->hide();
+        ui->label_2->hide();
+        ui->label_3->hide();
+        ui->label_4->hide();
+        ui->lineEdit->hide();
+        ui->lineEdit_2->hide();
+        ui->lineEdit_3->hide();
+        ui->lineEdit_4->hide();
+        ui->label_6->show();
+        ui->label_6->setText("Processes added successfully");
+        ui->tableWidget->show();
 
+        Dynamically *dynamically = new class Dynamically(nullptr); // Create Dynamically instance
+        dynamically->callAlgo(processes, process, quantum, comboIndex,isLive); // Pass the selected algo
+        dynamically->show(); // Show the Dynamically dialog
+        return; // Stop execution to prevent adding extra row
+    }
     i++;
 }
