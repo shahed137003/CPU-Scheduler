@@ -31,9 +31,11 @@ void RoundRobin::processStep() {
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
                 if (!processes.empty()) {
-                    operate.push('#');
-                    time_slots.push({overall_time,processes.front().getArrival()});
-                    overall_time = processes.front().getArrival();
+                    // operate.push('#');
+                    // time_slots.push({overall_time,processes.front().getArrival()});
+                    // overall_time = processes.front().getArrival();
+                    overall_time++;
+                    wait(1);
                 } else {
                     break;
                 }
@@ -91,7 +93,7 @@ void RoundRobin::processStep() {
         }
 
         if (live) {
-            wait_ms(100);
+            wait_ms(1000*time_slice);
         }
     }
     printResults();
@@ -101,7 +103,7 @@ QString RoundRobin::printResults() {
     processes = terminatedProcesses;
 
     // Output results
-    printGantt(operate, time_slots, live);
+    //printGantt(operate, time_slots, live);
 
     cout << "\n\n\n";
     cout << "\nTotal Response Time: " << calcTotal_response_time(processes) << "\n";

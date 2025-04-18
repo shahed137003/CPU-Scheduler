@@ -72,7 +72,7 @@ QString FCFS::printResults() {
     //processes = terminatedProcesses;
 
     // Output results
-    printGantt(operate, time_slots, live);
+   // printGantt(operate, time_slots, live);
 
     cout << "\n\n\n";
     cout << "\nTotal Response Time: " << calcTotal_response_time(terminatedProcesses) << "\n";
