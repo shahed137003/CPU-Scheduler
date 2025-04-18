@@ -1,5 +1,5 @@
 #include "processinfo.h"
-#include "build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/ui_processinfo.h"
+//#include "build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/ui_processinfo.h"
 #include "ui_processinfo.h"
 bool needsPriority=false;
 bool needsQuantum;
@@ -89,7 +89,29 @@ processInfo::processInfo(QWidget *parent)
     ui->lineEdit_2->setStyleSheet(lineEditStyle);
     ui->lineEdit_3->setStyleSheet(lineEditStyle);
     ui->lineEdit_4->setStyleSheet(lineEditStyle);
-
+    ui->pushButton_2->setText("Add Extra process");
+    ui->pushButton_2->setStyleSheet("QPushButton {"
+                                  "    background-color: #3498db;"    // Blue background
+                                  "    color: white;"                 // White text color
+                                  "    font: bold 23px Arial;"        // Bold font with Arial style
+                                  "    padding: 10px 20px;"           // Padding for a spacious button
+                                  "    border-radius: 10px;"          // Rounded corners
+                                  "    border: none;"                 // No border
+                                  "    transition: background-color 0.3s ease, transform 0.2s ease;" // Smooth transitions
+                                  "} "
+                                  "QPushButton:hover {"
+                                  "    background-color: #2980b9;"    // Darker blue when hovered
+                                  "    transform: scale(1.05);"        // Slightly enlarges the button on hover
+                                  "} "
+                                  "QPushButton:pressed {"
+                                  "    background-color: #2980b9;"    // Even darker blue when pressed
+                                  "    transform: scale(0.95);"        // Slightly shrinks the button on press
+                                  "} "
+                                  "QPushButton:disabled {"
+                                  "    background-color: #2980b9;"    // Grey background for disabled state
+                                  "    color: #7f8c8d;"                // Darker text color for disabled state
+                                  "}");
+    ui->pushButton_2->hide();
 
 }
 
@@ -261,6 +283,7 @@ void processInfo::on_pushButton_clicked()
         ui->label_6->show();
         ui->label_6->setText("Processes added successfully");
         ui->tableWidget->show();
+        ui->pushButton_2->show();
 
         Dynamically *dynamically = new class Dynamically(nullptr); // Create Dynamically instance
         dynamically->callAlgo(processes, process, quantum, comboIndex,isLive); // Pass the selected algo
@@ -269,3 +292,31 @@ void processInfo::on_pushButton_clicked()
     }
     i++;
 }
+
+void processInfo::on_pushButton_2_clicked()
+{
+    if(needsPriority)
+    {
+        ui->lineEdit_3->show();
+        ui->label_3->show();
+    }
+    if(needsQuantum)
+    {
+        ui->lineEdit_4->show();
+        ui->label_4->show();
+    }
+    if(!isLive){
+        ui->tableWidget->hide();
+    }
+    ui->pushButton->show();
+    ui->label->show();
+    ui->label_2->show();
+    ui->lineEdit->show();
+    ui->lineEdit_2->show();
+    ui->label_6->hide();
+    processNum++;
+    i++;
+    ui->tableWidget->show();
+    ui->pushButton_2->hide();
+}
+
