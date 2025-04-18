@@ -281,6 +281,7 @@ Makefile: ../../OS_Project_Scheduler.pro C:/Qt/6.9.0/mingw_64/mkspecs/win32-g++/
 		C:/Qt/6.9.0/mingw_64/mkspecs/features/qt_config.prf \
 		C:/Qt/6.9.0/mingw_64/mkspecs/win32-g++/qmake.conf \
 		C:/Qt/6.9.0/mingw_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		C:/Qt/6.9.0/mingw_64/mkspecs/features/exclusive_builds.prf \
 		C:/Qt/6.9.0/mingw_64/mkspecs/features/toolchain.prf \
 		C:/Qt/6.9.0/mingw_64/mkspecs/features/default_pre.prf \
@@ -313,7 +314,6 @@ Makefile: ../../OS_Project_Scheduler.pro C:/Qt/6.9.0/mingw_64/mkspecs/win32-g++/
 		C:/Qt/6.9.0/mingw_64/lib/Qt6Gui.prl \
 		C:/Qt/6.9.0/mingw_64/lib/Qt6Core.prl \
 		C:/Qt/6.9.0/mingw_64/lib/Qt6EntryPoint.prl \
-		.qmake.stash \
 		C:/Qt/6.9.0/mingw_64/mkspecs/features/build_pass.prf
 	$(QMAKE) -o Makefile ..\..\OS_Project_Scheduler.pro -spec win32-g++ "CONFIG+=qml_debug" "CONFIG+=qtquickcompiler" "CONFIG+=force_debug_info" "CONFIG+=separate_debug_info"
 C:/Qt/6.9.0/mingw_64/mkspecs/features/spec_pre.prf:
@@ -527,6 +527,7 @@ C:/Qt/6.9.0/mingw_64/mkspecs/features/qt_functions.prf:
 C:/Qt/6.9.0/mingw_64/mkspecs/features/qt_config.prf:
 C:/Qt/6.9.0/mingw_64/mkspecs/win32-g++/qmake.conf:
 C:/Qt/6.9.0/mingw_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 C:/Qt/6.9.0/mingw_64/mkspecs/features/exclusive_builds.prf:
 C:/Qt/6.9.0/mingw_64/mkspecs/features/toolchain.prf:
 C:/Qt/6.9.0/mingw_64/mkspecs/features/default_pre.prf:
@@ -559,7 +560,6 @@ C:/Qt/6.9.0/mingw_64/lib/Qt6Widgets.prl:
 C:/Qt/6.9.0/mingw_64/lib/Qt6Gui.prl:
 C:/Qt/6.9.0/mingw_64/lib/Qt6Core.prl:
 C:/Qt/6.9.0/mingw_64/lib/Qt6EntryPoint.prl:
-.qmake.stash:
 C:/Qt/6.9.0/mingw_64/mkspecs/features/build_pass.prf:
 qmake: FORCE
 	@$(QMAKE) -o Makefile ..\..\OS_Project_Scheduler.pro -spec win32-g++ "CONFIG+=qml_debug" "CONFIG+=qtquickcompiler" "CONFIG+=force_debug_info" "CONFIG+=separate_debug_info"
@@ -571,7 +571,7 @@ all: release-all debug-all  FORCE
 clean: release-clean debug-clean  FORCE
 distclean: release-distclean debug-distclean  FORCE
 	-$(DEL_FILE) Makefile
-	-$(DEL_FILE) C:\Users\Takwa\OneDrive\Documents\GitHub\CPU-Scheduler\GUI\build\Desktop_Qt_6_9_0_MinGW_64_bit-Profile\OS_Project_Scheduler.exe.debug .qmake.stash
+	-$(DEL_FILE) "C:\Users\Ehab\OneDrive - Faculty of Engineering Ain Shams University\Documents\GitHub\CPU-Scheduler\GUI\build\Desktop_Qt_6_9_0_MinGW_64_bit-Profile\OS_Project_Scheduler.exe.debug" .qmake.stash
 
 release-mocclean:
 	$(MAKE) -f $(MAKEFILE).Release mocclean

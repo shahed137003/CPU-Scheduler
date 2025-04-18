@@ -8,10 +8,13 @@ PriorityPre::PriorityPre(std::vector<Processes>& initialProcesses, bool live, Ga
     : QObject(parent), live(live), gantt(gantt) {
     // Initialize processes with remaining time
     while (!initialProcesses.empty()) {
-        Processes p = initialProcesses.front();
-        p.setRemaining(p.getBurst());
-        processes.push_back(p);
-        initialProcesses.pop_back();
+
+            Processes p = initialProcesses.front(); // ✅ get the first element
+            p.setRemaining(p.getBurst());
+            processes.push_back(p);
+            initialProcesses.erase(initialProcesses.begin()); // ✅ remove the first element
+
+
     }
     connect(this, &PriorityPre::requestProcessStep, this, &PriorityPre::processStep);
 }
@@ -26,19 +29,20 @@ void PriorityPre::processStep() {
     float total_burst = 0;
     for (auto& process : processes) {
         process.setRemaining(process.getBurst());
+        qDebug()<<"BURST"<<process.getBurst();
         total_burst += process.getBurst();
     }
-
+    int selected = -1; /////////////
     for (float i = 0; i < total_burst; i++) {
-        int selected = -1;
+
         int x = processes.size();
         for (int j = 0; j < x; j++) {
             if (processes[j].getArrival() <= i && processes[j].getRemaining() > 0) {
-                if (selected == -1 ||
-                    processes[j].getPriority() < processes[selected].getPriority() ||
-                    (processes[j].getPriority() == processes[selected].getPriority() &&
-                     processes[j].getArrival() < processes[selected].getArrival())) {
-                    selected = j;
+                if ((selected == -1 ||
+                    (selected !=-1 && processes[j].getPriority() < processes[selected].getPriority()) ||
+                    (selected!=1 && processes[j].getPriority() == processes[selected].getPriority() &&
+                     processes[j].getArrival() < processes[selected].getArrival())) && processes[j].getRemaining()>0) {
+                    selected = j; ///////
                 }
             }
         }
@@ -57,7 +61,7 @@ void PriorityPre::processStep() {
                 process.setWaiting(waiting);
             }
             operate.push(process.getName());
-            time_slots.push({total_burst,total_burst+1});
+            time_slots.push({i,i+1}); ////////
 
             // Update Gantt chart
             if (gantt && live) {
