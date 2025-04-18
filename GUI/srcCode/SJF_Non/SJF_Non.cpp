@@ -27,7 +27,8 @@ void SJF_Non::processStep() {
         std::sort(remaining.begin(), remaining.end(), compareByBurst);
 
         bool found = false;
-        for (int i = 0; i < remaining.size(); ++i) {
+        int x = remaining.size();
+        for (int i = 0; i < x; ++i) {
             if (remaining[i].getArrival() <= current_time) {
                 Processes p = remaining[i];
                 remaining.erase(remaining.begin() + i);

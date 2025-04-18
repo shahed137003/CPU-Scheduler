@@ -16,7 +16,8 @@ void dynamicInput(std::queue<Processes>& processes, std::mutex& queueMutex, std:
         std::cin >> input;
 
         if (input == "STOP" || (processes.empty() && readyQueue.empty())) {
-            if (processes.empty() && readyQueue.empty())
+            if(input == "STOP") std::cout << "You Have Stopped the Dynamic Input..\n";
+            else if (processes.empty() && readyQueue.empty())
                 std::cout << "Last process is not added as all processes finished..\n";
             stopInput = true;
             break;
@@ -28,7 +29,7 @@ void dynamicInput(std::queue<Processes>& processes, std::mutex& queueMutex, std:
 
         if (std::cin.fail() || burst <= 0 || arrival < 0) {
             std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cin.ignore(INT_MAX, '\n');
             std::cout << "Invalid input. Please ensure arrival and burst times are valid.\n";
             continue;
         }
@@ -49,7 +50,7 @@ void dynamicInput(std::queue<Processes>& processes, std::mutex& queueMutex, std:
     }
 }
 
-void roundRobin(std::queue<Processes>& processes, float quantum, bool live, GanttChart* ganttChart) {
+void roundRobin(std::queue<Processes>& processes, float quantum, bool live) {
     std::queue<std::vector<float>> time_slots;
     std::queue<char> operate;
     std::queue<Processes> terminatedProcesses;
@@ -87,7 +88,7 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live, Gant
             operating.setResponse(overall_time - operating.getArrival());
         }
 
-        float time_slice = std::min(quantum, operating.getRemaining());
+        float time_slice = (((quantum) < (operating.getRemaining())) ? (quantum) : (operating.getRemaining()));
         if(first){
             if(overall_time != 0){
                 operate.push('#');
@@ -111,7 +112,7 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live, Gant
         }
 
         if (live) {
-            wait(n);
+            wait(time_slice);
         }
     }
 
@@ -121,17 +122,17 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live, Gant
     processes = terminatedProcesses;
 
     // Assuming these functions are defined elsewhere
-    // printGantt(operate, time_slots, live);
+    printGantt(operate, time_slots, live);
     std::cout << "\n\n\n";
-    std::cout << "\nTotal Response Time: " << /* calcTotal_response_time(processes) */ 0 << "\n";
-    std::cout << "Average Response Time: " << /* calcAvg_response_time(processes) */ 0 << "\n\n";
-    std::cout << "Total Turnaround Time: " << /* calcTotal_turn_time(processes) */ 0 << "\n";
-    std::cout << "Average Turnaround Time: " << /* calcAvg_turn_time(processes) */ 0 << "\n\n";
-    std::cout << "Total Waiting Time: " << /* calcTotal_wait_time(processes) */ 0 << "\n";
-    std::cout << "Average Waiting Time: " << /* calcAvg_wait_time(processes) */ 0 << "\n";
+    std::cout << "\nTotal Response Time: " <<  calcTotal_response_time(processes) << "\n";
+    std::cout << "Average Response Time: " <<  calcAvg_response_time(processes)  << "\n\n";
+    std::cout << "Total Turnaround Time: " <<  calcTotal_turn_time(processes)  << "\n";
+    std::cout << "Average Turnaround Time: " <<  calcAvg_turn_time(processes)  << "\n\n";
+    std::cout << "Total Waiting Time: " << calcTotal_wait_time(processes)  << "\n";
+    std::cout << "Average Waiting Time: " <<  calcAvg_wait_time(processes)  << "\n";
 }
 
-/*int main() {
+int main() {
     cout << "Welcome! Enter number of processes to be scheduled: ";
     int n;
     cin >> n;
@@ -140,6 +141,7 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live, Gant
         cout << "Please Enter an integer number greater than 0...\n";
         return -1;
     }
+    
 
     queue<Processes> processes;
     for (int i = 0; i < n; i++) {
@@ -176,4 +178,4 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live, Gant
     roundRobin(processes, quantum, live);
 
     return 0;
-}*/
+}

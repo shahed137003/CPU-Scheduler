@@ -14,12 +14,11 @@ void RoundRobin::start() {
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     emit requestProcessStep();
 }
-
 void RoundRobin::processStep() {
+    overall_time=0;
     qDebug() << "processStep called, readyQueue size:" << readyQueue.size() << "processes size:" << processes.size();
     bool first = false;
     while (!readyQueue.empty() || !processes.empty() || !stopInput) {
-        // Move processes to readyQueue based on arrival times
         {
             std::lock_guard<std::mutex> lock(queueMutex);
             while (!processes.empty() && processes.front().getArrival() <= overall_time) {
@@ -29,19 +28,17 @@ void RoundRobin::processStep() {
         }
 
         if (readyQueue.empty()) {
-            // Advance time to the next process arrival if readyQueue is empty
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
                 if (!processes.empty()) {
                     operate.push('#');
                     time_slots.push({overall_time,processes.front().getArrival()});
                     overall_time = processes.front().getArrival();
-                    continue;
-                } else if (stopInput) {
-                    printResults();
-                    return;
+                } else {
+                    break;
                 }
             }
+            continue;
         }
 
         operating = readyQueue.front();
@@ -51,25 +48,19 @@ void RoundRobin::processStep() {
             operating.setResponse(overall_time - operating.getArrival());
         }
 
-
-        // Calculate time slice
-        float time_slice = min(quantum, operating.getRemaining());
+        float time_slice = (((quantum) < (operating.getRemaining())) ? (quantum) : (operating.getRemaining()));
         if(first){
-            if(overall_time != 0.0){
+            if(overall_time != 0){
                 operate.push('#');
                 time_slots.push({0,overall_time});
             }
             first = false;
         }
-        operate.push(operating.getName());
-        qDebug()<<operating.getName();
-
-        time_slots.push({overall_time, overall_time + time_slice});
-        qDebug()<<overall_time;
-        qDebug()<<overall_time + time_slice;
-
         // Debug the current state of queues
         qDebug() << "Before update: operate size:" << operate.size() << "time_slots size:" << time_slots.size();
+        operate.push(operating.getName());
+        time_slots.push({overall_time, overall_time + time_slice});
+
 
         // Create copies for Gantt chart update
         std::queue<char> operateCopy = operate;
@@ -86,6 +77,7 @@ void RoundRobin::processStep() {
                   << " start: " << overall_time << " end: " << (overall_time + time_slice) << std::endl;
         std::cout << "RoundRobin: Updated GanttChart with " << operate.size() << " processes" << std::endl;
 
+
         overall_time += time_slice;
         operating.setLasttime(overall_time);
         operating.setRemaining(operating.getRemaining() - time_slice);
@@ -96,11 +88,10 @@ void RoundRobin::processStep() {
             operating.setTurnaround(overall_time - operating.getArrival());
             operating.setWaiting(operating.getTurnaround() - operating.getBurst());
             terminatedProcesses.push(operating);
-            isOperating = false;
         }
 
         if (live) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(time_slice * 1000)));
+            wait_ms(100);
         }
     }
     printResults();
@@ -119,10 +110,12 @@ QString RoundRobin::printResults() {
     cout << "Average Turnaround Time: " << calcAvg_turn_time(processes) << "\n\n";
     cout << "Total Waiting Time: " << calcTotal_wait_time(processes) << "\n";
     cout << "Average Waiting Time: " << calcAvg_wait_time(processes) << "\n";    QString results;
-    //results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
+    results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
     results += QString("Average Turnaround Time: %1\n\n").arg(calcAvg_turn_time(terminatedProcesses));
-    //results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
-    results += QString("Average Waiting Time: %1\n").arg(calcAvg_wait_time(terminatedProcesses));
+    results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
+    results += QString("Average Waiting Time: %1\n\n").arg(calcAvg_wait_time(terminatedProcesses));
+    results += QString("Total Waiting Time: %1\n").arg(calcTotal_response_time(terminatedProcesses));
+    results += QString("Average Response Time: %1\n").arg(calcAvg_response_time(terminatedProcesses));
 
     return results;
 }
