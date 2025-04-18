@@ -9,10 +9,10 @@ PriorityPre::PriorityPre(std::vector<Processes>& initialProcesses, bool live, Ga
     // Initialize processes with remaining time
     while (!initialProcesses.empty()) {
 
-            Processes p = initialProcesses.front(); // ✅ get the first element
+            Processes p = initialProcesses.front(); // get the first element
             p.setRemaining(p.getBurst());
             processes.push_back(p);
-            initialProcesses.erase(initialProcesses.begin()); // ✅ remove the first element
+            initialProcesses.erase(initialProcesses.begin()); // remove the first element
 
 
     }
@@ -27,14 +27,16 @@ void PriorityPre::start() {
 void PriorityPre::processStep() {
     qDebug() << "PriorityPre::processStep called, processes size:" << processes.size();
     float total_burst = 0;
+    float first_arr = processes[0].getArrival(); // assuming the user enters processes by order of arrival
     for (auto& process : processes) {
         process.setRemaining(process.getBurst());
         qDebug()<<"BURST"<<process.getBurst();
         total_burst += process.getBurst();
+        if(process.getArrival()<first_arr) first_arr = process.getArrival(); // Just in case the user enters the processes randomly
     }
-    int selected = -1; /////////////
-    for (float i = 0; i < total_burst; i++) {
 
+    for (float i = 0; i < total_burst+first_arr; i++) {
+        int selected = -1;
         int x = processes.size();
         for (int j = 0; j < x; j++) {
             if (processes[j].getArrival() <= i && processes[j].getRemaining() > 0) {
