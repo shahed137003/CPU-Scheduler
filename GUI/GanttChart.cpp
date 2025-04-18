@@ -84,7 +84,7 @@ void GanttChart::paintEvent(QPaintEvent *event) {
         // Draw start and end times
         painter.drawText(barX, startY + barHeight + textOffset, QString::number(startTime));
         if(tempSlots.size() == 1)
-            painter.drawText(barX + barWidth - 15, startY + barHeight + textOffset, QString::number(endTime));
+            painter.drawText(barX + barWidth - 15, startY + barHeight + textOffset, " " +QString::number(endTime));
 
         tempNames.pop();
         tempSlots.pop();
