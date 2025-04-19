@@ -4,21 +4,14 @@
 #include <QDebug>
 using namespace std;
 
-RoundRobin::RoundRobin(std::queue<Processes>& initialProcesses, float quantum, bool live, GanttChart* gantt, QObject* parent)
-    : QObject(parent), processes(initialProcesses), quantum(quantum), live(live), gantt(gantt){
-    connect(this, &RoundRobin::requestProcessStep, this, &RoundRobin::processStep);
-    //connect(&timer, &QTimer::timeout, this, );
-}
+RoundRobin::RoundRobin(QObject* parent)
+    : QObject(parent){}
 
-void RoundRobin::start() {
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    emit requestProcessStep();
-}
-void RoundRobin::processStep() {
-    overall_time=0;
+void RoundRobin::runAlgo(std::queue<Processes>& processes, float quantum, bool live, float& overall_time,GanttChart* gantt,
+                              std::mutex& queueMutex) {
     qDebug() << "processStep called, readyQueue size:" << readyQueue.size() << "processes size:" << processes.size();
-    bool first = false;
-    while (!readyQueue.empty() || !processes.empty() || !stopInput) {
+    while (!readyQueue.empty() || !processes.empty()) {
+
         {
             std::lock_guard<std::mutex> lock(queueMutex);
             while (!processes.empty() && processes.front().getArrival() <= overall_time) {
@@ -34,10 +27,21 @@ void RoundRobin::processStep() {
                     // operate.push('#');
                     // time_slots.push({overall_time,processes.front().getArrival()});
                     // overall_time = processes.front().getArrival();
-                    overall_time++;
-                    wait(1);
-                } else {
-                    break;
+                    if(processes.front().getArrival() - overall_time <= 1){
+                        wait_ms(1000*(processes.front().getArrival() - overall_time));
+                        overall_time = processes.front().getArrival();
+                        operate.push('#');
+                        if(time_slots.empty()){
+                            time_slots.push({0,overall_time});
+                        }
+                        else{
+                            time_slots.push({time_slots.front()[1],overall_time});
+                        }
+                    }
+                    else{
+                        overall_time++;
+                        wait(1);
+                    }
                 }
             }
             continue;
@@ -51,13 +55,6 @@ void RoundRobin::processStep() {
         }
 
         float time_slice = (((quantum) < (operating.getRemaining())) ? (quantum) : (operating.getRemaining()));
-        if(first){
-            if(overall_time != 0){
-                operate.push('#');
-                time_slots.push({0,overall_time});
-            }
-            first = false;
-        }
         // Debug the current state of queues
         qDebug() << "Before update: operate size:" << operate.size() << "time_slots size:" << time_slots.size();
         operate.push(operating.getName());
@@ -96,14 +93,17 @@ void RoundRobin::processStep() {
             wait_ms(1000*time_slice);
         }
     }
-    printResults();
+    this->operate = operate;
+    this->terminatedProcesses = terminatedProcesses;
+    this->time_slots = time_slots;
 }
 
 QString RoundRobin::printResults() {
-    processes = terminatedProcesses;
-
+    queue<Processes>processes = this->terminatedProcesses;
+    queue<char>operate = this->operate;
+    queue<vector<float>>time_slots = this->time_slots;
     // Output results
-    //printGantt(operate, time_slots, live);
+    printGantt(operate, time_slots, false);
 
     cout << "\n\n\n";
     cout << "\nTotal Response Time: " << calcTotal_response_time(processes) << "\n";

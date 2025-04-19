@@ -50,6 +50,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void showWarning(const QString& message);
 
 private slots:
     void on_Nextbutton_clicked();

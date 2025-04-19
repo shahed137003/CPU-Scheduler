@@ -10,7 +10,6 @@ FCFS::FCFS(std::vector<Processes>& initialProcesses, bool live, GanttChart* gant
 }
 
 void FCFS::start() {
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     emit requestProcessStep();
 }
 
@@ -72,7 +71,7 @@ QString FCFS::printResults() {
     //processes = terminatedProcesses;
 
     // Output results
-   // printGantt(operate, time_slots, live);
+    printGantt(operate, time_slots, false);
 
     cout << "\n\n\n";
     cout << "\nTotal Response Time: " << calcTotal_response_time(terminatedProcesses) << "\n";

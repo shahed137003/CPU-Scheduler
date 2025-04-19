@@ -22,11 +22,14 @@ class Dynamically : public QWidget {
     Q_OBJECT
 public:
     explicit Dynamically(QWidget *parent = nullptr);
-    void callAlgo(std::vector<Processes> processes, std::vector<SRJF::Process> process, float quantum, int comboIndex, bool live);
+    void callAlgo(std::vector<Processes>& processes,std::queue<Processes>& processesQ,
+                  std::vector<SRJF::Process>& process, float quantum, int comboIndex, bool live,
+                  float& overall_time,std::mutex& allMutex);
 
 private slots:
     void addProcess();
-
+signals:
+    void algorithmFinished();
 private:
     QTextEdit *resultsDisplay; // Add this to the private section
     QWidget *outputWidget;

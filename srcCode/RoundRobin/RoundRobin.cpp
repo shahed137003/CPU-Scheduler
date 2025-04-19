@@ -55,7 +55,6 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live) {
     std::queue<char> operate;
     std::queue<Processes> terminatedProcesses;
     Processes operating;
-    bool first = false;
     std::thread inputThread(dynamicInput, std::ref(processes), std::ref(queueMutex), std::ref(stopInput));
 
     while (!readyQueue.empty() || !processes.empty() || !stopInput) {
@@ -71,11 +70,24 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live) {
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
                 if (!processes.empty()) {
-                    operate.push('#');
-                    time_slots.push({overall_time,processes.front().getArrival()});
-                    overall_time = processes.front().getArrival();
-                } else if (stopInput) {
-                    break;
+                    // operate.push('#');
+                    // time_slots.push({overall_time,processes.front().getArrival()});
+                    // overall_time = processes.front().getArrival();
+                    if(processes.front().getArrival() - overall_time <= 1){
+                        wait_ms(1000*(processes.front().getArrival() - overall_time));
+                        overall_time = processes.front().getArrival();
+                        operate.push('#');
+                        if(time_slots.empty()){
+                            time_slots.push({0,overall_time});
+                        }
+                        else{
+                            time_slots.push({time_slots.front()[1],overall_time});
+                        }
+                    }
+                    else{
+                        overall_time++;
+                        wait(1);
+                    }
                 }
             }
             continue;
@@ -89,13 +101,7 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live) {
         }
 
         float time_slice = (((quantum) < (operating.getRemaining())) ? (quantum) : (operating.getRemaining()));
-        if(first){
-            if(overall_time != 0){
-                operate.push('#');
-                time_slots.push({0,overall_time});
-            }
-            first = false;
-        }
+        
         operate.push(operating.getName());
         time_slots.push({overall_time, overall_time + time_slice});
 
@@ -112,7 +118,7 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live) {
         }
 
         if (live) {
-            wait(time_slice);
+            wait_ms(time_slice*1000);
         }
     }
 

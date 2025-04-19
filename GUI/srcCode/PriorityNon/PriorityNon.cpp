@@ -10,7 +10,6 @@ PriorityNon::PriorityNon(std::vector<Processes>& initialProcesses, bool live, Ga
 }
 
 void PriorityNon::start() {
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     emit requestProcessStep();
 }
 
@@ -69,7 +68,7 @@ void PriorityNon::processStep() {
 
 QString PriorityNon::printResults() {
     //processes = terminatedProcesses;
-    printGantt(operate, time_slots, live);
+    printGantt(operate, time_slots, false);
 
     std::cout << "\n\n\n";
     std::cout << "Total Turnaround Time: " << calcTotal_turn_time(terminatedProcesses) << "\n";

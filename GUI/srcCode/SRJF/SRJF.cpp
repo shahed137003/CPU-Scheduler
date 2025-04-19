@@ -13,7 +13,6 @@ SRJF::SRJF(std::vector<Process>& initialProcesses, bool live, GanttChart* gantt,
 }
 
 void SRJF::start() {
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     emit requestProcessStep();
 }
 
@@ -144,7 +143,7 @@ QString SRJF::calculateAverages() {
 
 QString SRJF::printResults() {
     // Output results
-    printGantt(operate, time_slots, live);
+    printGantt(operate, time_slots, false);
 
     return calculateAverages();
 }

@@ -2,6 +2,7 @@
 #include "srcCode/RoundRobin/RoundRobin.h"
 #include <QHeaderView>
 #include <algorithm>
+#include <QApplication>
 
 
 
@@ -20,6 +21,10 @@ Dynamically::Dynamically(QWidget *parent) : QWidget(parent) {
     // Add a QTextEdit for displaying results
     resultsDisplay = new QTextEdit;
     resultsDisplay->setReadOnly(true); // Make it read-only
+    resultsDisplay->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum); // Allow vertical expansion
+    resultsDisplay->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff); // Disable vertical scrollbar
+    resultsDisplay->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff); // Disable horizontal scrollbar
+    resultsDisplay->setLineWrapMode(QTextEdit::NoWrap); // Prevent line wrapping
     outputLayout->addWidget(new QLabel("Scheduling Results:"));
     outputLayout->addWidget(resultsDisplay);
 
@@ -28,8 +33,8 @@ Dynamically::Dynamically(QWidget *parent) : QWidget(parent) {
     ganttChart = new GanttChart;
 
     // Add all slots to main layout
-    mainLayout->addWidget(outputWidget, 1);
-    mainLayout->addWidget(ganttChart, 2);
+    mainLayout->addWidget(outputWidget);
+    mainLayout->addWidget(ganttChart);
 
     // Connect button to addProcess()
     //connect(addButton, &QPushButton::clicked, this, &Dynamically::addProcess);
@@ -72,82 +77,58 @@ void Dynamically::addProcess() {
     arrivalTimeEdit->clear();
     burstTimeEdit->clear();*/
 }
-void Dynamically::callAlgo(std::vector<Processes> processes, std::vector<SRJF::Process> process, float quantum, int comboIndex, bool live) {
-    std::queue<Processes> processesQ;
-    // Use input processes or hardcoded ones for testing
-    /*if (true) {
-        // Hardcoded for testing
-        std::vector<Processes> processes_manual = {
-            Processes('A', 0, 21),
-            Processes('B', 0, 3),
-            Processes('C', 0, 3)
-        };
-        for (const auto& proc : processes_manual) {
-            processesQ.push(proc);
-            qDebug() << "Adding process to queue:" << proc.getName();
+void Dynamically::callAlgo(std::vector<Processes>& processes,
+                           std::queue<Processes>& processesQ,
+                           std::vector<SRJF::Process>& process,
+                           float quantum,
+                           int comboIndex,
+                           bool live,
+                           float &overall_time,
+                           std::mutex& allMutex) {
+    switch (comboIndex) {
+        case 0: {
+            FCFS fcfs(processes, live, ganttChart);
+            fcfs.start();
+            resultsDisplay->setText(fcfs.printResults());
+            break;
+        }
+        case 1: {
+            SJF_Non sjfnon(processes, live, ganttChart);
+            sjfnon.start();
+            resultsDisplay->setText(sjfnon.printResults());
+            break;
+        }
+        case 2: {
+            SRJF srjf(process, live, ganttChart, nullptr);
+            srjf.start();
+            resultsDisplay->setText(srjf.printResults());
+            break;
+        }
+        case 3: {
+            PriorityNon pn(processes, live, ganttChart);
+            pn.start();
+            resultsDisplay->setText(pn.printResults());
+            break;
+        }
+        case 4: {
+            PriorityPre pp(processes, live, ganttChart);
+            pp.start();
+            resultsDisplay->setText(pp.printResults());
+            break;
+        }
+        case 5: {
+            qDebug() << "Calling roundRobin with quantum =" << quantum << ", live =" << live;
+            RoundRobin* RRSARA = new RoundRobin(nullptr);
+            RRSARA->runAlgo(processesQ, quantum, live, overall_time, ganttChart, allMutex);
+            resultsDisplay->setText(RRSARA->printResults());
+            delete RRSARA; // Clean up to avoid memory leak
+            break;
         }
     }
-    else {
 
-    }*/
-    for (const auto& proc : processes) {
-        processesQ.push(proc);
-        qDebug() << "Adding process to queue:" << proc.getName();
-    }
-    qDebug() << comboIndex;
-
-    std::queue<char> processes_name;
-    std::queue<std::vector<float>> timeSlots;
-    switch (comboIndex) {
-    case 0:{
-        FCFS fcfs(processes,live,ganttChart);
-        fcfs.start();
-        resultsDisplay->setText(fcfs.printResults());
-        break;
-    }
-
-    case 1:{
-        SJF_Non sjfnon(processes,live,ganttChart);
-        sjfnon.start();
-        resultsDisplay->setText(sjfnon.printResults());
-        break;
-    }
-
-    case 2:{
-        // scheduleSRJF(process);
-       SRJF srjf(
-            process,        // std::vector<Process>& initialProcesses
-            live,        // bool live
-            ganttChart,      // GanttChart* gantt
-            nullptr          // QObject* parent (optional if default is nullptr)
-            );
-
-        srjf.start();  // Begins the scheduling process
-        qDebug()<<processes_name.size();
-        resultsDisplay->setText(srjf.printResults());
-        //ganttChart->updateGanttChart(processes_name, timeSlots, false);
-        break;
-    }
-    case 3:{
-        PriorityNon pn(processes,live,ganttChart);
-        pn.start();
-        resultsDisplay->setText(pn.printResults());
-        break;
-    }
-    case 4:{
-        PriorityPre pp(processes,live,ganttChart);
-        pp.start();
-        resultsDisplay->setText(pp.printResults());
-        break;
-    }
-    case 5:{
-        qDebug() << "Calling roundRobin with quantum =" << quantum << ", live =" << live;
-        RoundRobin RRSARA(processesQ, quantum, live, ganttChart);
-        RRSARA.start();
-        resultsDisplay->setText(RRSARA.printResults());
-        //ganttChart->updateGanttChart(processes_name, timeSlots, false);
-        break;
-
-    }
-    }
+    // Ensure GUI updates are processed
+    QApplication::processEvents();
+    wait(10);
+    // Emit signal to indicate algorithm completion
+    emit algorithmFinished();
 }

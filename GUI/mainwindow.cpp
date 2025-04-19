@@ -150,6 +150,21 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_Nextbutton_clicked()
 {
+    if (ui->comboBox->currentIndex() == -1 && ui->spinBox->value() == 0) {
+        showWarning("Please select a scheduling algorithm and Number of processes");
+        return;
+    }
+    // Validate algorithm selection
+    if (ui->comboBox->currentIndex() == -1) {
+        showWarning("Please select a scheduling algorithm");
+        return;
+    }
+
+    // Validate number of processes
+    if (ui->spinBox->value() <= 0) {
+        showWarning("Number of processes must be at least 1");
+        return;
+    }
     cbindex= ui->comboBox->currentIndex();
     numProcessesMain = ui->spinBox->value();     // Get the entered number of processes
     algorithmMain = ui->comboBox->currentText(); // Get the selected algorithm
@@ -159,4 +174,42 @@ void MainWindow::on_Nextbutton_clicked()
     processInfo->receiveProcessData(algorithmMain, numProcessesMain,cbindex,live); // Pass the selected data
     processInfo->show(); // Show the processInfo dialog
 
+}
+void MainWindow::showWarning(const QString& message)
+{
+    QMessageBox warning;
+    warning.setWindowTitle("Invalid Input");
+    warning.setText(message);
+    warning.setIcon(QMessageBox::Warning);
+    warning.setStandardButtons(QMessageBox::Ok);
+
+    warning.setStyleSheet(R"(
+        QMessageBox {
+            background-color: #000000;
+            color: white;
+            font-family: Arial;
+            font-size: 16px;
+        }
+        QMessageBox QLabel {
+            color: white;
+            font: bold 16px Arial;
+        }
+        QMessageBox QPushButton {
+            background-color: #3498db;
+            color: white;
+            font: bold 14px Arial;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+        }
+        QMessageBox QPushButton:hover {
+            background-color: #2980b9;
+        }
+        QMessageBox QPushButton:pressed {
+            background-color: #1f6391;
+            transform: scale(0.95);
+        }
+    )");
+
+    warning.exec();
 }

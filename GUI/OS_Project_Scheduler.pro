@@ -21,11 +21,13 @@ SOURCES += \
     srcCode/Processes/Processes.cpp \
     srcCode/RoundRobin/RoundRobin.cpp \
     srcCode/SJF_Non/SJF_Non.cpp \
-    srcCode/SRJF/SRJF.cpp
+    srcCode/SRJF/SRJF.cpp \
+    timerthread.cpp
 
 HEADERS += \
     Dynamically.h \
     GanttChart.h \
+    Worker.h \
     mainwindow.h \
     processinfo.h \
     srcCode/FCFS/FCFS.h \
@@ -34,7 +36,8 @@ HEADERS += \
     srcCode/Processes/Processes.h \
     srcCode/RoundRobin/RoundRobin.h \
     srcCode/SJF_Non/SJF_Non.h \
-    srcCode/SRJF/SRJF.h
+    srcCode/SRJF/SRJF.h \
+    timerthread.h
 
 FORMS += \
     mainwindow.ui \
