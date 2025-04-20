@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include<bits/stdc++.h>
 
 SRJF::SRJF(QObject* parent)
     : QObject(parent) {}

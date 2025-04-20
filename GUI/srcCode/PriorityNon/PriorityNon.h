@@ -21,14 +21,10 @@ public:
     bool live;
     GanttChart* gantt;
     explicit PriorityNon(QObject *parent = nullptr);
-    void start();
     QString printResults();
 
-signals:
-    void requestProcessStep();
 
-public slots:
-    void processStep();
+
 
 private:
 };

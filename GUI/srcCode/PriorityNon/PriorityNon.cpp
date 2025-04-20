@@ -4,10 +4,7 @@
 #include <algorithm>
 #include <iostream>
 
-// PriorityNon::PriorityNon(std::vector<Processes>& initialProcesses, bool live, GanttChart* gantt, QObject* parent)
-//     : QObject(parent), processes(initialProcesses), live(live), gantt(gantt) {
-//     connect(this, &PriorityNon::requestProcessStep, this, &PriorityNon::processStep);
-// }
+
 
 PriorityNon::PriorityNon(QObject* parent)
     : QObject(parent) {};
@@ -50,7 +47,10 @@ void PriorityNon::runAlgo(std::vector<Processes>& initialProcesses, bool live, f
 
         // Adjust overall_time if process hasn't arrived yet
         if (operating.getArrival() > overall_time)
-            overall_time = operating.getArrival();
+        {
+         if(live)wait_ms(1000*(operating.getArrival() - overall_time));
+          overall_time = operating.getArrival();
+        }
 
 
         float start_time = overall_time;
@@ -64,7 +64,7 @@ void PriorityNon::runAlgo(std::vector<Processes>& initialProcesses, bool live, f
         operate.push(operating.getName());
         time_slots.push({start_time, end_time});
         // Update Gantt chart
-        if (gantt && live) {
+        if (gantt) {
             std::queue<char> operateCopy = operate;
             std::queue<std::vector<float>> timeSlotsCopy = time_slots;
             qDebug() << "Updating GanttChart with copy, operateCopy size:" << operateCopy.size();
