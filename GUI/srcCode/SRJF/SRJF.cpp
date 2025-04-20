@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include <unordered_set>
 
 SRJF::SRJF(QObject* parent)
     : QObject(parent) {}

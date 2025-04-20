@@ -4,89 +4,122 @@
 #include <algorithm>
 #include <iostream>
 
-SJF_Non::SJF_Non(std::vector<Processes>& initialProcesses, bool live, GanttChart* gantt, QObject* parent)
-    : QObject(parent), processes(initialProcesses), live(live), gantt(gantt) {
-    connect(this, &SJF_Non::requestProcessStep, this, &SJF_Non::processStep);
-}
+SJF_Non::SJF_Non(QObject* parent)
+    : QObject(parent) {}
 
-void SJF_Non::start() {
-    emit requestProcessStep();
-}
 
-void SJF_Non::processStep() {
-    qDebug() << "SJF_Non::processStep called, processes size:" << processes.size();
+void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overall_time, GanttChart* gantt,
+                      std::mutex& vectorMutex) {
+    qDebug() << "SJF_Non::runAlgo called, processes size:" << processes.size();
 
-    float current_time = 0;
-    std::vector<Processes> remaining = processes;
-    std::queue<char> local_operate;
-    std::queue<std::vector<float>> local_time_slots;
-    std::queue<Processes> terminated;
+    float start_time = 0;
+    float finish_time = 0;
 
-    while (!remaining.empty()) {
-        std::sort(remaining.begin(), remaining.end(), compareByBurst);
+    while (!processes.empty()) {
+        std::lock_guard<std::mutex> lock(vectorMutex);
 
-        bool found = false;
-        int x = remaining.size();
-        for (int i = 0; i < x; ++i) {
-            if (remaining[i].getArrival() <= current_time) {
-                Processes p = remaining[i];
-                remaining.erase(remaining.begin() + i);
+        // Find the shortest burst time among the processes that have arrived
+        int index = -1;
+        float minBurst = 10000;
 
-                local_operate.push(p.getName());
-                local_time_slots.push({ current_time, current_time + p.getBurst() });
-
-                float start_time = current_time;
-                float finish_time = current_time + p.getBurst();
-                p.setTurnaround(finish_time - p.getArrival());
-                p.setWaiting(p.getTurnaround() - p.getBurst());
-                p.setResponse(start_time - p.getArrival());
-
-                terminated.push(p);
-                current_time = finish_time;
-                found = true;
-
-                // Update Gantt chart live if enabled
-                if (live && gantt) {
-                    gantt->updateGanttChart(local_operate, local_time_slots, true);
-                    std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // simulate delay
-                }
-
-                break;
+        for (int i = 0; i < processes.size(); i++) {
+            if (processes[i].getArrival() <= overall_time && processes[i].getBurst() < minBurst) {
+                minBurst = processes[i].getBurst();
+                index = i;
             }
         }
 
-        if (!found) {
-            current_time++; // Idle CPU
+        if (index != -1) {
+            // Process found, perform scheduling
+            // std::lock_guard<std::mutex> lock(vectorMutex);
+            Processes p = processes[index];
+            processes.erase(processes.begin() + index);
+
+            start_time = overall_time;
+            //wait_ms(1000*(p.getBurst() - overall_time));
+            overall_time += p.getBurst();
+            finish_time = overall_time;
+
+            p.setTurnaround(finish_time - p.getArrival());
+            p.setWaiting(p.getTurnaround() - p.getBurst());
+            p.setLasttime(finish_time);
+
+            operate.push(p.getName());
+            time_slots.push({ start_time, finish_time });
+            queue<char> operateCopy = operate;
+            queue<vector<float>> timeSlotsCopy = time_slots;
+            if (gantt && live) {
+                qDebug() << "Updating GanttChart with copy, operateCopy size:" << operateCopy.size();
+                gantt->updateGanttChart(operateCopy, timeSlotsCopy, live);
+                QApplication::processEvents(); // Force GUI update
+            }
+
+            if (live) {
+                int burstTime  = p.getBurst();
+                while(burstTime --){
+                    wait(1);
+                }
+            }
+
+            std::cout << "SJF_Non: Scheduling process " << p.getName()
+                      << " start: " << start_time << " end: " << finish_time << std::endl;
+
+            terminatedProcesses.push(p);
+        } else {
+            // No process is ready – CPU is idle
+            float nextArrival = std::numeric_limits<float>::max();            for (const auto& p : processes) {
+                for (const auto& p : processes) {
+                    if (p.getArrival() > overall_time && p.getArrival() < nextArrival) {
+                        nextArrival = p.getArrival();
+                    }
+                }
+            }
+
+            float idle_time = nextArrival - overall_time;
+            if (idle_time > 0) {
+                if (live) wait_ms(1000 * idle_time);
+                start_time = overall_time;
+                overall_time = nextArrival;
+                finish_time = overall_time;
+
+                operate.push('#');
+                time_slots.push({ start_time, finish_time });
+                //idle_time=0;
+
+            }
+            else {
+                overall_time++; // fallback, shouldn't really reach here
+                if (live) wait(1);
+            }
+
         }
     }
 
-    // Store for final report and visualization
-    operate = local_operate;
-    time_slots = local_time_slots;
-    terminatedProcesses = terminated;
-
-    // Final update to Gantt chart (non-live or complete chart)
-    if (gantt) {
-        gantt->updateGanttChart(operate, time_slots, false);
-    }
-
+    // Print and return results
     printResults();
+
+    // Save state
+    this->operate = operate;
+    this->terminatedProcesses = terminatedProcesses;
+    this->time_slots = time_slots;
 }
-
 QString SJF_Non::printResults() {
+    queue<Processes>processes = this->terminatedProcesses;
+    queue<char>operate = this->operate;
+    queue<vector<float>>time_slots = this->time_slots;
+    // Output results
     printGantt(operate, time_slots, false);
-    std::cout << "\n\n";
-    std::cout << "Total Turnaround Time: " << calcTotal_turn_time(terminatedProcesses) << "\n";
-    std::cout << "Average Turnaround Time: " << calcAvg_turn_time(terminatedProcesses) << "\n\n";
-    std::cout << "Total Waiting Time: " << calcTotal_wait_time(terminatedProcesses) << "\n";
-    std::cout << "Average Waiting Time: " << calcAvg_wait_time(terminatedProcesses) << "\n\n";
-    std::cout << "Total Response Time: " << calcTotal_response_time(terminatedProcesses) << "\n";
-    std::cout << "Average Response Time: " << calcAvg_response_time(terminatedProcesses) << "\n";
 
+    cout << "\n\n\n";
+    cout << "Total Turnaround Time: " << calcTotal_turn_time(processes) << "\n";
+    cout << "Average Turnaround Time: " << calcAvg_turn_time(processes) << "\n\n";
+    cout << "Total Waiting Time: " << calcTotal_wait_time(processes) << "\n";
+    cout << "Average Waiting Time: " << calcAvg_wait_time(processes) << "\n";
     QString results;
-    results += QString("Average Turnaround Time: %1\n").arg(calcAvg_turn_time(terminatedProcesses));
-    results += QString("Average Waiting Time: %1\n").arg(calcAvg_wait_time(terminatedProcesses));
-    results += QString("Average Response Time: %1\n").arg(calcAvg_response_time(terminatedProcesses));
+    results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
+    results += QString("Average Turnaround Time: %1\n\n").arg(calcAvg_turn_time(terminatedProcesses));
+    results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
+    results += QString("Average Waiting Time: %1\n\n").arg(calcAvg_wait_time(terminatedProcesses));
+
     return results;
 }
-

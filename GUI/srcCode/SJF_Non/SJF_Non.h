@@ -10,28 +10,22 @@
 class SJF_Non : public QObject {
     Q_OBJECT
 public:
-    std::vector<Processes> processes;
+    explicit SJF_Non(QObject *parent = nullptr);
+    void runAlgo(std::vector<Processes>& processes, bool live, float& overall_time,GanttChart* gantt,
+                 std::mutex& allMutex);
+
+    QString printResults();
+
+private:
     std::queue<Processes> readyQueue;
     std::queue<Processes> terminatedProcesses;
     std::queue<char> operate;
     std::queue<std::vector<float>> time_slots;
-    float overall_time = 0;
-    bool live;
-    GanttChart* gantt;
+    float overall_time;
+    //QTimer timer;
+    Processes operating;
+    bool isOperating;
     QString results;
-
-    SJF_Non(std::vector<Processes>& initialProcesses, bool live, GanttChart* gantt, QObject* parent = nullptr);
-
-    void start();
-    QString printResults();
-
-signals:
-    void requestProcessStep();
-
-public slots:
-    void processStep();
-
-private:
 };
 
 #endif // SJF_NON_H

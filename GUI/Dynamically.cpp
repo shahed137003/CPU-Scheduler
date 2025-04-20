@@ -86,46 +86,47 @@ void Dynamically::callAlgo(std::vector<Processes>& processes,
                            float &overall_time,
                            std::mutex& allMutex) {
     switch (comboIndex) {
-        case 0: {
-            FCFS* fcfs = new FCFS(nullptr);
-            fcfs->runAlgo(processes, live, overall_time, ganttChart, allMutex);
-            resultsDisplay->setText(fcfs->printResults());
-            break;
-        }
-        case 1: {
-            SJF_Non sjfnon(processes, live, ganttChart);
-            sjfnon.start();
-            resultsDisplay->setText(sjfnon.printResults());
-            break;
-        }
-        case 2: {
-            SRJF* srjf = new SRJF(nullptr);
-            srjf->runAlgo(process, live, overall_time, ganttChart, allMutex);
-            resultsDisplay->setText(srjf->printResults());
-            delete srjf; // Clean up to avoid memory leak
-            break;
-        }
-        case 3: {
-            PriorityNon pn(processes, live, ganttChart);
-            pn.start();
-            resultsDisplay->setText(pn.printResults());
-            break;
-        }
-        case 4: {
-            PriorityPre* PrioPre = new PriorityPre(nullptr);
-            PrioPre->runAlgo(processes,live,overall_time, ganttChart, allMutex);
-            resultsDisplay->setText(PrioPre->printResults());
-            delete PrioPre; // Clean up to avoid memory leak
-            break;
-        }
-        case 5: {
-            qDebug() << "Calling roundRobin with quantum =" << quantum << ", live =" << live;
-            RoundRobin* RRSARA = new RoundRobin(nullptr);
-            RRSARA->runAlgo(processesQ, quantum, live, overall_time, ganttChart, allMutex);
-            resultsDisplay->setText(RRSARA->printResults());
-            delete RRSARA; // Clean up to avoid memory leak
-            break;
-        }
+    case 0: {
+        FCFS* fcfs = new FCFS(nullptr);
+        fcfs->runAlgo(processes, live, overall_time, ganttChart, allMutex);
+        resultsDisplay->setText(fcfs->printResults());
+        break;
+    }
+    case 1: {
+        SJF_Non* sjf = new SJF_Non(nullptr);
+        sjf->runAlgo(processes,live,overall_time, ganttChart, allMutex);
+        resultsDisplay->setText(sjf->printResults());
+        delete sjf; // Clean up to avoid memory leak
+        break;
+    }
+    case 2: {
+        SRJF* srjf = new SRJF(nullptr);
+        srjf->runAlgo(process, live, overall_time, ganttChart, allMutex);
+        resultsDisplay->setText(srjf->printResults());
+        delete srjf; // Clean up to avoid memory leak
+        break;
+    }
+    case 3: {
+        PriorityNon pn(processes, live, ganttChart);
+        pn.start();
+        resultsDisplay->setText(pn.printResults());
+        break;
+    }
+    case 4: {
+        PriorityPre* PrioPre = new PriorityPre(nullptr);
+        PrioPre->runAlgo(processes,live,overall_time, ganttChart, allMutex);
+        resultsDisplay->setText(PrioPre->printResults());
+        delete PrioPre; // Clean up to avoid memory leak
+        break;
+    }
+    case 5: {
+        qDebug() << "Calling roundRobin with quantum =" << quantum << ", live =" << live;
+        RoundRobin* RRSARA = new RoundRobin(nullptr);
+        RRSARA->runAlgo(processesQ, quantum, live, overall_time, ganttChart, allMutex);
+        resultsDisplay->setText(RRSARA->printResults());
+        delete RRSARA; // Clean up to avoid memory leak
+        break;
+    }
     }
 
     // Ensure GUI updates are processed
