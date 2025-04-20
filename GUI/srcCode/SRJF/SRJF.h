@@ -10,6 +10,9 @@
 #include "../Processes/Processes.h"
 #include "GanttChart.h"
 #include <atomic>
+#include <iomanip>
+#include <unordered_set>
+#include <algorithm>
 
 
 
