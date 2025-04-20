@@ -19,17 +19,12 @@ public:
     bool live;
     GanttChart* gantt;
     QString results;
-
-    PriorityPre(std::vector<Processes>& initialProcesses, bool live, GanttChart* gantt, QObject* parent = nullptr);
-
-    void start();
+    explicit PriorityPre(QObject *parent = nullptr);
+    void runAlgo(std::vector<Processes>& initialProcesses, bool live, float& overall_time, GanttChart* gantt, std::mutex& vectorMutex);
     QString printResults();
 
-signals:
-    void requestProcessStep();
 
-public slots:
-    void processStep();
+
 
 private:
 };

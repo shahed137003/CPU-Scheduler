@@ -10,8 +10,10 @@ release/Processes.o
 release/RoundRobin.o
 release/SJF_Non.o
 release/SRJF.o
+release/timerthread.o
 release/moc_Dynamically.o
 release/moc_GanttChart.o
+release/moc_Worker.o
 release/moc_mainwindow.o
 release/moc_processinfo.o
 release/moc_FCFS.o
@@ -20,3 +22,4 @@ release/moc_PriorityPre.o
 release/moc_RoundRobin.o
 release/moc_SJF_Non.o
 release/moc_SRJF.o
+release/moc_timerthread.o

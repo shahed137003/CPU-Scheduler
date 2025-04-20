@@ -112,9 +112,10 @@ void Dynamically::callAlgo(std::vector<Processes>& processes,
             break;
         }
         case 4: {
-            PriorityPre pp(processes, live, ganttChart);
-            pp.start();
-            resultsDisplay->setText(pp.printResults());
+            PriorityPre* PrioPre = new PriorityPre(nullptr);
+            PrioPre->runAlgo(processes,live,overall_time, ganttChart, allMutex);
+            resultsDisplay->setText(PrioPre->printResults());
+            delete PrioPre; // Clean up to avoid memory leak
             break;
         }
         case 5: {

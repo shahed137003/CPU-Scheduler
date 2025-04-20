@@ -37,6 +37,8 @@ public:
     QLabel *label_6;
     QTableWidget *tableWidget;
     QPushButton *pushButton_2;
+    QPushButton *pushButton_3;
+    QLabel *timeLabel;
 
     void setupUi(QDialog *processInfo)
     {
@@ -85,6 +87,12 @@ public:
         pushButton_2 = new QPushButton(processInfo);
         pushButton_2->setObjectName("pushButton_2");
         pushButton_2->setGeometry(QRect(560, 250, 291, 71));
+        pushButton_3 = new QPushButton(processInfo);
+        pushButton_3->setObjectName("pushButton_3");
+        pushButton_3->setGeometry(QRect(510, 300, 211, 51));
+        timeLabel = new QLabel(processInfo);
+        timeLabel->setObjectName("timeLabel");
+        timeLabel->setGeometry(QRect(590, 80, 421, 31));
 
         retranslateUi(processInfo);
 
@@ -103,6 +111,8 @@ public:
         pushButton->setText(QCoreApplication::translate("processInfo", "PushButton", nullptr));
         label_6->setText(QCoreApplication::translate("processInfo", "TextLabel", nullptr));
         pushButton_2->setText(QCoreApplication::translate("processInfo", "PushButton", nullptr));
+        pushButton_3->setText(QCoreApplication::translate("processInfo", "PushButton", nullptr));
+        timeLabel->setText(QCoreApplication::translate("processInfo", "TextLabel", nullptr));
     } // retranslateUi
 
 };
