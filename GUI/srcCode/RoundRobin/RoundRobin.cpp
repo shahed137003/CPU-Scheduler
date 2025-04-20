@@ -15,8 +15,23 @@ void RoundRobin::runAlgo(std::queue<Processes>& processes, float quantum, bool l
         {
             std::lock_guard<std::mutex> lock(queueMutex);
             while (!processes.empty() && processes.front().getArrival() <= overall_time) {
-                readyQueue.push(processes.front());
-                processes.pop();
+                if( processes.front().getArrival() < overall_time){
+                    int j = readyQueue.size();
+                    Processes temp;
+                    for(int i = 0; i < j-1; i++){
+                        temp = readyQueue.front();
+                        readyQueue.pop();
+                        readyQueue.push(temp);
+                    }
+                    temp = readyQueue.front();
+                    readyQueue.pop();
+                    readyQueue.push(processes.front());
+                    processes.pop();
+                    readyQueue.push(temp);
+                }else{
+                    readyQueue.push(processes.front());
+                    processes.pop();
+                }
             }
         }
 
@@ -74,8 +89,7 @@ void RoundRobin::runAlgo(std::queue<Processes>& processes, float quantum, bool l
         std::cout << "RoundRobin: Updated GanttChart with " << operate.size() << " processes" << std::endl;
 
 
-        overall_time += time_slice;
-        operating.setLasttime(overall_time);
+        operating.setLasttime(overall_time + time_slice);
         operating.setRemaining(operating.getRemaining() - time_slice);
 
         if (operating.getRemaining() > 0) {
@@ -87,8 +101,20 @@ void RoundRobin::runAlgo(std::queue<Processes>& processes, float quantum, bool l
         }
 
         if (live) {
-            wait_ms(1000*time_slice);
+            while(time_slice){
+                if(time_slice <= 1){
+                    overall_time+=time_slice;
+                    wait_ms(1000*time_slice);
+                    break;
+                }
+                else{
+                    overall_time++;
+                    wait_ms(1000*time_slice);
+                    time_slice--;
+                }
+            }
         }
+        else overall_time += time_slice;
     }
     printResults();
     this->operate = operate;
