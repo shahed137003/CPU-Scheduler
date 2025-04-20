@@ -67,8 +67,7 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
             terminatedProcesses.push(p);
         } else {
             // No process is ready – CPU is idle
-            float nextArrival = std::numeric_limits<float>::max();
-            for (const auto& p : processes) {
+            float nextArrival = std::numeric_limits<float>::max();            for (const auto& p : processes) {
                 for (const auto& p : processes) {
                     if (p.getArrival() > overall_time && p.getArrival() < nextArrival) {
                         nextArrival = p.getArrival();
