@@ -4,32 +4,45 @@
 #include <algorithm>
 #include <iostream>
 
-FCFS::FCFS(std::vector<Processes>& initialProcesses, bool live, GanttChart* gantt, QObject* parent)
-    : QObject(parent), processes(initialProcesses), live(live), gantt(gantt) {
-    connect(this, &FCFS::requestProcessStep, this, &FCFS::processStep);
-}
+FCFS::FCFS(QObject* parent)
+    : QObject(parent){}
 
-void FCFS::start() {
-    emit requestProcessStep();
-}
 
-void FCFS::processStep() {
+
+void FCFS::runAlgo(std::vector<Processes>& processes, bool live, float& overall_time,GanttChart* gantt,
+                   std::mutex& vectorMutex) {
     qDebug() << "FCFS::processStep called, processes size:" << processes.size();
 
-    // Sort by arrival time
-    std::sort(processes.begin(), processes.end(), compareByArrival);
-
-    // Push back to readyQueue
-    for (const auto& p : processes) {
-        readyQueue.push(p);
+    {
+        std::lock_guard<std::mutex> lock(vectorMutex);
+        // Sort by arrival time
+        std::sort(processes.begin(), processes.end(), compareByArrival);
     }
+    {
+        std::lock_guard<std::mutex> lock(vectorMutex);
+        // Push back to readyQueue
+        for (const auto& p : processes) {
+            readyQueue.push(p);
+        }
+    }
+    int vector_size = processes.size();
+    while (!readyQueue.empty() || processes.size() > vector_size) {
 
-    while (!readyQueue.empty()) {
+        {
+            std::lock_guard<std::mutex> lock(vectorMutex);
+            while( processes.size() > vector_size){
+                readyQueue.push(processes[vector_size]);
+                vector_size++;
+            }
+        }
+
         Processes operating = readyQueue.front();
         readyQueue.pop();
 
+        sort_queue(readyQueue);
         // Adjust overall_time if process hasn't arrived yet
         if (operating.getArrival() > overall_time) {
+            if(live)wait_ms(1000*(operating.getArrival() - overall_time));
             overall_time = operating.getArrival();
         }
 
@@ -45,6 +58,8 @@ void FCFS::processStep() {
         operate.push(operating.getName());
         time_slots.push({start_time, end_time});
 
+
+
         // Update Gantt chart
         if (gantt && live) {
             std::queue<char> operateCopy = operate;
@@ -54,37 +69,42 @@ void FCFS::processStep() {
             QApplication::processEvents();
         }
 
+        if (live) {
+            int i = operating.getBurst();
+            while(i--){
+                wait(1);
+            }
+        }
         std::cout << "FCFS: Scheduling process " << operating.getName()
                   << " start: " << start_time << " end: " << end_time << std::endl;
         std::cout << "FCFS: Updated GanttChart with " << operate.size() << " processes" << std::endl;
 
         terminatedProcesses.push(operating);
 
-        if (live) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(operating.getBurst() * 1000)));
-        }
     }
     printResults();
+    this->operate = operate;
+    this->terminatedProcesses = terminatedProcesses;
+    this->time_slots = time_slots;
 }
 
 QString FCFS::printResults() {
-    //processes = terminatedProcesses;
-
+    queue<Processes>processes = this->terminatedProcesses;
+    queue<char>operate = this->operate;
+    queue<vector<float>>time_slots = this->time_slots;
     // Output results
     printGantt(operate, time_slots, false);
 
     cout << "\n\n\n";
-    cout << "\nTotal Response Time: " << calcTotal_response_time(terminatedProcesses) << "\n";
-    cout << "Average Response Time: " << calcAvg_response_time(terminatedProcesses) << "\n\n";
-    cout << "Total Turnaround Time: " << calcTotal_turn_time(terminatedProcesses) << "\n";
-    cout << "Average Turnaround Time: " << calcAvg_turn_time(terminatedProcesses) << "\n\n";
-    cout << "Total Waiting Time: " << calcTotal_wait_time(terminatedProcesses) << "\n";
-    cout << "Average Waiting Time: " << calcAvg_wait_time(terminatedProcesses) << "\n";
+    cout << "Total Turnaround Time: " << calcTotal_turn_time(processes) << "\n";
+    cout << "Average Turnaround Time: " << calcAvg_turn_time(processes) << "\n\n";
+    cout << "Total Waiting Time: " << calcTotal_wait_time(processes) << "\n";
+    cout << "Average Waiting Time: " << calcAvg_wait_time(processes) << "\n";
     QString results;
-    //results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
+    results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
     results += QString("Average Turnaround Time: %1\n\n").arg(calcAvg_turn_time(terminatedProcesses));
-    //results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
-    results += QString("Average Waiting Time: %1\n").arg(calcAvg_wait_time(terminatedProcesses));
+    results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
+    results += QString("Average Waiting Time: %1\n\n").arg(calcAvg_wait_time(terminatedProcesses));
 
     return results;
 }

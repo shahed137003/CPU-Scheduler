@@ -87,9 +87,9 @@ void Dynamically::callAlgo(std::vector<Processes>& processes,
                            std::mutex& allMutex) {
     switch (comboIndex) {
         case 0: {
-            FCFS fcfs(processes, live, ganttChart);
-            fcfs.start();
-            resultsDisplay->setText(fcfs.printResults());
+            FCFS* fcfs = new FCFS(nullptr);
+            fcfs->runAlgo(processes, live, overall_time, ganttChart, allMutex);
+            resultsDisplay->setText(fcfs->printResults());
             break;
         }
         case 1: {

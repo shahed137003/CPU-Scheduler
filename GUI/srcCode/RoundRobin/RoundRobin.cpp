@@ -24,9 +24,6 @@ void RoundRobin::runAlgo(std::queue<Processes>& processes, float quantum, bool l
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
                 if (!processes.empty()) {
-                    // operate.push('#');
-                    // time_slots.push({overall_time,processes.front().getArrival()});
-                    // overall_time = processes.front().getArrival();
                     if(processes.front().getArrival() - overall_time <= 1){
                         wait_ms(1000*(processes.front().getArrival() - overall_time));
                         overall_time = processes.front().getArrival();
@@ -40,7 +37,7 @@ void RoundRobin::runAlgo(std::queue<Processes>& processes, float quantum, bool l
                     }
                     else{
                         overall_time++;
-                        wait(1);
+                        if(live)wait(1);
                     }
                 }
             }
@@ -93,6 +90,7 @@ void RoundRobin::runAlgo(std::queue<Processes>& processes, float quantum, bool l
             wait_ms(1000*time_slice);
         }
     }
+    printResults();
     this->operate = operate;
     this->terminatedProcesses = terminatedProcesses;
     this->time_slots = time_slots;
@@ -111,7 +109,8 @@ QString RoundRobin::printResults() {
     cout << "Total Turnaround Time: " << calcTotal_turn_time(processes) << "\n";
     cout << "Average Turnaround Time: " << calcAvg_turn_time(processes) << "\n\n";
     cout << "Total Waiting Time: " << calcTotal_wait_time(processes) << "\n";
-    cout << "Average Waiting Time: " << calcAvg_wait_time(processes) << "\n";    QString results;
+    cout << "Average Waiting Time: " << calcAvg_wait_time(processes) << "\n";
+    QString results;
     results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
     results += QString("Average Turnaround Time: %1\n\n").arg(calcAvg_turn_time(terminatedProcesses));
     results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
