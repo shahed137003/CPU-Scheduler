@@ -24,11 +24,6 @@ public:
     void start();
     QString printResults();
 
-signals:
-    void requestProcessStep();
-
-public slots:
-    void processStep();
 
 private:
 };
