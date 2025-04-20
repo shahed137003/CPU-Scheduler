@@ -39,7 +39,7 @@ public:
     void runAlgo(std::queue<Process>& processes, bool live, float& current_time,GanttChart* gantt,std::mutex& mtx);
 
     QString printResults();
-    QString calculateAverages(const std::vector<Process>& processes);
+    QString calculateAverages();
 private:
     std::queue<Process> processes;
     std::priority_queue<Process*, std::vector<Process*>, std::function<bool(Process*, Process*)>> ready_queue;
@@ -58,6 +58,9 @@ private:
     QString results;
 
     //void calculateAverages(const std::vector<Process>& processes);
+
+    std::vector<Process> completed_processes;
+    std::mutex completed_mutex;  // Separate mutex for completed processes
 };
 
 #endif

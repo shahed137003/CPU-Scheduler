@@ -4,7 +4,6 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
-#include <unordered_set>
 
 SRJF::SRJF(QObject* parent)
     : QObject(parent) {}
@@ -30,10 +29,18 @@ void SRJF::runAlgo(std::queue<Process>& processes, bool live, float& current_tim
                 processes.pop();
             }
         }
-
+        /*
         // Process completion check
         if (current_process && current_process->remaining_time == 0) {
             current_process->finish_time = current_time;
+            processes_in_queue.erase(current_process->pid);
+            current_process = nullptr;
+        }
+        */
+        if (current_process && current_process->remaining_time == 0) {
+            std::lock_guard<std::mutex> lock(completed_mutex);
+            current_process->finish_time = current_time;
+            completed_processes.push_back(*current_process);
             processes_in_queue.erase(current_process->pid);
             current_process = nullptr;
         }
@@ -102,7 +109,7 @@ void SRJF::runAlgo(std::queue<Process>& processes, bool live, float& current_tim
     this->operate = operate;
     this->time_slots = time_slots;
 }
-
+/*
 QString SRJF::calculateAverages(const std::vector<Process>& processes) {
     double total_waiting = 0;
     double total_turnaround = 0;
@@ -127,7 +134,30 @@ QString SRJF::calculateAverages(const std::vector<Process>& processes) {
     }
     return results;
 }
+*/
+QString SRJF::calculateAverages() {
+    std::lock_guard<std::mutex> lock(completed_mutex);
 
+    if (completed_processes.empty()) {
+        return "No processes completed.";
+    }
+
+    double total_waiting = 0;
+    double total_turnaround = 0;
+
+    for (const auto& p : completed_processes) {
+        int turnaround = p.finish_time - p.arrival_time;
+        int waiting = turnaround - p.burst_time;
+        total_turnaround += turnaround;
+        total_waiting += waiting;
+    }
+
+    QString results;
+    results += QString("Average Turnaround Time: %1\n").arg(total_turnaround / completed_processes.size());
+    results += QString("Average Waiting Time: %1\n").arg(total_waiting / completed_processes.size());
+    return results;
+}
+/*
 QString SRJF::printResults() {
     printGantt(operate, time_slots, false);
     vector<Process> pout;
@@ -141,4 +171,9 @@ QString SRJF::printResults() {
     // Note: You'll need to maintain completed processes separately in your class
 
     return calculateAverages(pout);
+}
+*/
+QString SRJF::printResults() {
+    printGantt(operate, time_slots, false);
+    return calculateAverages();
 }
