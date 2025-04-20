@@ -20,7 +20,7 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
 
         // Find the shortest burst time among the processes that have arrived
         int index = -1;
-        float minBurst = 10000;
+        float minBurst = std::numeric_limits<float>::max();
 
         for (int i = 0; i < processes.size(); i++) {
             if (processes[i].getArrival() <= overall_time && processes[i].getBurst() < minBurst) {
@@ -31,13 +31,11 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
 
         if (index != -1) {
             // Process found, perform scheduling
-            // std::lock_guard<std::mutex> lock(vectorMutex);
             Processes p = processes[index];
             processes.erase(processes.begin() + index);
 
             start_time = overall_time;
-            //wait_ms(1000*(p.getBurst() - overall_time));
-            finish_time = overall_time+p.getBurst();
+            finish_time = start_time + p.getBurst();
 
             p.setTurnaround(finish_time - p.getArrival());
             p.setWaiting(p.getTurnaround() - p.getBurst());
@@ -45,28 +43,30 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
 
             operate.push(p.getName());
             time_slots.push({ start_time, finish_time });
-            queue<char> operateCopy = operate;
-            queue<vector<float>> timeSlotsCopy = time_slots;
+
             if (gantt) {
-                qDebug() << "Updating GanttChart with copy, operateCopy size:" << operateCopy.size();
+                queue<char> operateCopy = operate;
+                queue<vector<float>> timeSlotsCopy = time_slots;
                 gantt->updateGanttChart(operateCopy, timeSlotsCopy, live);
                 QApplication::processEvents(); // Force GUI update
             }
 
-            float time_slice=p.getBurst();
             if (live) {
-                while(time_slice){
-                    if(time_slice <= 1){
-                        overall_time+=time_slice;
-                        wait_ms(1000*time_slice);
-                        break;
-                    }
-                    else{
-                        overall_time++;
-                        wait_ms(1000*time_slice);
-                        time_slice--;
-                    }
+                int burstInt = static_cast<int>(p.getBurst());
+                for (int sec = 0; sec < burstInt; ++sec) {
+                    wait_ms(1000);        // Wait 1 second
+                    overall_time += 1.0;  // Advance time by 1
+                    QApplication::processEvents();
                 }
+
+                // If burst time is not an integer, process remaining fraction
+                float remaining = p.getBurst() - burstInt;
+                if (remaining > 0.0f) {
+                    wait_ms(remaining * 1000);
+                    overall_time += remaining;
+                }
+            } else {
+                overall_time = finish_time;
             }
 
             std::cout << "SJF_Non: Scheduling process " << p.getName()
@@ -75,35 +75,46 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
             terminatedProcesses.push(p);
         } else {
             // No process is ready – CPU is idle
-            float nextArrival = std::numeric_limits<float>::max();            for (const auto& p : processes) {
-                for (const auto& p : processes) {
-                    if (p.getArrival() > overall_time && p.getArrival() < nextArrival) {
-                        nextArrival = p.getArrival();
-                    }
+            float nextArrival = std::numeric_limits<float>::max();
+            for (const auto& p : processes) {
+                if (p.getArrival() > overall_time && p.getArrival() < nextArrival) {
+                    nextArrival = p.getArrival();
                 }
             }
 
             float idle_time = nextArrival - overall_time;
             if (idle_time > 0) {
-                if (live) wait_ms(1000 * idle_time);
                 start_time = overall_time;
-                overall_time = nextArrival;
+                if (live) {
+                    int idleInt = static_cast<int>(idle_time);
+                    for (int sec = 0; sec < idleInt; ++sec) {
+                        wait_ms(1000);
+                        overall_time += 1.0;
+                        QApplication::processEvents();
+                    }
+
+                    float remaining = idle_time - idleInt;
+                    if (remaining > 0.0f) {
+                        wait_ms(remaining * 1000);
+                        overall_time += remaining;
+                    }
+                } else {
+                    overall_time = nextArrival;
+                }
                 finish_time = overall_time;
 
-                operate.push('#');
+                operate.push('#'); // Idle marker
                 time_slots.push({ start_time, finish_time });
-                //idle_time=0;
-
+            } else {
+                overall_time += 1.0f;
+                if (live) {
+                    wait_ms(1000);
+                    QApplication::processEvents();
+                }
             }
-            else {
-                overall_time++; // fallback, shouldn't really reach here
-                if (live) wait(1);
-            }
-
         }
     }
 
-    // Print and return results
     printResults();
 
     // Save state
@@ -111,6 +122,7 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
     this->terminatedProcesses = terminatedProcesses;
     this->time_slots = time_slots;
 }
+
 QString SJF_Non::printResults() {
     queue<Processes>processes = this->terminatedProcesses;
     queue<char>operate = this->operate;
