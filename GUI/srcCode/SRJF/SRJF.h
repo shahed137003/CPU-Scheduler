@@ -11,8 +11,13 @@
 #include "GanttChart.h"
 #include <atomic>
 
+
+
 class SRJF : public QObject {
     Q_OBJECT
+
+
+
 public:
     struct Process {
         int pid;
@@ -29,20 +34,17 @@ public:
             remaining_time(burst), start_time(-1), finish_time(-1),
             is_initial(initial),name(nam) {}
     };
+    explicit SRJF(QObject *parent = nullptr);
 
-    SRJF(std::vector<Process>& initialProcesses, bool live, GanttChart* gantt, QObject* parent);
-    void start();
+    void runAlgo(std::queue<Process>& processes, bool live, float& current_time,GanttChart* gantt,std::mutex& mtx);
 
     QString printResults();
-private slots :
-    void processStep();
-signals:
-    void requestProcessStep();
+    QString calculateAverages(const std::vector<Process>& processes);
 private:
-    std::vector<Process> processes;
+    std::queue<Process> processes;
     std::priority_queue<Process*, std::vector<Process*>, std::function<bool(Process*, Process*)>> ready_queue;
     Process* current_process;
-    int current_time;
+    float current_time;
     bool live;
     GanttChart* gantt;
     QTimer timer;
@@ -55,7 +57,7 @@ private:
     atomic<bool> new_processes_added;
     QString results;
 
-    QString calculateAverages();
+    //void calculateAverages(const std::vector<Process>& processes);
 };
 
 #endif

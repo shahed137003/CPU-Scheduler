@@ -229,7 +229,7 @@ int i = 0;
 bool first = false;
 float quantum = 0.0;
 std::vector<Processes> processes;
-std::vector<SRJF::Process> process;
+std::queue<SRJF::Process> process;
 std::queue<Processes> processesQ;
 float overall_time = 0;
 void processInfo::on_pushButton_clicked()
@@ -285,7 +285,7 @@ void processInfo::on_pushButton_clicked()
     SRJF::Process p1(i, arrival, (ui->lineEdit_2->text()).toFloat(), true, name);
     {
         std::lock_guard<std::mutex> lock(allMutex);
-        process.push_back(p1);
+        process.push(p1);
         processes.push_back(p);
         processesQ.push(p);
     }
@@ -481,7 +481,7 @@ void processInfo::on_pushButton_3_clicked()
     SRJF::Process p1(i, arrival, (ui->lineEdit_2->text()).toFloat(), true, name);
     {
         std::lock_guard<std::mutex> lock(allMutex);
-        process.push_back(p1);
+        process.push(p1);
         std::sort(processes.begin(), processes.end(), compareByArrival);
         processes.push_back(p);
         std::cout << "size before Added process: " << processesQ.size() << "\n";

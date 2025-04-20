@@ -11,7 +11,7 @@ class Worker : public QObject {
 public:
     Worker(std::vector<Processes>* processes,
            std::queue<Processes>* processesQ,
-           std::vector<SRJF::Process>* process,
+           std::queue<SRJF::Process>* process,
            float* overall_time,
            float quantum,
            int comboIndex,
@@ -79,7 +79,7 @@ signals:
 private:
     std::vector<Processes>* processes_;
     std::queue<Processes>* processesQ_;
-    std::vector<SRJF::Process>* process_;
+    std::queue<SRJF::Process>* process_;
     float* overall_time_;
     float quantum_;
     int comboIndex_;

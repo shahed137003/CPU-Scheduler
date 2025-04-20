@@ -10,8 +10,10 @@ debug/Processes.o
 debug/RoundRobin.o
 debug/SJF_Non.o
 debug/SRJF.o
+debug/timerthread.o
 debug/moc_Dynamically.o
 debug/moc_GanttChart.o
+debug/moc_Worker.o
 debug/moc_mainwindow.o
 debug/moc_processinfo.o
 debug/moc_FCFS.o
@@ -20,3 +22,4 @@ debug/moc_PriorityPre.o
 debug/moc_RoundRobin.o
 debug/moc_SJF_Non.o
 debug/moc_SRJF.o
+debug/moc_timerthread.o

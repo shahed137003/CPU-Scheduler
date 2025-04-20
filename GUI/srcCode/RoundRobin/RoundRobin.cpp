@@ -63,7 +63,7 @@ void RoundRobin::runAlgo(std::queue<Processes>& processes, float quantum, bool l
         std::queue<std::vector<float>> timeSlotsCopy = time_slots;
 
         // Update Gantt chart
-        if (gantt && live) {
+        if (gantt) {
             qDebug() << "Updating GanttChart with copy, operateCopy size:" << operateCopy.size();
             gantt->updateGanttChart(operateCopy, timeSlotsCopy, live);
             QApplication::processEvents(); // Force GUI update

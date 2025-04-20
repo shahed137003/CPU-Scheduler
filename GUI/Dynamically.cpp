@@ -79,7 +79,7 @@ void Dynamically::addProcess() {
 }
 void Dynamically::callAlgo(std::vector<Processes>& processes,
                            std::queue<Processes>& processesQ,
-                           std::vector<SRJF::Process>& process,
+                           std::queue<SRJF::Process>& process,
                            float quantum,
                            int comboIndex,
                            bool live,
@@ -99,9 +99,10 @@ void Dynamically::callAlgo(std::vector<Processes>& processes,
             break;
         }
         case 2: {
-            SRJF srjf(process, live, ganttChart, nullptr);
-            srjf.start();
-            resultsDisplay->setText(srjf.printResults());
+            SRJF* srjf = new SRJF(nullptr);
+            srjf->runAlgo(process, live, overall_time, ganttChart, allMutex);
+            resultsDisplay->setText(srjf->printResults());
+            delete srjf; // Clean up to avoid memory leak
             break;
         }
         case 3: {

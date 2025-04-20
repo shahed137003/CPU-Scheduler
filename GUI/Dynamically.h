@@ -23,7 +23,7 @@ class Dynamically : public QWidget {
 public:
     explicit Dynamically(QWidget *parent = nullptr);
     void callAlgo(std::vector<Processes>& processes,std::queue<Processes>& processesQ,
-                  std::vector<SRJF::Process>& process, float quantum, int comboIndex, bool live,
+                  std::queue<SRJF::Process>& process, float quantum, int comboIndex, bool live,
                   float& overall_time,std::mutex& allMutex);
 
 private slots:

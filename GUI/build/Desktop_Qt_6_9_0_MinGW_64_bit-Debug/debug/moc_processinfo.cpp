@@ -41,12 +41,24 @@ template <> constexpr inline auto processInfo::qt_create_metaobjectdata<qt_meta_
     QtMocHelpers::StringRefStorage qt_stringData {
         "processInfo",
         "on_pushButton_clicked",
-        ""
+        "",
+        "on_pushButton_2_clicked",
+        "on_pushButton_3_clicked",
+        "updateTimeDisplay",
+        "newTime"
     };
 
     QtMocHelpers::UintData qt_methods {
         // Slot 'on_pushButton_clicked'
         QtMocHelpers::SlotData<void()>(1, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_pushButton_2_clicked'
+        QtMocHelpers::SlotData<void()>(3, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_pushButton_3_clicked'
+        QtMocHelpers::SlotData<void()>(4, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'updateTimeDisplay'
+        QtMocHelpers::SlotData<void(float)>(5, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Float, 6 },
+        }}),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -71,10 +83,12 @@ void processInfo::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: _t->on_pushButton_clicked(); break;
+        case 1: _t->on_pushButton_2_clicked(); break;
+        case 2: _t->on_pushButton_3_clicked(); break;
+        case 3: _t->updateTimeDisplay((*reinterpret_cast< std::add_pointer_t<float>>(_a[1]))); break;
         default: ;
         }
     }
-    (void)_a;
 }
 
 const QMetaObject *processInfo::metaObject() const
@@ -96,14 +110,14 @@ int processInfo::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 4;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 1)
+        if (_id < 4)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 1;
+        _id -= 4;
     }
     return _id;
 }
