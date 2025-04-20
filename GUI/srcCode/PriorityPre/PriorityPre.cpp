@@ -67,6 +67,7 @@ void PriorityPre::runAlgo(std::vector<Processes>& initialProcesses, bool live, f
             while (processes.size() < initialProcesses.size()) {
                 Processes p = initialProcesses[processes.size()];
                 p.setRemaining(p.getBurst());
+                total_burst+=p.getBurst(); // edited
                 processes.push_back(p);
             }
         }
