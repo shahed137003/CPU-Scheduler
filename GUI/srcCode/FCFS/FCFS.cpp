@@ -60,7 +60,7 @@ void FCFS::runAlgo(std::vector<Processes>& processes, bool live, float& overall_
 
 
         // Update Gantt chart
-        if (gantt && live) {
+        if (gantt) {
             std::queue<char> operateCopy = operate;
             std::queue<std::vector<float>> timeSlotsCopy = time_slots;
             qDebug() << "Updating GanttChart with copy, operateCopy size:" << operateCopy.size();

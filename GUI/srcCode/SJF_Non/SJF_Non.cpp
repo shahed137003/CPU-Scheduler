@@ -37,8 +37,7 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
 
             start_time = overall_time;
             //wait_ms(1000*(p.getBurst() - overall_time));
-            overall_time += p.getBurst();
-            finish_time = overall_time;
+            finish_time = overall_time+p.getBurst();
 
             p.setTurnaround(finish_time - p.getArrival());
             p.setWaiting(p.getTurnaround() - p.getBurst());
@@ -48,16 +47,25 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
             time_slots.push({ start_time, finish_time });
             queue<char> operateCopy = operate;
             queue<vector<float>> timeSlotsCopy = time_slots;
-            if (gantt && live) {
+            if (gantt) {
                 qDebug() << "Updating GanttChart with copy, operateCopy size:" << operateCopy.size();
                 gantt->updateGanttChart(operateCopy, timeSlotsCopy, live);
                 QApplication::processEvents(); // Force GUI update
             }
 
+            float time_slice=p.getBurst();
             if (live) {
-                int burstTime  = p.getBurst();
-                while(burstTime --){
-                    wait(1);
+                while(time_slice){
+                    if(time_slice <= 1){
+                        overall_time+=time_slice;
+                        wait_ms(1000*time_slice);
+                        break;
+                    }
+                    else{
+                        overall_time++;
+                        wait_ms(1000*time_slice);
+                        time_slice--;
+                    }
                 }
             }
 
