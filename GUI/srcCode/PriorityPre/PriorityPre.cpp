@@ -100,7 +100,7 @@ void PriorityPre::runAlgo(std::vector<Processes>& initialProcesses, bool live, f
             time_slots.push({overall_time, overall_time + 1});
         }
 
-        if (gantt && live) {
+        if (gantt) {
             std::queue<char> operateCopy = operate;
             std::queue<std::vector<float>> timeSlotsCopy = time_slots;
             qDebug() << "Updating GanttChart with copy, operateCopy size:" << operateCopy.size();
