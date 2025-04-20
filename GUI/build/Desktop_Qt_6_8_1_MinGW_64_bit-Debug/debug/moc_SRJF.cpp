@@ -37,10 +37,7 @@ struct qt_meta_tag_ZN4SRJFE_t {};
 
 #ifdef QT_MOC_HAS_STRINGDATA
 static constexpr auto qt_meta_stringdata_ZN4SRJFE = QtMocHelpers::stringData(
-    "SRJF",
-    "requestProcessStep",
-    "",
-    "processStep"
+    "SRJF"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -52,24 +49,12 @@ Q_CONSTINIT static const uint qt_meta_data_ZN4SRJFE[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       0,    0, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       1,       // signalCount
-
- // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   26,    2, 0x06,    1 /* Public */,
-
- // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       3,    0,   27,    2, 0x08,    2 /* Private */,
-
- // signals: parameters
-    QMetaType::Void,
-
- // slots: parameters
-    QMetaType::Void,
+       0,       // signalCount
 
        0        // eod
 };
@@ -82,11 +67,7 @@ Q_CONSTINIT const QMetaObject SRJF::staticMetaObject = { {
     nullptr,
     qt_incomplete_metaTypeArray<qt_meta_tag_ZN4SRJFE_t,
         // Q_OBJECT / Q_GADGET
-        QtPrivate::TypeAndForceComplete<SRJF, std::true_type>,
-        // method 'requestProcessStep'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'processStep'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>
+        QtPrivate::TypeAndForceComplete<SRJF, std::true_type>
     >,
     nullptr
 } };
@@ -94,23 +75,10 @@ Q_CONSTINIT const QMetaObject SRJF::staticMetaObject = { {
 void SRJF::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     auto *_t = static_cast<SRJF *>(_o);
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        switch (_id) {
-        case 0: _t->requestProcessStep(); break;
-        case 1: _t->processStep(); break;
-        default: ;
-        }
-    }
-    if (_c == QMetaObject::IndexOfMethod) {
-        int *result = reinterpret_cast<int *>(_a[0]);
-        {
-            using _q_method_type = void (SRJF::*)();
-            if (_q_method_type _q_method = &SRJF::requestProcessStep; *reinterpret_cast<_q_method_type *>(_a[1]) == _q_method) {
-                *result = 0;
-                return;
-            }
-        }
-    }
+    (void)_t;
+    (void)_c;
+    (void)_id;
+    (void)_a;
 }
 
 const QMetaObject *SRJF::metaObject() const
@@ -129,24 +97,6 @@ void *SRJF::qt_metacast(const char *_clname)
 int SRJF::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = QObject::qt_metacall(_c, _id, _a);
-    if (_id < 0)
-        return _id;
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
-            qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
-    }
-    if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 2)
-            *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 2;
-    }
     return _id;
-}
-
-// SIGNAL 0
-void SRJF::requestProcessStep()
-{
-    QMetaObject::activate(this, &staticMetaObject, 0, nullptr);
 }
 QT_WARNING_POP

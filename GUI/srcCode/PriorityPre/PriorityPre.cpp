@@ -8,7 +8,6 @@ PriorityPre::PriorityPre(QObject* parent)
     : QObject(parent) {};
 
 void PriorityPre::runAlgo(std::vector<Processes>& initialProcesses, bool live, float& overall_time, GanttChart* gantt, std::mutex& vectorMutex) {
-
     // Initialize processes from initialProcesses
     {
         std::lock_guard<std::mutex> lock(vectorMutex);
@@ -21,7 +20,7 @@ void PriorityPre::runAlgo(std::vector<Processes>& initialProcesses, bool live, f
     }
 
     float total_burst = 0;
-    float first_arr = processes[0].getArrival(); // assuming user input is ordered
+    float first_arr = processes.empty() ? 0 : processes[0].getArrival();
     for (auto& process : processes) {
         process.setRemaining(process.getBurst());
         qDebug() << "BURST" << process.getBurst();
@@ -30,52 +29,40 @@ void PriorityPre::runAlgo(std::vector<Processes>& initialProcesses, bool live, f
     }
 
     qDebug() << "PriorityPre called, processes size:" << processes.size();
-     if (overall_time < first_arr)
-      {
-      if(live) wait_ms(1000*(first_arr - overall_time));
-         overall_time = first_arr;
-      }
-     // if (readyQueue.empty()) {   ns2l sara
-     //     {
-     //         std::lock_guard<std::mutex> lock(queueMutex);
-     //         if (!processes.empty()) {
-     //             if(processes.front().getArrival() - overall_time <= 1){
-     //                 wait_ms(1000*(processes.front().getArrival() - overall_time));
-     //                 overall_time = processes.front().getArrival();
-     //                 operate.push('#');
-     //                 if(time_slots.empty()){
-     //                     time_slots.push({0,overall_time});
-     //                 }
-     //                 else{
-     //                     time_slots.push({time_slots.front()[1],overall_time});
-     //                 }
-     //             }
-     //             else{
-     //                 overall_time++;
-     //                 if(live)wait(1);
-     //             }
-     //         }
-     //     }
-     //     continue;
-     // }
+    if (overall_time < first_arr) {
+        if (live) wait_ms(1000 * (first_arr - overall_time));
+        operate.push('#');
+        time_slots.push({overall_time, first_arr});
+        overall_time = first_arr;
+    }
 
-      float timeElapsed = 0;
-  while (timeElapsed < total_burst) {
+    float timeElapsed = 0;
+    while (timeElapsed < total_burst) {
         // Check and append any new processes
         {
             std::lock_guard<std::mutex> lock(vectorMutex);
-            while (processes.size() < initialProcesses.size()) {
-                Processes p = initialProcesses[processes.size()];
-                p.setRemaining(p.getBurst());
-                total_burst+=p.getBurst(); // edited
-                processes.push_back(p);
+            for (size_t i = 0; i < initialProcesses.size(); ++i) {
+                bool alreadyAdded = false;
+                for (const auto& p : processes) {
+                    if (p.getName() == initialProcesses[i].getName()) {
+                        alreadyAdded = true;
+                        break;
+                    }
+                }
+                if (!alreadyAdded && initialProcesses[i].getArrival() <= overall_time) {
+                    Processes p = initialProcesses[i];
+                    p.setRemaining(p.getBurst());
+                    total_burst += p.getBurst();
+                    processes.push_back(p);
+                }
             }
         }
 
         int selected = -1;
-        int x = processes.size();
-        for (int j = 0; j < x; j++) {
+        bool isIdle = true;
+        for (size_t j = 0; j < processes.size(); j++) {
             if (processes[j].getArrival() <= overall_time && processes[j].getRemaining() > 0) {
+                isIdle = false;
                 if ((selected == -1 ||
                      (selected != -1 && processes[j].getPriority() < processes[selected].getPriority()) ||
                      (selected != -1 && processes[j].getPriority() == processes[selected].getPriority() &&
@@ -90,6 +77,9 @@ void PriorityPre::runAlgo(std::vector<Processes>& initialProcesses, bool live, f
             Processes& process = processes[selected];
             process.setRemaining(process.getRemaining() - 1);
 
+            operate.push(process.getName());
+            time_slots.push({overall_time, overall_time + 1});
+
             if (process.getRemaining() == 0 && process.getLasttime() == -1) {
                 float arr = process.getArrival();
                 float burst = process.getBurst();
@@ -99,28 +89,28 @@ void PriorityPre::runAlgo(std::vector<Processes>& initialProcesses, bool live, f
                 process.setTurnaround(turnaround);
                 process.setWaiting(waiting);
 
-                // Save to terminated list
                 {
                     std::lock_guard<std::mutex> lock(vectorMutex);
                     terminatedProcesses.push(process);
                 }
             }
-
-            operate.push(process.getName());
+        } else if (isIdle) {
+            // Add idle period
+            operate.push('#');
             time_slots.push({overall_time, overall_time + 1});
-
-            if (gantt && live) {
-                std::queue<char> operateCopy = operate;
-                std::queue<std::vector<float>> timeSlotsCopy = time_slots;
-                qDebug() << "Updating GanttChart with copy, operateCopy size:" << operateCopy.size();
-                gantt->updateGanttChart(operateCopy, timeSlotsCopy, live);
-                QApplication::processEvents();
-            }
         }
-        if (live) wait(1);
 
-        overall_time += 1;   // 🕒 advance the simulation clock
-        timeElapsed += 1;    // tracking how long we've run
+        if (gantt && live) {
+            std::queue<char> operateCopy = operate;
+            std::queue<std::vector<float>> timeSlotsCopy = time_slots;
+            qDebug() << "Updating GanttChart with copy, operateCopy size:" << operateCopy.size();
+            gantt->updateGanttChart(operateCopy, timeSlotsCopy, live);
+            QApplication::processEvents();
+        }
+
+        if (live) wait_ms(1000);
+        overall_time += 1;
+        if (selected != -1) timeElapsed += 1;
     }
 
     printResults();
@@ -130,6 +120,10 @@ void PriorityPre::runAlgo(std::vector<Processes>& initialProcesses, bool live, f
 }
 
 QString PriorityPre::printResults() {
+    queue<Processes>processes = this->terminatedProcesses;
+    queue<char>operate = this->operate;
+    queue<vector<float>>time_slots = this->time_slots;
+    // Output results
     printGantt(operate, time_slots, false);
 
     std::cout << "\n\n\n";
@@ -144,4 +138,3 @@ QString PriorityPre::printResults() {
 
     return results;
 }
-
