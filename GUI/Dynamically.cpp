@@ -107,9 +107,10 @@ void Dynamically::callAlgo(std::vector<Processes>& processes,
         break;
     }
     case 3: {
-        PriorityNon pn(processes, live, ganttChart);
-        pn.start();
-        resultsDisplay->setText(pn.printResults());
+        PriorityNon* PrioNon = new PriorityNon(nullptr);
+        PrioNon->runAlgo(processes,live,overall_time, ganttChart, allMutex);
+        resultsDisplay->setText(PrioNon->printResults());
+        delete PrioNon;
         break;
     }
     case 4: {
