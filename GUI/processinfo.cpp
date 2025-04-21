@@ -7,7 +7,7 @@
 bool needsPriority = false;
 bool needsQuantum;
 bool isLive = false;
-
+QString savedMessage;
 struct ProcessInputs {
     QLabel* label;             // Process label
     QLabel* arrivalLabel;      // Arrival time label
