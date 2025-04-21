@@ -29,6 +29,7 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
             }
         }
 
+
         if (index != -1) {
             // Process found, perform scheduling
             Processes p = processes[index];
@@ -136,9 +137,9 @@ QString SJF_Non::printResults() {
     cout << "Total Waiting Time: " << calcTotal_wait_time(processes) << "\n";
     cout << "Average Waiting Time: " << calcAvg_wait_time(processes) << "\n";
     QString results;
-    results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
+    //results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
     results += QString("Average Turnaround Time: %1\n\n").arg(calcAvg_turn_time(terminatedProcesses));
-    results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
+    //results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
     results += QString("Average Waiting Time: %1\n\n").arg(calcAvg_wait_time(terminatedProcesses));
 
     return results;

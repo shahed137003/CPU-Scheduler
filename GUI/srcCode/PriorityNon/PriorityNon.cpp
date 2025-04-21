@@ -4,22 +4,25 @@
 #include <algorithm>
 #include <iostream>
 
-
-
 PriorityNon::PriorityNon(QObject* parent)
     : QObject(parent) {};
 
 
-void PriorityNon::runAlgo(std::vector<Processes>& initialProcesses, bool live, float& overall_time, GanttChart* gantt, std::mutex& vectorMutex){
 
-
+void PriorityNon::runAlgo(std::vector<Processes>& processes, bool live, float& overall_time, GanttChart* gantt, std::mutex& vectorMutex) {
     qDebug() << "PriorityNon::processStep called, processes size:" << processes.size();
-    // Sort by priority
+
+    // Create a local copy of processes for thread safety
+    std::vector<Processes> localProcesses;
     {
         std::lock_guard<std::mutex> lock(vectorMutex);
-        std::sort(processes.begin(), processes.end(),compareByPriority);
-
+        localProcesses = processes;
+        std::sort(localProcesses.begin(), localProcesses.end(), compareByPriority);
     }
+
+    // Sort by priority
+    //      std::sort(localProcesses.begin(), localProcesses.end(), compareByPriority);
+
 
     {
         std::lock_guard<std::mutex> lock(vectorMutex);
@@ -29,7 +32,6 @@ void PriorityNon::runAlgo(std::vector<Processes>& initialProcesses, bool live, f
         }
 
     }
-
     int vector_size = processes.size();
     while (!readyQueue.empty() || processes.size() > vector_size) {
 
@@ -48,8 +50,8 @@ void PriorityNon::runAlgo(std::vector<Processes>& initialProcesses, bool live, f
         // Adjust overall_time if process hasn't arrived yet
         if (operating.getArrival() > overall_time)
         {
-         if(live)wait_ms(1000*(operating.getArrival() - overall_time));
-          overall_time = operating.getArrival();
+            if(live)wait_ms(1000*(operating.getArrival() - overall_time));
+            overall_time = operating.getArrival();
         }
 
 
@@ -85,30 +87,37 @@ void PriorityNon::runAlgo(std::vector<Processes>& initialProcesses, bool live, f
         terminatedProcesses.push(operating);
 
     }
-    printResults();
-    this->operate = operate;
-    this->terminatedProcesses = terminatedProcesses;
-    this->time_slots = time_slots;
 
+
+    printResults();
 }
 
 QString PriorityNon::printResults() {
-    queue<Processes>processes = this->terminatedProcesses;
-    queue<char>operate = this->operate;
-    queue<vector<float>>time_slots = this->time_slots;
+    std::queue<Processes> processesCopy;
+    std::queue<char> operateCopy;
+    std::queue<std::vector<float>> timeSlotsCopy;
+
+    {
+        //std::lock_guard<std::mutex> lock(vectorMutex);
+        processesCopy = terminatedProcesses;
+        operateCopy = operate;
+        timeSlotsCopy = time_slots;
+    }
+
     // Output results
-    printGantt(operate, time_slots, false);
+    printGantt(operateCopy, timeSlotsCopy, false);
 
     cout << "\n\n\n";
-    cout << "Total Turnaround Time: " << calcTotal_turn_time(processes) << "\n";
-    cout << "Average Turnaround Time: " << calcAvg_turn_time(processes) << "\n\n";
-    cout << "Total Waiting Time: " << calcTotal_wait_time(processes) << "\n";
-    cout << "Average Waiting Time: " << calcAvg_wait_time(processes) << "\n";
+    cout << "Total Turnaround Time: " << calcTotal_turn_time(processesCopy) << "\n";
+    cout << "Average Turnaround Time: " << calcAvg_turn_time(processesCopy) << "\n\n";
+    cout << "Total Waiting Time: " << calcTotal_wait_time(processesCopy) << "\n";
+    cout << "Average Waiting Time: " << calcAvg_wait_time(processesCopy) << "\n";
+
     QString results;
-    results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(terminatedProcesses));
-    results += QString("Average Turnaround Time: %1\n\n").arg(calcAvg_turn_time(terminatedProcesses));
-    results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(terminatedProcesses));
-    results += QString("Average Waiting Time: %1\n\n").arg(calcAvg_wait_time(terminatedProcesses));
+    //results += QString("Total Turnaround Time: %1\n").arg(calcTotal_turn_time(processesCopy));
+    results += QString("Average Turnaround Time: %1\n\n").arg(calcAvg_turn_time(processesCopy));
+    //results += QString("Total Waiting Time: %1\n").arg(calcTotal_wait_time(processesCopy));
+    results += QString("Average Waiting Time: %1\n\n").arg(calcAvg_wait_time(processesCopy));
 
     return results;
 }
