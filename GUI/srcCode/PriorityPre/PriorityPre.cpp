@@ -77,8 +77,31 @@ void PriorityPre::runAlgo(std::vector<Processes>& initialProcesses, bool live, f
             Processes& process = processes[selected];
             process.setRemaining(process.getRemaining() - 1);
 
-            operate.push(process.getName());
-            time_slots.push({overall_time, overall_time + 1});
+            if(!operate.empty() && last == process.getName())
+            {
+                vector<float>lastTimeSlot;
+                std::queue<vector<float>> tempQueue;
+                while (!time_slots.empty()) {
+                    lastTimeSlot = time_slots.front();
+                    time_slots.pop();
+                    if (!time_slots.empty()) {
+                        tempQueue.push(lastTimeSlot); // Keep all except the last
+                    }
+                }
+                // Push back
+                while (!tempQueue.empty()) {
+                    time_slots.push(tempQueue.front());
+                    tempQueue.pop();
+                }
+                // Push updated time slot with same start time, new end time
+                time_slots.push({lastTimeSlot[0], overall_time + 1});
+
+            }
+            else{
+                operate.push(process.getName());
+                last = process.getName();
+                time_slots.push({overall_time, overall_time + 1});
+            }
 
             if (process.getRemaining() == 0 && process.getLasttime() == -1) {
                 float arr = process.getArrival();

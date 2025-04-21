@@ -22,7 +22,7 @@ public:
     explicit PriorityPre(QObject *parent = nullptr);
     void runAlgo(std::vector<Processes>& initialProcesses, bool live, float& overall_time, GanttChart* gantt, std::mutex& vectorMutex);
     QString printResults();
-
+    char last;
 
 
 

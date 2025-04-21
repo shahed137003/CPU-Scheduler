@@ -59,7 +59,7 @@ private:
     atomic<bool> stop_flag;
     atomic<bool> new_processes_added;
     QString results;
-
+    char last;
     //void calculateAverages(const std::vector<Process>& processes);
 
     std::vector<Process> completed_processes;

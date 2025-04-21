@@ -69,8 +69,31 @@ void RoundRobin::runAlgo(std::queue<Processes>& processes, float quantum, bool l
         float time_slice = (((quantum) < (operating.getRemaining())) ? (quantum) : (operating.getRemaining()));
         // Debug the current state of queues
         qDebug() << "Before update: operate size:" << operate.size() << "time_slots size:" << time_slots.size();
-        operate.push(operating.getName());
-        time_slots.push({overall_time, overall_time + time_slice});
+        if(!operate.empty() && last == operating.getName())
+        {
+            vector<float>lastTimeSlot;
+            std::queue<vector<float>> tempQueue;
+            while (!time_slots.empty()) {
+                lastTimeSlot = time_slots.front();
+                time_slots.pop();
+                if (!time_slots.empty()) {
+                    tempQueue.push(lastTimeSlot); // Keep all except the last
+                }
+            }
+            // Push back
+            while (!tempQueue.empty()) {
+                time_slots.push(tempQueue.front());
+                tempQueue.pop();
+            }
+            // Push updated time slot with same start time, new end time
+            time_slots.push({lastTimeSlot[0], overall_time + time_slice});
+
+        }
+        else{
+            operate.push(operating.getName());
+            last = operating.getName();
+            time_slots.push({overall_time, overall_time + time_slice});
+        }
 
 
         // Create copies for Gantt chart update

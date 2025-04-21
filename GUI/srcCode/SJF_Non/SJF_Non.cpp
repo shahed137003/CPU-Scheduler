@@ -16,19 +16,20 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
     float finish_time = 0;
 
     while (!processes.empty()) {
-        std::lock_guard<std::mutex> lock(vectorMutex);
+
 
         // Find the shortest burst time among the processes that have arrived
         int index = -1;
         float minBurst = std::numeric_limits<float>::max();
-
-        for (int i = 0; i < processes.size(); i++) {
-            if (processes[i].getArrival() <= overall_time && processes[i].getBurst() < minBurst) {
-                minBurst = processes[i].getBurst();
-                index = i;
+        {
+            std::lock_guard<std::mutex> lock(vectorMutex);
+            for (int i = 0; i < processes.size(); i++) {
+                if (processes[i].getArrival() <= overall_time && processes[i].getBurst() < minBurst) {
+                    minBurst = processes[i].getBurst();
+                    index = i;
+                }
             }
         }
-
 
         if (index != -1) {
             // Process found, perform scheduling
@@ -57,7 +58,7 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
                 for (int sec = 0; sec < burstInt; ++sec) {
                     wait_ms(1000);        // Wait 1 second
                     overall_time += 1.0;  // Advance time by 1
-                    QApplication::processEvents();
+                    //QApplication::processEvents();
                 }
 
                 // If burst time is not an integer, process remaining fraction
@@ -91,7 +92,7 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
                     for (int sec = 0; sec < idleInt; ++sec) {
                         wait_ms(1000);
                         overall_time += 1.0;
-                        QApplication::processEvents();
+                        //QApplication::processEvents();
                     }
 
                     float remaining = idle_time - idleInt;
@@ -110,7 +111,7 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
                 overall_time += 1.0f;
                 if (live) {
                     wait_ms(1000);
-                    QApplication::processEvents();
+                    //QApplication::processEvents();
                 }
             }
         }

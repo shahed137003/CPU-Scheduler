@@ -28,6 +28,7 @@ private:
     Processes operating;
     bool isOperating;
     QString results;
+    char last;
 
 };
 

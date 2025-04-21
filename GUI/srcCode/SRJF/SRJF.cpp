@@ -59,12 +59,36 @@ void SRJF::runAlgo(std::queue<Process>& processes, bool live, float& current_tim
         // Execute current process for 1 time unit
         if (current_process) {
             current_process->remaining_time--;
-
+            char last;
             // Update Gantt chart
             {
                 std::lock_guard<std::mutex> lock(mtx);
-                operate.push(current_process->name);
-                time_slots.push({current_time, current_time + 1});
+                if(!operate.empty() && last == current_process->name)
+                {
+                    vector<float>lastTimeSlot;
+                    std::queue<vector<float>> tempQueue;
+                    while (!time_slots.empty()) {
+                        lastTimeSlot = time_slots.front();
+                        time_slots.pop();
+                        if (!time_slots.empty()) {
+                            tempQueue.push(lastTimeSlot); // Keep all except the last
+                        }
+                    }
+                    // Push back
+                    while (!tempQueue.empty()) {
+                        time_slots.push(tempQueue.front());
+                        tempQueue.pop();
+                    }
+                    // Push updated time slot with same start time, new end time
+                    time_slots.push({lastTimeSlot[0], current_time + 1});
+
+                }
+                else{
+                    operate.push(current_process->name);
+                    last = current_process->name;
+                    time_slots.push({current_time, current_time + 1});
+                }
+
 
                 if (gantt) {
                     std::queue<char> operateCopy = operate;

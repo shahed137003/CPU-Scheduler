@@ -55,6 +55,7 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live) {
     std::queue<char> operate;
     std::queue<Processes> terminatedProcesses;
     Processes operating;
+    char last;
     std::thread inputThread(dynamicInput, std::ref(processes), std::ref(queueMutex), std::ref(stopInput));
 
     while (!readyQueue.empty() || !processes.empty() || !stopInput) {
@@ -102,11 +103,33 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live) {
 
         float time_slice = (((quantum) < (operating.getRemaining())) ? (quantum) : (operating.getRemaining()));
         
-        operate.push(operating.getName());
-        time_slots.push({overall_time, overall_time + time_slice});
+        if(!operate.empty() && last == operating.getName())
+        {
+            vector<float>lastTimeSlot;
+            std::queue<vector<float>> tempQueue;
+            while (!time_slots.empty()) {
+                lastTimeSlot = time_slots.front();
+                time_slots.pop();
+                if (!time_slots.empty()) {
+                    tempQueue.push(lastTimeSlot); // Keep all except the last
+                }
+            }
+            // Push back
+            while (!tempQueue.empty()) {
+                time_slots.push(tempQueue.front());
+                tempQueue.pop();
+            }
+            // Push updated time slot with same start time, new end time
+            time_slots.push({lastTimeSlot[0], overall_time + time_slice});
 
-        overall_time += time_slice;
-        operating.setLasttime(overall_time);
+        }
+        else{
+            operate.push(operating.getName());
+            last = operating.getName();
+            time_slots.push({overall_time, overall_time + time_slice});
+        }
+
+        operating.setLasttime(overall_time + time_slice);
         operating.setRemaining(operating.getRemaining() - time_slice);
 
         if (operating.getRemaining() > 0) {
@@ -118,8 +141,20 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live) {
         }
 
         if (live) {
-            wait_ms(time_slice*1000);
+            while(time_slice){
+                if(time_slice <= 1){
+                    overall_time+=time_slice;
+                    wait_ms(1000*time_slice);
+                    break;
+                }
+                else{
+                    overall_time++;
+                    wait_ms(1000*time_slice);
+                    time_slice--;
+                }
+            }
         }
+        else overall_time += time_slice;
     }
 
     stopInput = true;
