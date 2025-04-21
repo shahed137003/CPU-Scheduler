@@ -406,6 +406,86 @@ void processInfo::on_pushButton_clicked()
 
 void processInfo::on_pushButton_2_clicked()
 {
+    if(!isLive){
+        savedMessage = QString("You disabled live mode so you cant add process within run time.. ");
+        // Create and style QMessageBox
+        QMessageBox information;
+        information.setWindowTitle("Info");
+        information.setText(savedMessage);
+        information.setStandardButtons(QMessageBox::Ok);
+        information.setModal(false) ;
+
+        // Apply stylesheet to QMessageBox
+        information.setStyleSheet(R"(
+            QMessageBox {
+                background-color: #000000;
+                color: white;
+                font-family: Arial;
+                font-size: 16px;
+            }
+            QMessageBox QLabel {
+                color: white;
+                font: bold 16px Arial;
+            }
+            QMessageBox QPushButton {
+                background-color: #3498db;
+                color: white;
+                font: bold 14px Arial;
+                padding: 8px 16px;
+                border-radius: 8px;
+                border: none;
+            }
+            QMessageBox QPushButton:hover {
+                background-color: #2980b9;
+            }
+            QMessageBox QPushButton:pressed {
+                background-color: #1f6391;
+                transform: scale(0.95);
+            }
+        )");
+        information.exec();
+        return;
+    }
+    if(!dynamically){
+        savedMessage = QString("Sorry scheduling all processes has finished\n so you cant add process.. ");
+        // Create and style QMessageBox
+        QMessageBox information;
+        information.setWindowTitle("Info");
+        information.setText(savedMessage);
+        information.setStandardButtons(QMessageBox::Ok);
+        information.setModal(false) ;
+
+        // Apply stylesheet to QMessageBox
+        information.setStyleSheet(R"(
+            QMessageBox {
+                background-color: #000000;
+                color: white;
+                font-family: Arial;
+                font-size: 16px;
+            }
+            QMessageBox QLabel {
+                color: white;
+                font: bold 16px Arial;
+            }
+            QMessageBox QPushButton {
+                background-color: #3498db;
+                color: white;
+                font: bold 14px Arial;
+                padding: 8px 16px;
+                border-radius: 8px;
+                border: none;
+            }
+            QMessageBox QPushButton:hover {
+                background-color: #2980b9;
+            }
+            QMessageBox QPushButton:pressed {
+                background-color: #1f6391;
+                transform: scale(0.95);
+            }
+        )");
+        information.exec();
+        return;
+    }
     if (needsPriority)
     {
         ui->lineEdit_3->show();

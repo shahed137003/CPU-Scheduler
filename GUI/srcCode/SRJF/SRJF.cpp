@@ -90,10 +90,12 @@ void SRJF::runAlgo(std::queue<Process>& processes, bool live, float& current_tim
                 }
 
 
+                // Update Gantt chart
                 if (gantt) {
                     std::queue<char> operateCopy = operate;
                     std::queue<std::vector<float>> timeSlotsCopy = time_slots;
-                    gantt->updateGanttChart(operateCopy, timeSlotsCopy, live);
+                    qDebug() << "Updating GanttChart with copy, operateCopy size:" << operateCopy.size();
+                    gantt->updateGanttChart(operateCopy, timeSlotsCopy, true);
                     QApplication::processEvents();
                 }
             }

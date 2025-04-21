@@ -46,11 +46,13 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
             operate.push(p.getName());
             time_slots.push({ start_time, finish_time });
 
+            // Update Gantt chart
             if (gantt) {
-                queue<char> operateCopy = operate;
-                queue<vector<float>> timeSlotsCopy = time_slots;
-                gantt->updateGanttChart(operateCopy, timeSlotsCopy, live);
-                QApplication::processEvents(); // Force GUI update
+                std::queue<char> operateCopy = operate;
+                std::queue<std::vector<float>> timeSlotsCopy = time_slots;
+                qDebug() << "Updating GanttChart with copy, operateCopy size:" << operateCopy.size();
+                gantt->updateGanttChart(operateCopy, timeSlotsCopy, true);
+                QApplication::processEvents();
             }
 
             if (live) {
