@@ -80,6 +80,7 @@ void Dynamically::addProcess() {
 void Dynamically::callAlgo(std::vector<Processes>& processes,
                            std::queue<Processes>& processesQ,
                            std::queue<SRJF::Process>& process,
+                           std::queue<std::pair<char,float>>&remaining,
                            float quantum,
                            int comboIndex,
                            bool live,
@@ -88,34 +89,34 @@ void Dynamically::callAlgo(std::vector<Processes>& processes,
     switch (comboIndex) {
     case 0: {
         FCFS* fcfs = new FCFS(nullptr);
-        fcfs->runAlgo(processes, live, overall_time, ganttChart, allMutex);
+        fcfs->runAlgo(processes,  remaining, live, overall_time, ganttChart, allMutex);
         resultsDisplay->setText(fcfs->printResults());
         break;
     }
     case 1: {
         SJF_Non* sjf = new SJF_Non(nullptr);
-        sjf->runAlgo(processes,live,overall_time, ganttChart, allMutex);
+        sjf->runAlgo(processes, remaining,live,overall_time, ganttChart, allMutex);
         resultsDisplay->setText(sjf->printResults());
         delete sjf; // Clean up to avoid memory leak
         break;
     }
     case 2: {
         SRJF* srjf = new SRJF(nullptr);
-        srjf->runAlgo(process, live, overall_time, ganttChart, allMutex);
+        srjf->runAlgo(process, remaining, live, overall_time, ganttChart, allMutex);
         resultsDisplay->setText(srjf->printResults());
         delete srjf; // Clean up to avoid memory leak
         break;
     }
     case 3: {
         PriorityNon* PrioNon = new PriorityNon(nullptr);
-        PrioNon->runAlgo(processes,live,overall_time, ganttChart, allMutex);
+        PrioNon->runAlgo(processes, remaining, live,overall_time, ganttChart, allMutex);
         resultsDisplay->setText(PrioNon->printResults());
         delete PrioNon;
         break;
     }
     case 4: {
         PriorityPre* PrioPre = new PriorityPre(nullptr);
-        PrioPre->runAlgo(processes,live,overall_time, ganttChart, allMutex);
+        PrioPre->runAlgo(processes, remaining, live,overall_time, ganttChart, allMutex);
         resultsDisplay->setText(PrioPre->printResults());
         delete PrioPre; // Clean up to avoid memory leak
         break;
@@ -123,7 +124,7 @@ void Dynamically::callAlgo(std::vector<Processes>& processes,
     case 5: {
         qDebug() << "Calling roundRobin with quantum =" << quantum << ", live =" << live;
         RoundRobin* RRSARA = new RoundRobin(nullptr);
-        RRSARA->runAlgo(processesQ, quantum, live, overall_time, ganttChart, allMutex);
+        RRSARA->runAlgo(processesQ, remaining, quantum, live, overall_time, ganttChart, allMutex);
         resultsDisplay->setText(RRSARA->printResults());
         delete RRSARA; // Clean up to avoid memory leak
         break;

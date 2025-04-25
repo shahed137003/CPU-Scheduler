@@ -6,14 +6,35 @@ GanttChart::GanttChart(QWidget *parent) : QWidget(parent), isLiveMode(false) {
     connect(this, &GanttChart::requestUpdateGantt, this, &GanttChart::handleUpdateGantt);
 }
 
-void GanttChart::updateGanttChart(const std::queue<char>& processes, const std::queue<std::vector<float>>& timeSlots, bool live) {
+void GanttChart::updateGanttChart(std::queue<char>& processes, std::queue<std::vector<float>>& timeSlots, bool live) {
     // Emit signal to ensure update happens in the main thread
     qDebug() << "GanttChart::updateGanttChart - processes size:" << processes.size()
              << "timeSlots size:" << timeSlots.size();
     emit requestUpdateGantt(processes, timeSlots, live);
 }
 
-void GanttChart::handleUpdateGantt(const std::queue<char>& processes, const std::queue<std::vector<float>>& timeSlots, bool live) {
+void GanttChart::handleUpdateGantt(std::queue<char>& processes, std::queue<std::vector<float>>& timeSlots, bool live) {
+    int originalProcessCount = processes.size(); // Store original count
+    float expectedStart = 0.0f; // Tracks where the next process should start
+
+    for (int i = 0; i < originalProcessCount; i++) {
+        float processStart = timeSlots.front()[0];
+        float processEnd = timeSlots.front()[1];
+
+        // Check for a gap before this process
+        if (processStart > expectedStart) {
+            processes.push('#'); // Insert idle slot
+            timeSlots.push({expectedStart, processStart});
+        }
+
+        // Move this process to the back of the queue
+        processes.push(processes.front());
+        timeSlots.push(timeSlots.front());
+        processes.pop();
+        timeSlots.pop();
+
+        expectedStart = processEnd; // Update expected next start time
+    }
     // Clear existing data
     while (!processNames.empty()) processNames.pop();
     while (!timeIntervals.empty()) timeIntervals.pop();

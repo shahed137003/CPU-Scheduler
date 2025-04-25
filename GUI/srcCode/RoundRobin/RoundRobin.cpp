@@ -7,8 +7,9 @@ using namespace std;
 RoundRobin::RoundRobin(QObject* parent)
     : QObject(parent){}
 
-void RoundRobin::runAlgo(std::queue<Processes>& processes, float quantum, bool live, float& overall_time,GanttChart* gantt,
-                              std::mutex& queueMutex) {
+void RoundRobin::runAlgo(std::queue<Processes>& processes,
+                         std::queue<std::pair<char,float>>&remaining, float quantum, bool live, float& overall_time,GanttChart* gantt,
+                         std::mutex& queueMutex) {
     qDebug() << "processStep called, readyQueue size:" << readyQueue.size() << "processes size:" << processes.size();
     while (!readyQueue.empty() || !processes.empty()) {
 
@@ -47,7 +48,14 @@ void RoundRobin::runAlgo(std::queue<Processes>& processes, float quantum, bool l
                             time_slots.push({0,overall_time});
                         }
                         else{
-                            time_slots.push({time_slots.front()[1],overall_time});
+                            vector<float> temp;
+                            int n = time_slots.size();
+                            for(int i = 0; i < n;i++){
+                                temp = time_slots.front();
+                                time_slots.pop();
+                                time_slots.push(temp);
+                            }
+                            time_slots.push({temp[1],overall_time});
                         }
                     }
                     else{
@@ -116,6 +124,7 @@ void RoundRobin::runAlgo(std::queue<Processes>& processes, float quantum, bool l
 
         operating.setLasttime(overall_time + time_slice);
         operating.setRemaining(operating.getRemaining() - time_slice);
+        remaining.push({operating.getName(),operating.getRemaining()});
 
         if (operating.getRemaining() > 0) {
             readyQueue.push(operating);

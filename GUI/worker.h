@@ -12,6 +12,7 @@ public:
     Worker(std::vector<Processes>* processes,
            std::queue<Processes>* processesQ,
            std::queue<SRJF::Process>* process,
+           std::queue<std::pair<char,float>>* remaining,
            float* overall_time,
            float quantum,
            int comboIndex,
@@ -22,6 +23,7 @@ public:
         processes_(processes),
         processesQ_(processesQ),
         process_(process),
+        remaining_(remaining),
         overall_time_(overall_time),
         quantum_(quantum),
         comboIndex_(comboIndex),
@@ -65,7 +67,7 @@ public slots:
         connect(dynamically_, &Dynamically::algorithmFinished, this, &Worker::onAlgorithmFinished);
 
         // Call the algorithm
-        dynamically_->callAlgo(*processes_, *processesQ_, *process_, quantum_, comboIndex_, isLive_, *overall_time_, *allMutex_);
+        dynamically_->callAlgo(*processes_, *processesQ_, *process_, *remaining_, quantum_, comboIndex_, isLive_, *overall_time_, *allMutex_);
     }
 
     void onAlgorithmFinished() {
@@ -80,6 +82,7 @@ private:
     std::vector<Processes>* processes_;
     std::queue<Processes>* processesQ_;
     std::queue<SRJF::Process>* process_;
+    std::queue<std::pair<char,float>>* remaining_;
     float* overall_time_;
     float quantum_;
     int comboIndex_;

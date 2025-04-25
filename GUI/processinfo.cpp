@@ -170,9 +170,6 @@ void processInfo::receiveProcessData(QString algorithm, int numProcesses, int in
         ui->lineEdit_4->hide();
         ui->label_4->hide();
     }
-    if (!isLive) {
-        ui->tableWidget->hide();
-    }
     ui->pushButton_3->setText("Add process");
     ui->pushButton_3->setStyleSheet("QPushButton {"
                                   "    background-color: #3498db;"    // Blue background
@@ -231,6 +228,7 @@ float quantum = 0.0;
 std::vector<Processes> processes;
 std::queue<SRJF::Process> process;
 std::queue<Processes> processesQ;
+std::queue<std::pair<char,float>> remaining;
 float overall_time = 0;
 void processInfo::on_pushButton_clicked()
 {
@@ -306,13 +304,18 @@ void processInfo::on_pushButton_clicked()
     QStringList headers = {"Process Name", "Arrival Time", "Burst Time"};
     int columnCount = 3;
     if (needsPriority) {
-        headers << "Priority";
+        headers.insert(columnCount, "Priority");
+        columnCount++;
+    }
+    if(isLive){
+        headers.insert(columnCount, "Remaining Time");
         columnCount++;
     }
 
     ui->tableWidget->setColumnCount(columnCount);
     ui->tableWidget->setHorizontalHeaderLabels(headers);
-    ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
+    ui->tableWidget->horizontalHeader()->setStretchLastSection(false); // Disable last column stretch
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch); // Equal width for all columns
     ui->tableWidget->verticalHeader()->setVisible(false);
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget->setSelectionMode(QAbstractItemView::NoSelection);
@@ -336,6 +339,11 @@ void processInfo::on_pushButton_clicked()
         QTableWidgetItem *priorityItem = new QTableWidgetItem(QString::number(p.getPriority()));
         priorityItem->setTextAlignment(Qt::AlignCenter);
         ui->tableWidget->setItem(row, 3, priorityItem);
+    }
+    if(isLive){
+        QTableWidgetItem *remainingItem = new QTableWidgetItem(QString::number(p.getRemaining()));
+        remainingItem->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(row, columnCount - 1, remainingItem);
     }
 
     ui->tableWidget->setStyleSheet(R"(
@@ -381,7 +389,7 @@ void processInfo::on_pushButton_clicked()
 
         // Create worker and thread
         QThread* thread = new QThread;
-        Worker* worker = new Worker(&processes, &processesQ, &process, &overall_time, quantum, comboIndex, isLive, &allMutex);
+        Worker* worker = new Worker(&processes, &processesQ, &process, &remaining, &overall_time, quantum, comboIndex, isLive, &allMutex);
         worker->moveToThread(thread);
 
         // Connect signals and slots
@@ -406,6 +414,7 @@ void processInfo::on_pushButton_clicked()
 
 void processInfo::on_pushButton_2_clicked()
 {
+    QString savedMessage;
     if(!isLive){
         savedMessage = QString("You disabled live mode so you cant add process within run time.. ");
         // Create and style QMessageBox
@@ -666,6 +675,11 @@ void processInfo::on_pushButton_3_clicked()
         priorityItem->setTextAlignment(Qt::AlignCenter);
         ui->tableWidget->setItem(row, 3, priorityItem);
     }
+    if(isLive){
+        QTableWidgetItem *remainingItem = new QTableWidgetItem(QString::number(p.getRemaining()));
+        remainingItem->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(row, columnCount - 1, remainingItem);
+    }
 
     ui->tableWidget->setStyleSheet(R"(
         QTableWidget {
@@ -693,6 +707,26 @@ void processInfo::on_pushButton_3_clicked()
 void processInfo::updateTimeDisplay(float newTime) {
     ui->timeLabel->setText(QString("Current Time: %1").arg(newTime,0,'f',1));
     ui->timeLabel->adjustSize();
+    while(!remaining.empty()){
+        qDebug() << "Remaining process data:" << remaining.front().first << remaining.front().second;
+        // Get the next pair from the queue
+        std::pair<char, float> data = remaining.front();
+        char targetChar = data.first;
+        float newValue = data.second;
+        remaining.pop();
+
+        // Search for the row where the name (first column) matches targetChar
+        for (int row = 0; row < ui->tableWidget->rowCount(); ++row) {
+            QTableWidgetItem *nameItem = ui->tableWidget->item(row, 0);
+            if (nameItem && nameItem->text() == QString(targetChar)) {
+                // Found the matching row, update the last column
+                QTableWidgetItem *remainingItem = new QTableWidgetItem(QString::number(newValue));
+                remainingItem->setTextAlignment(Qt::AlignCenter);
+                ui->tableWidget->setItem(row, ui->tableWidget->columnCount() - 1, remainingItem);
+                break; // Exit the loop after updating the row
+            }
+        }
+    }
 }
 void processInfo::showWarning(const QString& message)
 {

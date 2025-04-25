@@ -82,7 +82,13 @@ void roundRobin(std::queue<Processes>& processes, float quantum, bool live) {
                             time_slots.push({0,overall_time});
                         }
                         else{
-                            time_slots.push({time_slots.front()[1],overall_time});
+                            vector<float> temp;
+                            for(int i = 0; i < time_slots.size();i++){
+                                temp = time_slots.front();
+                                time_slots.pop();
+                                time_slots.push(temp);
+                            }
+                            time_slots.push({temp[1],overall_time});
                         }
                     }
                     else{

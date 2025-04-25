@@ -13,7 +13,7 @@ class RoundRobin : public QObject {
     Q_OBJECT
 public:
     explicit RoundRobin(QObject *parent = nullptr);
-    void runAlgo(std::queue<Processes>& processes, float quantum, bool live, float& overall_time,GanttChart* gantt,
+    void runAlgo(std::queue<Processes>& processes, std::queue<std::pair<char,float>>&remaining, float quantum, bool live, float& overall_time,GanttChart* gantt,
       std::mutex& allMutex);
 
     QString printResults();
