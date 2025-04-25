@@ -9,7 +9,7 @@
 SRJF::SRJF(QObject* parent)
     : QObject(parent) {}
 
-void SRJF::runAlgo(std::queue<Process>& processes, bool live, float& current_time,GanttChart* gantt, std::mutex& mtx) {
+void SRJF::runAlgo(std::queue<Process>& processes,  std::queue<std::pair<char,float>>&remaining, bool live, float& current_time,GanttChart* gantt, std::mutex& mtx) {
     // Priority queue for ready processes (sorted by remaining time)
     auto cmp = [](Process* left, Process* right) {
         return left->remaining_time > right->remaining_time;
@@ -59,6 +59,7 @@ void SRJF::runAlgo(std::queue<Process>& processes, bool live, float& current_tim
         // Execute current process for 1 time unit
         if (current_process) {
             current_process->remaining_time--;
+            remaining.push({current_process->name,current_process->remaining_time});
             char last;
             // Update Gantt chart
             {

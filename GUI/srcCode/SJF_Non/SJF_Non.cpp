@@ -8,7 +8,7 @@ SJF_Non::SJF_Non(QObject* parent)
     : QObject(parent) {}
 
 
-void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overall_time, GanttChart* gantt,
+void SJF_Non::runAlgo(std::vector<Processes>& processes,  std::queue<std::pair<char,float>>&remainingQ, bool live, float& overall_time, GanttChart* gantt,
                       std::mutex& vectorMutex) {
     qDebug() << "SJF_Non::runAlgo called, processes size:" << processes.size();
 
@@ -60,6 +60,7 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
                 for (int sec = 0; sec < burstInt; ++sec) {
                     wait_ms(1000);        // Wait 1 second
                     overall_time += 1.0;  // Advance time by 1
+                    remainingQ.push({p.getName(),burstInt - sec -1});
                     //QApplication::processEvents();
                 }
 
@@ -68,6 +69,7 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
                 if (remaining > 0.0f) {
                     wait_ms(remaining * 1000);
                     overall_time += remaining;
+                    remainingQ.push({p.getName(),0});
                 }
             } else {
                 overall_time = finish_time;
@@ -75,7 +77,6 @@ void SJF_Non::runAlgo(std::vector<Processes>& processes, bool live, float& overa
 
             std::cout << "SJF_Non: Scheduling process " << p.getName()
                       << " start: " << start_time << " end: " << finish_time << std::endl;
-
             terminatedProcesses.push(p);
         } else {
             // No process is ready – CPU is idle

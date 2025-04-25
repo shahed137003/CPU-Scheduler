@@ -4,12 +4,11 @@
 #include <algorithm>
 #include <iostream>
 
-PriorityNon::PriorityNon(QObject* parent)
-    : QObject(parent) {};
+PriorityNon::PriorityNon(QObject* parent) : QObject(parent) {}
 
 
 
-void PriorityNon::runAlgo(std::vector<Processes>& processes, bool live, float& overall_time, GanttChart* gantt, std::mutex& vectorMutex) {
+void PriorityNon::runAlgo(std::vector<Processes>& processes,  std::queue<std::pair<char,float>>&remaining, bool live, float& overall_time, GanttChart* gantt, std::mutex& vectorMutex) {
     qDebug() << "PriorityNon::processStep called, processes size:" << processes.size();
 
     // Create a local copy of processes for thread safety
@@ -78,12 +77,13 @@ void PriorityNon::runAlgo(std::vector<Processes>& processes, bool live, float& o
             int i = operating.getBurst();
             while(i--){
                 wait(1);
+                remaining.push({operating.getName(),i - 1});
             }
         }
         std::cout << "PriorityNon: Scheduling process " << operating.getName()
                   << " start: " << start_time << " end: " << end_time << std::endl;
         std::cout << "PriorityNon: Updated GanttChart with " << operate.size() << " processes" << std::endl;
-
+        remaining.push({operating.getName(),0});
         terminatedProcesses.push(operating);
 
     }

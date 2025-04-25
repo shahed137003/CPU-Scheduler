@@ -9,7 +9,7 @@ FCFS::FCFS(QObject* parent)
 
 
 
-void FCFS::runAlgo(std::vector<Processes>& processes, bool live, float& overall_time,GanttChart* gantt,
+void FCFS::runAlgo(std::vector<Processes>& processes, std::queue<std::pair<char,float>>&remaining, bool live, float& overall_time,GanttChart* gantt,
                    std::mutex& vectorMutex) {
     qDebug() << "FCFS::processStep called, processes size:" << processes.size();
 
@@ -73,12 +73,14 @@ void FCFS::runAlgo(std::vector<Processes>& processes, bool live, float& overall_
                 if(time_slice <= 1){
                     overall_time+=time_slice;
                     wait_ms(1000*time_slice);
+                    remaining.push({operating.getName(),0});
                     break;
                 }
                 else{
                     overall_time++;
                     wait_ms(1000);
                     time_slice--;
+                    remaining.push({operating.getName(),time_slice});
                 }
             }
         }
@@ -86,7 +88,6 @@ void FCFS::runAlgo(std::vector<Processes>& processes, bool live, float& overall_
         std::cout << "FCFS: Scheduling process " << operating.getName()
                   << " start: " << start_time << " end: " << end_time << std::endl;
         std::cout << "FCFS: Updated GanttChart with " << operate.size() << " processes" << std::endl;
-
         terminatedProcesses.push(operating);
 
     }

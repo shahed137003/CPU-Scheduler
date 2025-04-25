@@ -39,7 +39,7 @@ public:
     };
     explicit SRJF(QObject *parent = nullptr);
 
-    void runAlgo(std::queue<Process>& processes, bool live, float& current_time,GanttChart* gantt,std::mutex& mtx);
+    void runAlgo(std::queue<Process>& processes, std::queue<std::pair<char,float>>&remaining, bool live, float& current_time,GanttChart* gantt,std::mutex& mtx);
 
     QString printResults();
     QString calculateAverages();

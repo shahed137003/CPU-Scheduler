@@ -15,7 +15,7 @@ public:
     std::queue<Processes> terminatedProcesses;
     std::queue<char> operate;
     QString results;
-    void runAlgo(std::vector<Processes>& initialProcesses, bool live, float& overall_time, GanttChart* gantt, std::mutex& vectorMutex);
+    void runAlgo(std::vector<Processes>& initialProcesses, std::queue<std::pair<char,float>>&remaining, bool live, float& overall_time, GanttChart* gantt, std::mutex& vectorMutex);
     std::queue<std::vector<float>> time_slots;
     float overall_time = 0;
     bool live;

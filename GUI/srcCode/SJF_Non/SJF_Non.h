@@ -11,7 +11,7 @@ class SJF_Non : public QObject {
     Q_OBJECT
 public:
     explicit SJF_Non(QObject *parent = nullptr);
-    void runAlgo(std::vector<Processes>& processes, bool live, float& overall_time,GanttChart* gantt,
+    void runAlgo(std::vector<Processes>& processes, std::queue<std::pair<char,float>>&remaining, bool live, float& overall_time,GanttChart* gantt,
                  std::mutex& allMutex);
 
     QString printResults();

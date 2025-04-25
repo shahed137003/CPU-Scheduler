@@ -5,9 +5,9 @@
 #include <iostream>
 
 PriorityPre::PriorityPre(QObject* parent)
-    : QObject(parent) {};
+    : QObject(parent) {}
 
-void PriorityPre::runAlgo(std::vector<Processes>& initialProcesses, bool live, float& overall_time, GanttChart* gantt, std::mutex& vectorMutex) {
+void PriorityPre::runAlgo(std::vector<Processes>& initialProcesses,  std::queue<std::pair<char,float>>&remaining, bool live, float& overall_time, GanttChart* gantt, std::mutex& vectorMutex) {
     // Initialize processes from initialProcesses
     {
         std::lock_guard<std::mutex> lock(vectorMutex);
@@ -76,7 +76,7 @@ void PriorityPre::runAlgo(std::vector<Processes>& initialProcesses, bool live, f
         if (selected != -1) {
             Processes& process = processes[selected];
             process.setRemaining(process.getRemaining() - 1);
-
+            remaining.push({process.getName(),process.getRemaining()});
             if(!operate.empty() && last == process.getName())
             {
                 vector<float>lastTimeSlot;
