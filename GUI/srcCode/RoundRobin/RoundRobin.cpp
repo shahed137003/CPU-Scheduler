@@ -128,8 +128,9 @@ void RoundRobin::runAlgo(std::queue<Processes>& processes,
 
         if (operating.getRemaining() > 0) {
             readyQueue.push(operating);
-        } else {
-            operating.setTurnaround(overall_time - operating.getArrival());
+        }
+        else {
+            operating.setTurnaround(overall_time + time_slice - operating.getArrival());
             operating.setWaiting(operating.getTurnaround() - operating.getBurst());
             terminatedProcesses.push(operating);
         }

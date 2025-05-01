@@ -26,7 +26,7 @@ void PriorityNon::runAlgo(std::vector<Processes>& processes,  std::queue<std::pa
     {
         std::lock_guard<std::mutex> lock(vectorMutex);
         // Push back to readyQueue
-        for (const auto& p : processes) {
+        for (const auto& p : localProcesses) {
             readyQueue.push(p);
         }
 
